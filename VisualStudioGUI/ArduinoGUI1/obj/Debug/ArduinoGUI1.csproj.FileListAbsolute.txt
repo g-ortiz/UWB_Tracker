@@ -1,0 +1,27 @@
+c:\users\gabriel\documents\visual studio 2015\Projects\ArduinoGUI1\ArduinoGUI1\bin\Debug\ArduinoGUI1.exe.config
+c:\users\gabriel\documents\visual studio 2015\Projects\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.csprojResolveAssemblyReference.cache
+c:\users\gabriel\documents\visual studio 2015\Projects\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.Form1.resources
+c:\users\gabriel\documents\visual studio 2015\Projects\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.Properties.Resources.resources
+c:\users\gabriel\documents\visual studio 2015\Projects\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.csproj.GenerateResource.Cache
+c:\users\gabriel\documents\visual studio 2015\Projects\ArduinoGUI1\ArduinoGUI1\bin\Debug\ArduinoGUI1.exe
+c:\users\gabriel\documents\visual studio 2015\Projects\ArduinoGUI1\ArduinoGUI1\bin\Debug\ArduinoGUI1.pdb
+c:\users\gabriel\documents\visual studio 2015\Projects\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.exe
+c:\users\gabriel\documents\visual studio 2015\Projects\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.pdb
+C:\Users\Gabriel\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\bin\Debug\ArduinoGUI1.exe.config
+C:\Users\Gabriel\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.exe
+C:\Users\Gabriel\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.pdb
+C:\Users\Gabriel\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\bin\Debug\ArduinoGUI1.exe
+C:\Users\Gabriel\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\bin\Debug\ArduinoGUI1.pdb
+C:\Users\Gabriel\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.csprojResolveAssemblyReference.cache
+C:\Users\Gabriel\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.Form1.resources
+C:\Users\Gabriel\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.Properties.Resources.resources
+C:\Users\Gabriel\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.csproj.GenerateResource.Cache
+C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\bin\Debug\ArduinoGUI1.exe.config
+C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.exe
+C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.pdb
+C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\bin\Debug\ArduinoGUI1.exe
+C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\bin\Debug\ArduinoGUI1.pdb
+C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.csprojResolveAssemblyReference.cache
+C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.Form1.resources
+C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.Properties.Resources.resources
+C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.csproj.GenerateResource.Cache
