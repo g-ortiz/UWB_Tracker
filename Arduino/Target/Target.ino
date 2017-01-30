@@ -14,7 +14,7 @@ const uint8_t PIN_RST = 9; // reset pin
 const uint8_t PIN_IRQ = 2; // irq pin
 const uint8_t PIN_SS = 7; // spi select pin
 
-//Comment
+
 
 // Expected messages
 #define POLL 0
