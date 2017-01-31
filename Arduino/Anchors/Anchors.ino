@@ -52,8 +52,8 @@ float samplingRate = 0;
 void setup() {
     // Setup Code
     // Begin serial communication
-    Serial1.begin(9600);
-    SerialUSB.begin(9600);
+    //Serial1.begin(9600);
+    SerialUSB.begin(115000);
     delay(1000);
     // Set pins and start SPI
     DW1000.begin(PIN_IRQ, PIN_RST);
