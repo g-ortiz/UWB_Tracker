@@ -53,7 +53,7 @@ void setup() {
     // Setup Code
     // Begin serial communication
     //Serial1.begin(9600);
-    SerialUSB.begin(115000);
+    SerialUSB.begin(115200);
     delay(1000);
     // Set pins and start SPI
     DW1000.begin(PIN_IRQ, PIN_RST);
