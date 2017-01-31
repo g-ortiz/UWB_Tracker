@@ -89,13 +89,17 @@ namespace ArduinoGUI1
 
         private void display(object sender, EventArgs e)
         {
-            Plots.Add(new plot
+            if (float.Parse(yRaw, CultureInfo.InvariantCulture.NumberFormat) > 0)
             {
-                xPosRaw = float.Parse(xRaw, CultureInfo.InvariantCulture.NumberFormat),
-                yPosRaw = float.Parse(yRaw, CultureInfo.InvariantCulture.NumberFormat),
-                //ResponseTime = float.Parse(TimeRaw, CultureInfo.InvariantCulture.NumberFormat),
-                //TxPower = float.Parse(PowerRaw, CultureInfo.InvariantCulture.NumberFormat)
-            });
+                Plots.Add(new plot
+                {
+                    xPosRaw = float.Parse(xRaw, CultureInfo.InvariantCulture.NumberFormat),
+                    yPosRaw = float.Parse(yRaw, CultureInfo.InvariantCulture.NumberFormat),
+                    //ResponseTime = float.Parse(TimeRaw, CultureInfo.InvariantCulture.NumberFormat),
+                    //TxPower = float.Parse(PowerRaw, CultureInfo.InvariantCulture.NumberFormat)
+                });
+            }
+
 
             Console.WriteLine(xRaw + " " + yRaw);
             if (Plots.Count == 20)
