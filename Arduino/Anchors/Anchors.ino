@@ -48,12 +48,17 @@ uint16_t replyDelayTimeUS = 3000;
 uint16_t successRangingCount = 0;
 uint32_t rangingCountPeriod = 0;
 float samplingRate = 0;
+//For Filter
+#define FILTER_LENGTH 12
+float filt_list[FILTER_LENGTH];
+uint16_t filtCounter;
+float avg, sum;
 
 void setup() {
     // Setup Code
     // Begin serial communication
     //Serial1.begin(9600);
-    SerialUSB.begin(115000);
+    Serial.begin(115200);
     delay(1000);
     // Set pins and start SPI
     DW1000.begin(PIN_IRQ, PIN_RST);
@@ -79,6 +84,14 @@ void setup() {
     noteActivity();
     // for first time ranging frequency computation
     rangingCountPeriod = millis();
+
+    //Initialize filter
+    filtCounter = 0;
+    sum = 0;
+    for(int i = 0; i < FILTER_LENGTH; i++)
+    {
+      filt_list[i] = 30;
+    }
 }
 
 void noteActivity() {
@@ -91,7 +104,7 @@ void resetInactive() {
     expectedMsgId = POLL;
     receiver();
     noteActivity();
-    //SerialUSB.println("Timeout");
+    //Serial.println("Timeout");
 }
 
 void handleSent() {
@@ -153,6 +166,53 @@ void computeRangeAsymmetric() {
     timeComputedRange.setTimestamp(tof);
 }
 
+//Averaging Filter
+
+float filter(float newDist)
+{
+  uint16_t delta = 100; //Range in which new reading must be to contribute to average is current average +/- delta
+  float first_val;
+
+  if(newDist > 0)
+  {
+    first_val = filt_list[0];
+    filtCounter = filtCounter + 1;
+    for(int k = 0; k < FILTER_LENGTH-1; k ++)
+    {
+      filt_list[k] = filt_list[k + 1];
+    }
+  }
+  
+
+  if(filtCounter < FILTER_LENGTH) //If the filter length has not yet been reached don't return anything
+  {
+    if(newDist > 0)
+    {
+     sum = sum + newDist;
+     avg = sum/filtCounter; 
+    }
+    return 0;
+  }
+  else
+  {
+    if(newDist > 0 && newDist >= avg - delta && newDist <= avg + delta)
+    {
+      filt_list[FILTER_LENGTH-1] = newDist;
+      sum = sum - first_val + newDist;
+      avg = sum/FILTER_LENGTH;     
+    }
+    else
+    {
+      filt_list[FILTER_LENGTH-1] = filt_list[FILTER_LENGTH-1];
+      avg = avg;
+    }
+
+    
+    
+    return avg;
+  }
+}
+
 
 void loop() {
     int32_t curMillis = millis(); // get current time
@@ -178,7 +238,7 @@ void loop() {
         // get message
         DW1000.getData(data, LEN_DATA);
         byte msgId = data[0];
-        //SerialUSB.println(msgId); 
+        //Serial.println(msgId); 
         if (msgId != expectedMsgId) {
             // unexpected message, start over again (except if already POLL)
             protocolFailed = true;
@@ -203,16 +263,20 @@ void loop() {
                 computeRangeAsymmetric();
                 transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
                 float distance = timeComputedRange.getAsMeters()*100;
-                String serialdata = "0," + String(distance) + ",0," + String(distance) + "," + String(samplingRate) + "," + String(DW1000.getReceivePower()) + "," + String(DW1000.getReceiveQuality()) + "," + String(samplingRate) + "\n\r";
-                SerialUSB.print(serialdata);
-                /*SerialUSB.print("0,"); 
-                SerialUSB.print(distance); SerialUSB.print(","); 
-                SerialUSB.print("0,"); 
-                SerialUSB.print(distance); SerialUSB.print(",");                 
-                SerialUSB.print(samplingRate);SerialUSB.print(",");
-                SerialUSB.print(DW1000.getReceivePower());SerialUSB.print(",");
-                SerialUSB.print(DW1000.getReceiveQuality());SerialUSB.print(",");
-                SerialUSB.print(samplingRate);SerialUSB.print("\n\r"); //This should be the time after processing data, "response time"     */         
+                String serialdata = "New Distance = " + String(distance);
+                Serial.println(serialdata);
+                float avg_distance = filter(distance);
+                //String serialdata = "0," + String(distance) + ",0," + String(distance) + "," + String(samplingRate) + "," + String(DW1000.getReceivePower()) + "," + String(DW1000.getReceiveQuality()) + "," + String(samplingRate) + "\n\r";
+                serialdata = "Average Distance = " + String(avg_distance);
+                Serial.println(serialdata);
+                /*Serial.print("0,"); 
+                Serial.print(distance); Serial.print(","); 
+                Serial.print("0,"); 
+                Serial.print(distance); Serial.print(",");                 
+                Serial.print(samplingRate);Serial.print(",");
+                Serial.print(DW1000.getReceivePower());Serial.print(",");
+                Serial.print(DW1000.getReceiveQuality());Serial.print(",");
+                Serial.print(samplingRate);Serial.print("\n\r"); //This should be the time after processing data, "response time"     */         
                 // update sampling rate (each second)
                 successRangingCount++;
                 if (curMillis - rangingCountPeriod > 1000) {
