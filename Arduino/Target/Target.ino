@@ -9,7 +9,7 @@
 #include <SPI.h>
 #include <DW1000.h>
 
-// Pins in Arduino M0 Pro
+// Pins in Arduino Pro Mini 3.3V
 const uint8_t PIN_RST = 9; // reset pin
 const uint8_t PIN_IRQ = 2; // irq pin
 const uint8_t PIN_SS = 7; // spi select pin
@@ -141,6 +141,7 @@ void loop() {
         // get message and parse
         DW1000.getData(data, LEN_DATA);
         byte msgId = data[0];
+        //Serial.println(msgId);
         if (msgId != expectedMsgId) {
             // unexpected message, start over again
             expectedMsgId = POLL_ACK;

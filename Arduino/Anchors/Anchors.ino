@@ -53,7 +53,7 @@ void setup() {
     // Setup Code
     // Begin serial communication
     Serial1.begin(9600);
-    SerialUSB.begin(115200);
+    SerialUSB.begin(9600);
     delay(1000);
     // Set pins and start SPI
     DW1000.begin(PIN_IRQ, PIN_RST);
@@ -178,6 +178,7 @@ void loop() {
         // get message
         DW1000.getData(data, LEN_DATA);
         byte msgId = data[0];
+        //SerialUSB.println(msgId); 
         if (msgId != expectedMsgId) {
             // unexpected message, start over again (except if already POLL)
             protocolFailed = true;
@@ -202,14 +203,16 @@ void loop() {
                 computeRangeAsymmetric();
                 transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
                 float distance = timeComputedRange.getAsMeters()*100;
-                SerialUSB.print("0,"); 
+                String serialdata = "0," + String(distance) + ",0," + String(distance) + "," + String(samplingRate) + "," + String(DW1000.getReceivePower()) + "," + String(DW1000.getReceiveQuality()) + "," + String(samplingRate) + "\n\r";
+                SerialUSB.print(serialdata);
+                /*SerialUSB.print("0,"); 
                 SerialUSB.print(distance); SerialUSB.print(","); 
                 SerialUSB.print("0,"); 
                 SerialUSB.print(distance); SerialUSB.print(",");                 
                 SerialUSB.print(samplingRate);SerialUSB.print(",");
                 SerialUSB.print(DW1000.getReceivePower());SerialUSB.print(",");
                 SerialUSB.print(DW1000.getReceiveQuality());SerialUSB.print(",");
-                SerialUSB.print(samplingRate);SerialUSB.print("\n\r"); //This should be the time after processing data, "response time"              
+                SerialUSB.print(samplingRate);SerialUSB.print("\n\r"); //This should be the time after processing data, "response time"     */         
                 // update sampling rate (each second)
                 successRangingCount++;
                 if (curMillis - rangingCountPeriod > 1000) {

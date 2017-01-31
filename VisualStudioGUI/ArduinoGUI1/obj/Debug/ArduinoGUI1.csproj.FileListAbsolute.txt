@@ -25,3 +25,12 @@ C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoG
 C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.Form1.resources
 C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.Properties.Resources.resources
 C:\Users\gabet1\Dropbox\Thesis\Visual\ArduinoGUI1\ArduinoGUI1\obj\Debug\ArduinoGUI1.csproj.GenerateResource.Cache
+C:\Users\gabet1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\bin\Debug\ArduinoGUI1.exe.config
+C:\Users\gabet1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.exe
+C:\Users\gabet1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.pdb
+C:\Users\gabet1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\bin\Debug\ArduinoGUI1.exe
+C:\Users\gabet1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\bin\Debug\ArduinoGUI1.pdb
+C:\Users\gabet1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.csprojResolveAssemblyReference.cache
+C:\Users\gabet1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.Form1.resources
+C:\Users\gabet1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.Properties.Resources.resources
+C:\Users\gabet1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.csproj.GenerateResource.Cache
