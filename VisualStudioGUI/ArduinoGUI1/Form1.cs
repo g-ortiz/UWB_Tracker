@@ -16,7 +16,7 @@ namespace ArduinoGUI1
     {
         SerialPort sp;
         string RawData = "0";
-        string[] SplitData = new string[8]; 
+        string[] SplitData = new string[7]; 
         string xRaw = "0";
         string yRaw = "0";
         string xFilterRaw = "0";
@@ -24,7 +24,6 @@ namespace ArduinoGUI1
         string SamplingRaw = "0";
         string PowerRaw = "0";
         string QualityRaw = "0";
-        string TimeRaw = "0";
         double xPlot = 0;
         double yPlot = 0;
         string ActualPort = "";
@@ -51,7 +50,7 @@ namespace ArduinoGUI1
             chart1.Series["Target"].Color = Color.Red;
             chart1.Series["Robot"].ChartType =
                 SeriesChartType.FastPoint;
-            chart1.Series["Robot"].Points.AddXY(0, 0);
+            chart1.Series["Robot"].Points.AddXY(string.Empty, 0);
             chart1.Series["Robot"].Color = Color.Blue;
         }
 
@@ -74,7 +73,6 @@ namespace ArduinoGUI1
                     SamplingRaw = SplitData[4];
                     PowerRaw = SplitData[5];
                     QualityRaw = SplitData[6];
-                    TimeRaw = SplitData[7];
                     this.Invoke(new EventHandler(display));
                     this.Invoke(new EventHandler(log));
                 }
@@ -89,34 +87,13 @@ namespace ArduinoGUI1
 
         private void display(object sender, EventArgs e)
         {
-            if (float.Parse(yRaw, CultureInfo.InvariantCulture.NumberFormat) > 0)
-            {
-                Plots.Add(new plot
-                {
-                    xPosRaw = float.Parse(xRaw, CultureInfo.InvariantCulture.NumberFormat),
-                    yPosRaw = float.Parse(yRaw, CultureInfo.InvariantCulture.NumberFormat),
-                    //ResponseTime = float.Parse(TimeRaw, CultureInfo.InvariantCulture.NumberFormat),
-                    //TxPower = float.Parse(PowerRaw, CultureInfo.InvariantCulture.NumberFormat)
-                });
-            }
-
-
-            Console.WriteLine(xRaw + " " + yRaw);
-            if (Plots.Count == 20)
-            {
+                xPlot = float.Parse(xFilterRaw, CultureInfo.InvariantCulture.NumberFormat);
+                yPlot = float.Parse(yFilterRaw, CultureInfo.InvariantCulture.NumberFormat);
                 chart1.Series["Target"].Points.Clear();
-                xPlot = 0;
-                yPlot = 0;
-                foreach (var p in Plots)
-                {
-                    xPlot += p.xPosRaw / 20;
-                    yPlot += p.yPosRaw / 20;
-                }
-                chart1.Series["Target"].Points.AddXY(xPlot, yPlot);
+                chart1.Series["Target"].Points.AddXY(0,yPlot);
                 label1.Text = "Location: (" + xPlot.ToString("0.00") + ", " + yPlot.ToString("0.00") + ")";
                 label4.Text = "Sampling: " + SamplingRaw;
-                Plots.Clear();
-            }
+                Plots.Clear();            
         }
 
         private void log(object sender, EventArgs e)
@@ -132,10 +109,9 @@ namespace ArduinoGUI1
                     SamplingFreq = float.Parse(SamplingRaw, CultureInfo.InvariantCulture.NumberFormat),
                     TxPower = float.Parse(PowerRaw, CultureInfo.InvariantCulture.NumberFormat),
                     TxRxQ = float.Parse(QualityRaw, CultureInfo.InvariantCulture.NumberFormat),
-                    ResponseTime = float.Parse(TimeRaw, CultureInfo.InvariantCulture.NumberFormat)
                 });
             }
-            if (Logger.Count == 1000)
+            if (Logger.Count == 500)
             {
                 Filename = txFileName.Text;
                 btnLogging.Text = "Start Logging";
@@ -143,7 +119,7 @@ namespace ArduinoGUI1
                 foreach (var s in Logger)
                     tw.WriteLine(s.xPosRaw.ToString("0.00", new CultureInfo("en-US")) + "," + s.yPosRaw.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.xPosFilter.ToString("0.00", new CultureInfo("en-US")) + "," + s.yPosFilter.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.ResponseTime.ToString("0.00", new CultureInfo("en-US")) +
+                        "," + s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.TxPower.ToString("0.00", new CultureInfo("en-US")) + "," + s.TxRxQ.ToString("0.00", new CultureInfo("en-US")));
                 tw.Close();
                 IsLogging = false;
@@ -195,7 +171,7 @@ namespace ArduinoGUI1
                 sp = new SerialPort(portName);
                 try
                 {
-                    sp.BaudRate = 9600;
+                    sp.BaudRate = 115200;
                     sp.Open();
                     ActualPort = portName;
                     sp.DataReceived += sp_DataReceived;
@@ -229,7 +205,6 @@ namespace ArduinoGUI1
             public double SamplingFreq { get; set; }
             public double TxPower { get; set; }
             public double TxRxQ { get; set; }
-            public double ResponseTime { get; set; }
         }
 
         private void Form1_Closing(object sender, CancelEventArgs e)
@@ -262,7 +237,7 @@ namespace ArduinoGUI1
                 foreach (var s in Logger)
                     tw.WriteLine(s.xPosRaw.ToString("0.00", new CultureInfo("en-US")) + "," + s.yPosRaw.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.xPosFilter.ToString("0.00", new CultureInfo("en-US")) + "," + s.yPosFilter.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.ResponseTime.ToString("0.00", new CultureInfo("en-US")) + 
+                        "," + s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + 
                         "," + s.TxPower.ToString("0.00", new CultureInfo("en-US")) + "," + s.TxRxQ.ToString("0.00", new CultureInfo("en-US")));
                 tw.Close();
                 IsLogging = false;
