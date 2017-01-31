@@ -49,16 +49,16 @@ uint16_t successRangingCount = 0;
 uint32_t rangingCountPeriod = 0;
 float samplingRate = 0;
 //For Filter
-#define FILTER_LENGTH 12
+#define FILTER_LENGTH 100
 float filt_list[FILTER_LENGTH];
 uint16_t filtCounter;
 float avg, sum;
 
 void setup() {
     // Setup Code
-    // Begin serial communication
-    //Serial1.begin(9600);
-    Serial.begin(115200);
+    // Begin SerialUSB communication
+    //SerialUSB1.begin(9600);
+    SerialUSB.begin(115200);
     delay(1000);
     // Set pins and start SPI
     DW1000.begin(PIN_IRQ, PIN_RST);
@@ -70,8 +70,8 @@ void setup() {
     DW1000.setNetworkId(10);
     DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER); // Test to see if we get better results with a different mode
     DW1000.commitConfiguration();
-    DW1000.enableDebounceClock();
-    DW1000.enableLedBlinking();
+    //DW1000.enableDebounceClock();
+    //DW1000.enableLedBlinking();
 
 
     // set function callbacks for sent and received messages
@@ -104,7 +104,7 @@ void resetInactive() {
     expectedMsgId = POLL;
     receiver();
     noteActivity();
-    //Serial.println("Timeout");
+    //SerialUSB.println("Timeout");
 }
 
 void handleSent() {
@@ -238,7 +238,7 @@ void loop() {
         // get message
         DW1000.getData(data, LEN_DATA);
         byte msgId = data[0];
-        //Serial.println(msgId); 
+        //SerialUSB.println(msgId); 
         if (msgId != expectedMsgId) {
             // unexpected message, start over again (except if already POLL)
             protocolFailed = true;
@@ -264,12 +264,12 @@ void loop() {
                 transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
                 float distance = timeComputedRange.getAsMeters()*100;
                 float avg_distance = filter(distance);
-               /* String serialdata = "New Distance = " + String(distance);
-                Serial.println(serialdata);                
-                serialdata = "Average Distance = " + String(avg_distance);
-                Serial.println(serialdata);  */
-                String serialdata = "0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000.getReceivePower()) + "," + String(DW1000.getReceiveQuality()) + "\n\r";                
-                Serial.println(serialdata);
+               /* String SerialUSBdata = "New Distance = " + String(distance);
+                SerialUSB.println(SerialUSBdata);                
+                SerialUSBdata = "Average Distance = " + String(avg_distance);
+                SerialUSB.println(SerialUSBdata);  */
+                String SerialUSBdata = "0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000.getReceivePower()) + "," + String(DW1000.getReceiveQuality()) + "\n\r";                
+                SerialUSB.print(SerialUSBdata);
                 // update sampling rate (each second)
                 successRangingCount++;
                 if (curMillis - rangingCountPeriod > 1000) {
