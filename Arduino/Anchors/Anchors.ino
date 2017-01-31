@@ -263,20 +263,13 @@ void loop() {
                 computeRangeAsymmetric();
                 transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
                 float distance = timeComputedRange.getAsMeters()*100;
-                String serialdata = "New Distance = " + String(distance);
-                Serial.println(serialdata);
                 float avg_distance = filter(distance);
-                //String serialdata = "0," + String(distance) + ",0," + String(distance) + "," + String(samplingRate) + "," + String(DW1000.getReceivePower()) + "," + String(DW1000.getReceiveQuality()) + "," + String(samplingRate) + "\n\r";
+               /* String serialdata = "New Distance = " + String(distance);
+                Serial.println(serialdata);                
                 serialdata = "Average Distance = " + String(avg_distance);
+                Serial.println(serialdata);  */
+                String serialdata = "0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000.getReceivePower()) + "," + String(DW1000.getReceiveQuality()) + "\n\r";                
                 Serial.println(serialdata);
-                /*Serial.print("0,"); 
-                Serial.print(distance); Serial.print(","); 
-                Serial.print("0,"); 
-                Serial.print(distance); Serial.print(",");                 
-                Serial.print(samplingRate);Serial.print(",");
-                Serial.print(DW1000.getReceivePower());Serial.print(",");
-                Serial.print(DW1000.getReceiveQuality());Serial.print(",");
-                Serial.print(samplingRate);Serial.print("\n\r"); //This should be the time after processing data, "response time"     */         
                 // update sampling rate (each second)
                 successRangingCount++;
                 if (curMillis - rangingCountPeriod > 1000) {
