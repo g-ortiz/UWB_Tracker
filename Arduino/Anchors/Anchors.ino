@@ -177,19 +177,19 @@ float filter(float newDist)
   {
     first_val = filt_list[0];
     filtCounter = filtCounter + 1;
-    for(int k = 0; k < FILTER_LENGTH-1; k ++)
+    for(int k = 0; k < FILTER_LENGTH-1; k++)
     {
       filt_list[k] = filt_list[k + 1];
     }
   }
   
-
   if(filtCounter < FILTER_LENGTH) //If the filter length has not yet been reached don't return anything
   {
     if(newDist > 0)
     {
      sum = sum + newDist;
      avg = sum/filtCounter; 
+     filt_list[FILTER_LENGTH-1] = newDist;     
     }
     return 0;
   }
@@ -197,13 +197,13 @@ float filter(float newDist)
   {
     if(newDist > 0 && newDist >= avg - delta && newDist <= avg + delta)
     {
-      filt_list[FILTER_LENGTH-1] = newDist;
+      filt_list[FILTER_LENGTH-1] = newDist;    
       sum = sum - first_val + newDist;
-      avg = sum/FILTER_LENGTH;     
+      avg = sum/(FILTER_LENGTH);  
     }
     else
     {
-      filt_list[FILTER_LENGTH-1] = filt_list[FILTER_LENGTH-1];
+      filt_list[FILTER_LENGTH-1] = filt_list[FILTER_LENGTH-2];
       avg = avg;
     }
 
