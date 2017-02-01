@@ -49,7 +49,7 @@ uint16_t successRangingCount = 0;
 uint32_t rangingCountPeriod = 0;
 float samplingRate = 0;
 //For Filter
-#define FILTER_LENGTH 100
+#define FILTER_LENGTH 12
 float filt_list[FILTER_LENGTH];
 uint16_t filtCounter;
 float avg, sum;
@@ -219,6 +219,7 @@ void loop() {
     if (!sentAck && !receivedAck) {
         // reset if wathcdog timed out
         if (curMillis - lastActivity > resetPeriod) {
+            //SerialUSB.print("WATCHDOG TIMEOUT \n\r");
             resetInactive();
         }
         return;
@@ -242,9 +243,11 @@ void loop() {
         if (msgId != expectedMsgId) {
             // unexpected message, start over again (except if already POLL)
             protocolFailed = true;
+            //SerialUSB.print("Received ERROR \n\r");            
         }
         if (msgId == POLL) {
             // get timestamp, change expected message and send POLL_ACK
+            //SerialUSB.print("Received POLL \n\r");
             protocolFailed = false;
             DW1000.getReceiveTimestamp(timePollReceived);
             expectedMsgId = RANGE;
@@ -254,6 +257,7 @@ void loop() {
         }
         else if (msgId == RANGE) {
             // get timestamp, change expected message, calculate range and print
+            //SerialUSB.print("Received RANGE \n\r");
             DW1000.getReceiveTimestamp(timeRangeReceived);
             expectedMsgId = POLL;
             if (!protocolFailed) {
@@ -279,6 +283,7 @@ void loop() {
                 }
             }
             else {
+                SerialUSB.print("RANGE Failed \n\r");
                 transmitRangeFailed();
             }
             // reset watchdog
