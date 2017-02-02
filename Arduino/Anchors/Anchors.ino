@@ -70,8 +70,8 @@ void setup() {
     DW1000.setNetworkId(10);
     DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER); // Test to see if we get better results with a different mode
     DW1000.commitConfiguration();
-    //DW1000.enableDebounceClock();
-    //DW1000.enableLedBlinking();
+    DW1000.enableDebounceClock();
+    DW1000.enableLedBlinking();
 
 
     // set function callbacks for sent and received messages

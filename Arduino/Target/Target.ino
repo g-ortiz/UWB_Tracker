@@ -54,8 +54,8 @@ void setup() {
     DW1000.setNetworkId(10);
     DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER);
     DW1000.commitConfiguration();
-    //DW1000.enableDebounceClock();
-    //DW1000.enableLedBlinking();   
+    DW1000.enableDebounceClock();
+    DW1000.enableLedBlinking();   
     DW1000.attachSentHandler(handleSent);
     DW1000.attachReceivedHandler(handleReceived);
     // Target transmitting a POLL message
