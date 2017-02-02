@@ -10,9 +10,9 @@
 #include <DW1000.h>
 
 // Pins in Arduino M0 Pro
-const uint8_t PIN_RST = 13; // reset pin
-const uint8_t PIN_IRQ = 4; // irq pin
-const uint8_t PIN_SS = 7; // spi select pin
+const uint8_t PIN_RST = 12; // reset pin
+const uint8_t PIN_IRQ = 3; // irq pin
+const uint8_t PIN_SS = 6; // spi select pin
 
 // Expected messages
 #define POLL 0
@@ -41,7 +41,7 @@ DW1000Time timeComputedRange;
 byte data[LEN_DATA];
 // watchdog and reset period
 uint32_t lastActivity;
-uint32_t resetPeriod = 250;
+uint32_t resetPeriod = 500;
 // reply times (same on both sides for symm. ranging)
 uint16_t replyDelayTimeUS = 3000;
 // ranging counter (per second)
@@ -219,7 +219,7 @@ void loop() {
     if (!sentAck && !receivedAck) {
         // reset if wathcdog timed out
         if (curMillis - lastActivity > resetPeriod) {
-            //SerialUSB.print("WATCHDOG TIMEOUT \n\r");
+            SerialUSB.print("WATCHDOG TIMEOUT \n\r");
             resetInactive();
         }
         return;
@@ -265,7 +265,7 @@ void loop() {
                 timePollAckReceived.setTimestamp(data + 6);
                 timeRangeSent.setTimestamp(data + 11);
                 computeRangeAsymmetric();
-                transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
+                //transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
                 float distance = timeComputedRange.getAsMeters()*100;
                 float avg_distance = filter(distance);
                /* String SerialUSBdata = "New Distance = " + String(distance);
@@ -283,7 +283,7 @@ void loop() {
                 }
             }
             else {
-                SerialUSB.print("RANGE Failed \n\r");
+                //SerialUSB.print("RANGE Failed \n\r");
                 transmitRangeFailed();
             }
             // reset watchdog
