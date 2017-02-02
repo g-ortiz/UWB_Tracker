@@ -7,12 +7,14 @@
  */
 
 #include <SPI.h>
-#include <DW1000.h>
+#include <DW1000FL.h>
+#include <DW1000FL.h>
 
 // Pins in Arduino M0 Pro
 const uint8_t PIN_RST = 12; // reset pin
 const uint8_t PIN_IRQ = 3; // irq pin
-const uint8_t PIN_SS = 6; // spi select pin
+const uint8_t PIN_SS_FL = 6; // spi select pin
+const uint8_t PIN_SS_FR = 7; // spi select pin
 
 // Expected messages
 #define POLL 0
@@ -61,22 +63,23 @@ void setup() {
     SerialUSB.begin(115200);
     delay(1000);
     // Set pins and start SPI
-    DW1000.begin(PIN_IRQ, PIN_RST);
-    DW1000.select(PIN_SS);
+    DW1000FL.begin(PIN_IRQ, PIN_RST);    
+    //DW1000FL.select(PIN_SS_FL,PIN_SS_FR); //Lots of things to modify, pass ss to writebytes
+    DW1000FL.select(PIN_SS_FL); //    
     // general configuration
-    DW1000.newConfiguration();
-    DW1000.setDefaults();
-    DW1000.setDeviceAddress(1);
-    DW1000.setNetworkId(10);
-    DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER); // Test to see if we get better results with a different mode
-    DW1000.commitConfiguration();
-    DW1000.enableDebounceClock();
-    DW1000.enableLedBlinking();
+    DW1000FL.newConfiguration();
+    DW1000FL.setDefaults();
+    DW1000FL.setDeviceAddress(1);
+    DW1000FL.setNetworkId(12);
+    DW1000FL.enableMode(DW1000FL.MODE_LONGDATA_RANGE_LOWPOWER); // Test to see if we get better results with a different mode
+    DW1000FL.commitConfiguration();
+    DW1000FL.enableDebounceClock();
+    DW1000FL.enableLedBlinking();
 
 
     // set function callbacks for sent and received messages
-    DW1000.attachSentHandler(handleSent);
-    DW1000.attachReceivedHandler(handleReceived);
+    DW1000FL.attachSentHandler(handleSent);
+    DW1000FL.attachReceivedHandler(handleReceived);
     
     // start receive mode, wait for POLL message
     receiver();
@@ -118,40 +121,40 @@ void handleReceived() {
 }
 
 void transmitPollAck() {
-    DW1000.newTransmit();
-    DW1000.setDefaults();
+    DW1000FL.newTransmit();
+    DW1000FL.setDefaults();
     data[0] = POLL_ACK;
     // delay the same amount as ranging tag
     DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    DW1000.setDelay(deltaTime);
-    DW1000.setData(data, LEN_DATA);
-    DW1000.startTransmit();
+    DW1000FL.setDelay(deltaTime);
+    DW1000FL.setData(data, LEN_DATA);
+    DW1000FL.startTransmit();
 }
 
 void transmitRangeReport(float curRange) {
-    DW1000.newTransmit();
-    DW1000.setDefaults();
+    DW1000FL.newTransmit();
+    DW1000FL.setDefaults();
     data[0] = RANGE_REPORT;
     // write final ranging result
     memcpy(data + 1, &curRange, 4);
-    DW1000.setData(data, LEN_DATA);
-    DW1000.startTransmit();
+    DW1000FL.setData(data, LEN_DATA);
+    DW1000FL.startTransmit();
 }
 
 void transmitRangeFailed() {
-    DW1000.newTransmit();
-    DW1000.setDefaults();
+    DW1000FL.newTransmit();
+    DW1000FL.setDefaults();
     data[0] = RANGE_FAILED;
-    DW1000.setData(data, LEN_DATA);
-    DW1000.startTransmit();
+    DW1000FL.setData(data, LEN_DATA);
+    DW1000FL.startTransmit();
 }
 
 void receiver() {
-    DW1000.newReceive();
-    DW1000.setDefaults();
+    DW1000FL.newReceive();
+    DW1000FL.setDefaults();
     // Enable receiver
-    DW1000.receivePermanently(true);
-    DW1000.startReceive();
+    DW1000FL.receivePermanently(true);
+    DW1000FL.startReceive();
 }
 
 // Ranging Algorithm
@@ -229,7 +232,7 @@ void loop() {
         sentAck = false;
         byte msgId = data[0];
         if (msgId == POLL_ACK) {
-            DW1000.getTransmitTimestamp(timePollAckSent);
+            DW1000FL.getTransmitTimestamp(timePollAckSent);
             // reset watchdog
             noteActivity();
         }
@@ -237,7 +240,7 @@ void loop() {
     if (receivedAck) {  
         receivedAck = false;
         // get message
-        DW1000.getData(data, LEN_DATA);
+        DW1000FL.getData(data, LEN_DATA);
         byte msgId = data[0];
         //SerialUSB.println(msgId); 
         if (msgId != expectedMsgId) {
@@ -249,7 +252,7 @@ void loop() {
             // get timestamp, change expected message and send POLL_ACK
             //SerialUSB.print("Received POLL \n\r");
             protocolFailed = false;
-            DW1000.getReceiveTimestamp(timePollReceived);
+            DW1000FL.getReceiveTimestamp(timePollReceived);
             expectedMsgId = RANGE;
             transmitPollAck();
             // reset watchdog
@@ -258,7 +261,7 @@ void loop() {
         else if (msgId == RANGE) {
             // get timestamp, change expected message, calculate range and print
             //SerialUSB.print("Received RANGE \n\r");
-            DW1000.getReceiveTimestamp(timeRangeReceived);
+            DW1000FL.getReceiveTimestamp(timeRangeReceived);
             expectedMsgId = POLL;
             if (!protocolFailed) {
                 timePollSent.setTimestamp(data + 1);
@@ -272,7 +275,7 @@ void loop() {
                 SerialUSB.println(SerialUSBdata);                
                 SerialUSBdata = "Average Distance = " + String(avg_distance);
                 SerialUSB.println(SerialUSBdata);  */
-                String SerialUSBdata = "0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000.getReceivePower()) + "," + String(DW1000.getReceiveQuality()) + "\n\r";                
+                String SerialUSBdata = "0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
                 SerialUSB.print(SerialUSBdata);
                 // update sampling rate (each second)
                 successRangingCount++;
