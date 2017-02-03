@@ -54,8 +54,8 @@ void setup() {
     DW1000.setNetworkId(10);
     DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER);
     DW1000.commitConfiguration();
-    //DW1000.enableDebounceClock();
-    //DW1000.enableLedBlinking();   
+    DW1000.enableDebounceClock();
+    DW1000.enableLedBlinking();   
     DW1000.attachSentHandler(handleSent);
     DW1000.attachReceivedHandler(handleReceived);
     // Target transmitting a POLL message
@@ -150,15 +150,18 @@ void loop() {
         }
         if (msgId == POLL_ACK) {
             DW1000.getReceiveTimestamp(timePollAckReceived);
-            expectedMsgId = RANGE_REPORT;
+            expectedMsgId = POLL_ACK;
             transmitRange();
             noteActivity();
-        } else if (msgId == RANGE_REPORT) {
+            delay(6);
+            transmitPoll();
+            noteActivity();            
+        /*} else if (msgId == RANGE_REPORT) {
             expectedMsgId = POLL_ACK;
             float curRange;
             memcpy(&curRange, data + 1, 4);
             transmitPoll();
-            noteActivity();
+            noteActivity();*/
         } else if (msgId == RANGE_FAILED) {
             expectedMsgId = POLL_ACK;
             transmitPoll();

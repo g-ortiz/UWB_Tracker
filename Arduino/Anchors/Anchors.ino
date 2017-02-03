@@ -67,7 +67,7 @@ void setup() {
     DW1000.newConfiguration();
     DW1000.setDefaults();
     DW1000.setDeviceAddress(1);
-    DW1000.setNetworkId(12);
+    DW1000.setNetworkId(10);
     DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER); // Test to see if we get better results with a different mode
     DW1000.commitConfiguration();
     DW1000.enableDebounceClock();
@@ -283,7 +283,7 @@ void loop() {
                 }
             }
             else {
-                SerialUSB.print("RANGE Failed \n\r");
+                //SerialUSB.print("RANGE Failed \n\r");
                 transmitRangeFailed();
             }
             // reset watchdog
