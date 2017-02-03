@@ -18,12 +18,20 @@ const uint8_t PIN_IRQ_FR = 4; // irq pin
 const uint8_t PIN_SS_FL = 6; // spi select pin
 const uint8_t PIN_SS_FR = 7; // spi select pin
 
-// Expected messages
-#define POLL 0
-#define POLL_ACK 1
-#define RANGE 2
-#define RANGE_REPORT 3
-#define RANGE_FAILED 255
+// Expected messages FL
+#define POLL_FL 10
+#define POLL_ACK_FL 11
+#define RANGE_FL 12
+#define RANGE_REPORT_FL 13
+#define RANGE_FAILED_FL 255
+
+// Expected messages FR
+#define POLL_FR 20
+#define POLL_ACK_FR 21
+#define RANGE_FR 22
+#define RANGE_REPORT_FR 23
+#define RANGE_FAILED_FR 255
+
 
 // Anchor Names
 #define F_L 0
@@ -34,7 +42,7 @@ const uint8_t PIN_SS_FR = 7; // spi select pin
 // Receiving anchor
 uint8_t anchorReceiving = F_L;
 // message flow state
-volatile byte expectedMsgId = POLL;
+volatile byte expectedMsgId = POLL_FL;
 // message sent/received state
 volatile boolean sentAck = false;
 volatile boolean receivedAck = false;
@@ -54,7 +62,7 @@ DW1000Time timeComputedRange;
 byte data[LEN_DATA];
 // watchdog and reset period
 uint32_t lastActivity;
-uint32_t resetPeriod = 500;
+uint32_t resetPeriod = 1000;
 // reply times (same on both sides for symm. ranging)
 uint16_t replyDelayTimeUS = 3000;
 // ranging counter (per second)
@@ -69,9 +77,9 @@ float avg, sum;
 
 void setup() {
     // Setup Code
-    // Begin SerialUSB communication
-    //SerialUSB1.begin(9600);
-    SerialUSB.begin(115200);
+    // Begin Serial communication
+    //Serial1.begin(9600);
+    Serial.begin(115200);
     delay(1000);
     // ################# FRONT LEFT####################//
     DW1000FL.begin(PIN_IRQ_FL, PIN_RST_FL);    
@@ -93,9 +101,9 @@ void setup() {
     DW1000FR.select(PIN_SS_FR); //    
     DW1000FR.newConfiguration();
     DW1000FR.setDefaults();
-    DW1000FR.setDeviceAddress(3);
+    DW1000FR.setDeviceAddress(5);
     DW1000FR.setNetworkId(12);
-    DW1000FR.enableMode(DW1000FL.MODE_LONGDATA_RANGE_LOWPOWER);
+    DW1000FR.enableMode(DW1000FR.MODE_LONGDATA_RANGE_LOWPOWER);
     DW1000FR.commitConfiguration();
     DW1000FR.enableDebounceClock();
     DW1000FR.enableLedBlinking();
@@ -127,10 +135,10 @@ void noteActivity() {
 
 void resetInactive() {
     // when watchdog times out, reset device
-    expectedMsgId = POLL;
+    expectedMsgId = POLL_FL;
     receiverFL();
     noteActivity();
-    //SerialUSB.println("Timeout");
+    //Serial.println("Timeout");
 }
 
 void handleSent() {
@@ -146,7 +154,7 @@ void handleReceived() {
 void transmitPollAckFL() {
     DW1000FL.newTransmit();
     DW1000FL.setDefaults();
-    data[0] = POLL_ACK;
+    data[0] = POLL_ACK_FL;
     // delay the same amount as ranging tag
     DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
     DW1000FL.setDelay(deltaTime);
@@ -157,7 +165,7 @@ void transmitPollAckFL() {
 void transmitPollAckFR() {
     DW1000FR.newTransmit();
     DW1000FR.setDefaults();
-    data[0] = POLL_ACK;
+    data[0] = POLL_ACK_FR;
     // delay the same amount as ranging tag
     DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
     DW1000FR.setDelay(deltaTime);
@@ -178,7 +186,7 @@ void transmitPollAckFR() {
 void transmitRangeFailedFL() {
     DW1000FL.newTransmit();
     DW1000FL.setDefaults();
-    data[0] = RANGE_FAILED;
+    data[0] = RANGE_FAILED_FL;
     DW1000FL.setData(data, LEN_DATA);
     DW1000FL.startTransmit();
 }
@@ -186,7 +194,7 @@ void transmitRangeFailedFL() {
 void transmitRangeFailedFR() {
     DW1000FR.newTransmit();
     DW1000FR.setDefaults();
-    data[0] = RANGE_FAILED;
+    data[0] = RANGE_FAILED_FR;
     DW1000FR.setData(data, LEN_DATA);
     DW1000FR.startTransmit();
 }
@@ -272,7 +280,7 @@ void loop() {
     if (!sentAck && !receivedAck) {
         // reset if wathcdog timed out
         if (curMillis - lastActivity > resetPeriod) {
-            SerialUSB.print("WATCHDOG TIMEOUT \n\r");
+            Serial.print("WATCHDOG TIMEOUT \n\r");
             resetInactive();
         }
         return;
@@ -283,7 +291,7 @@ void loop() {
         if (sentAck) {
             sentAck = false;
             byte msgId = data[0];
-            if (msgId == POLL_ACK) {
+            if (msgId == POLL_ACK_FL) {
                 DW1000FL.getTransmitTimestamp(timePollAckSent);
                 // reset watchdog
                 noteActivity();
@@ -294,27 +302,27 @@ void loop() {
             // get message
             DW1000FL.getData(data, LEN_DATA);
             byte msgId = data[0];
-            //SerialUSB.println(msgId); 
-            if (msgId != expectedMsgId) {
+            Serial.print("FRONT-LEFT: "); Serial.println(msgId); 
+            if (msgId != expectedMsgId && msgId != POLL_ACK_FR) {
                 // unexpected message, start over again (except if already POLL)
                 protocolFailed = true;
-                //SerialUSB.print("Received ERROR \n\r");            
+               Serial.print("Received ERROR --FL-- Expected:"); Serial.println(expectedMsgId);        
             }
-            if (msgId == POLL) {
+            if (msgId == POLL_FL) {
                 // get timestamp, change expected message and send POLL_ACK
-                SerialUSB.print("Received POLL --FL-- \n\r");
+                //Serial.print("Received POLL --FL-- \n\r");
                 protocolFailed = false;
                 DW1000FL.getReceiveTimestamp(timePollReceived);
-                expectedMsgId = RANGE;
+                expectedMsgId = RANGE_FL;
                 transmitPollAckFL();
                 // reset watchdog
                 noteActivity();
             }
-            else if (msgId == RANGE) {
+            else if (msgId == RANGE_FL) {
                 // get timestamp, change expected message, calculate range and print
-                SerialUSB.print("Received RANGE --FL-- \n\r");
+                //Serial.print("Received RANGE --FL-- \n\r");
                 DW1000FL.getReceiveTimestamp(timeRangeReceived);
-                expectedMsgId = POLL;
+                expectedMsgId = POLL_FR;
                 if (!protocolFailed) {
                     timePollSent.setTimestamp(data + 1);
                     timePollAckReceived.setTimestamp(data + 6);
@@ -323,12 +331,12 @@ void loop() {
                     //transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
                     float distance = timeComputedRange.getAsMeters()*100;
                     float avg_distance = filter(distance);
-                   /* String SerialUSBdata = "New Distance = " + String(distance);
-                    SerialUSB.println(SerialUSBdata);                
-                    SerialUSBdata = "Average Distance = " + String(avg_distance);
-                    SerialUSB.println(SerialUSBdata);  */
-                    String SerialUSBdata = "0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
-                    SerialUSB.print(SerialUSBdata);
+                   /* String Serialdata = "New Distance = " + String(distance);
+                    Serial.println(Serialdata);                
+                    Serialdata = "Average Distance = " + String(avg_distance);
+                    Serial.println(Serialdata);  */
+                    String Serialdata = "0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
+                    Serial.print(Serialdata);
                     //Change Receiver anchor
                     DW1000FL.receivePermanently(false);
                     anchorReceiving = F_R;
@@ -342,7 +350,7 @@ void loop() {
                     }
                 }
                 else {
-                    SerialUSB.print("RANGE Failed --FL-- \n\r");
+                    Serial.print("RANGE Failed --FL-- \n\r");
                     transmitRangeFailedFL();
                 }
                 // reset watchdog
@@ -354,7 +362,7 @@ void loop() {
         if (sentAck) {
             sentAck = false;
             byte msgId = data[0];
-            if (msgId == POLL_ACK) {
+            if (msgId == POLL_ACK_FR) {
                 DW1000FR.getTransmitTimestamp(timePollAckSent);
                 // reset watchdog
                 noteActivity();
@@ -365,27 +373,27 @@ void loop() {
             // get message
             DW1000FR.getData(data, LEN_DATA);
             byte msgId = data[0];
-            //SerialUSB.println(msgId); 
-            if (msgId != expectedMsgId) {
+            Serial.print("FRONT-RIGHT: "); Serial.println(msgId); 
+            if (msgId != expectedMsgId && msgId != POLL_ACK_FR) {
                 // unexpected message, start over again (except if already POLL)
                 protocolFailed = true;
-                //SerialUSB.print("Received ERROR \n\r");            
+               Serial.print("Received ERROR --FR-- Expected:"); Serial.println(expectedMsgId);             
             }
-            if (msgId == POLL) {
+            if (msgId == POLL_FR) {
                 // get timestamp, change expected message and send POLL_ACK
-                SerialUSB.print("Received POLL --FR-- \n\r");
+                //Serial.print("Received POLL --FR-- \n\r");
                 protocolFailed = false;
                 DW1000FR.getReceiveTimestamp(timePollReceived);
-                expectedMsgId = RANGE;
+                expectedMsgId = RANGE_FR;
                 transmitPollAckFR();
                 // reset watchdog
                 noteActivity();
             }
-            else if (msgId == RANGE) {
+            else if (msgId == RANGE_FR) {
                 // get timestamp, change expected message, calculate range and print
-                SerialUSB.print("Received RANGE --FR-- \n\r");
+                //Serial.print("Received RANGE --FR-- \n\r");
                 DW1000FR.getReceiveTimestamp(timeRangeReceived);
-                expectedMsgId = POLL;
+                expectedMsgId = POLL_FL;
                 if (!protocolFailed) {
                     timePollSent.setTimestamp(data + 1);
                     timePollAckReceived.setTimestamp(data + 6);
@@ -394,12 +402,12 @@ void loop() {
                     //transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
                     float distance = timeComputedRange.getAsMeters()*100;
                     float avg_distance = filter(distance);
-                   /* String SerialUSBdata = "New Distance = " + String(distance);
-                    SerialUSB.println(SerialUSBdata);                
-                    SerialUSBdata = "Average Distance = " + String(avg_distance);
-                    SerialUSB.println(SerialUSBdata);  */
-                    String SerialUSBdata = "0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
-                    SerialUSB.print(SerialUSBdata);
+                   /* String Serialdata = "New Distance = " + String(distance);
+                    Serial.println(Serialdata);                
+                    Serialdata = "Average Distance = " + String(avg_distance);
+                    Serial.println(Serialdata);  */
+                    String Serialdata = "0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
+                    Serial.print(Serialdata);
                     //Change Receiver anchor
                     DW1000FR.receivePermanently(false);
                     anchorReceiving = F_L;
@@ -413,7 +421,7 @@ void loop() {
                     }
                 }
                 else {
-                    SerialUSB.print("RANGE Failed --FR-- \n\r");
+                    Serial.print("RANGE Failed --FR-- \n\r");
                     transmitRangeFailedFR();
                 }
                 // reset watchdog
