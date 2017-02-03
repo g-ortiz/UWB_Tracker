@@ -157,54 +157,6 @@ void computeRangeAsymmetric() {
     timeComputedRange.setTimestamp(tof);
 }
 
-//Averaging Filter
-
-//float filter(float newDist)
-//{
-//  uint16_t delta = 100; //Range in which new reading must be to contribute to average is current average +/- delta
-//  float first_val;
-//
-//  if(newDist > 0)
-//  {
-//    first_val = filt_list[0];
-//    filtCounter = filtCounter + 1;
-//    for(int k = 0; k < FILTER_LENGTH-1; k++)
-//    {
-//      filt_list[k] = filt_list[k + 1];
-//    }
-//  }
-//  
-//  if(filtCounter < FILTER_LENGTH) //If the filter length has not yet been reached don't return anything
-//  {
-//    if(newDist > 0)
-//    {
-//     sum = sum + newDist;
-//     avg = sum/filtCounter; 
-//     filt_list[FILTER_LENGTH-1] = newDist;     
-//    }
-//    return 0;
-//  }
-//  else
-//  {
-//    if(newDist > 0 && newDist >= avg - delta && newDist <= avg + delta)
-//    {
-//      filt_list[FILTER_LENGTH-1] = newDist;    
-//      sum = sum - first_val + newDist;
-//      avg = sum/(FILTER_LENGTH);  
-//    }
-//    else
-//    {
-//      filt_list[FILTER_LENGTH-1] = filt_list[FILTER_LENGTH-2];
-//      avg = avg;
-//    }
-//
-//    
-//    
-//    return avg;
-//  }
-//}
-
-
 void loop() {
     int32_t curMillis = millis(); // get current time
     if (!sentAck && !receivedAck) {
