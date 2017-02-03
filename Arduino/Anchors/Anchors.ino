@@ -8,6 +8,7 @@
 
 #include <SPI.h>
 #include <DW1000.h>
+#include <Tracker.h>
 
 // Pins in Arduino M0 Pro
 const uint8_t PIN_RST = 13; // reset pin
@@ -48,11 +49,6 @@ uint16_t replyDelayTimeUS = 3000;
 uint16_t successRangingCount = 0;
 uint32_t rangingCountPeriod = 0;
 float samplingRate = 0;
-//For Filter
-#define FILTER_LENGTH 12
-float filt_list[FILTER_LENGTH];
-uint16_t filtCounter;
-float avg, sum;
 
 void setup() {
     // Setup Code
@@ -86,12 +82,7 @@ void setup() {
     rangingCountPeriod = millis();
 
     //Initialize filter
-    filtCounter = 0;
-    sum = 0;
-    for(int i = 0; i < FILTER_LENGTH; i++)
-    {
-      filt_list[i] = 30;
-    }
+    Tracker.initFilter();
 }
 
 void noteActivity() {
@@ -168,50 +159,50 @@ void computeRangeAsymmetric() {
 
 //Averaging Filter
 
-float filter(float newDist)
-{
-  uint16_t delta = 100; //Range in which new reading must be to contribute to average is current average +/- delta
-  float first_val;
-
-  if(newDist > 0)
-  {
-    first_val = filt_list[0];
-    filtCounter = filtCounter + 1;
-    for(int k = 0; k < FILTER_LENGTH-1; k++)
-    {
-      filt_list[k] = filt_list[k + 1];
-    }
-  }
-  
-  if(filtCounter < FILTER_LENGTH) //If the filter length has not yet been reached don't return anything
-  {
-    if(newDist > 0)
-    {
-     sum = sum + newDist;
-     avg = sum/filtCounter; 
-     filt_list[FILTER_LENGTH-1] = newDist;     
-    }
-    return 0;
-  }
-  else
-  {
-    if(newDist > 0 && newDist >= avg - delta && newDist <= avg + delta)
-    {
-      filt_list[FILTER_LENGTH-1] = newDist;    
-      sum = sum - first_val + newDist;
-      avg = sum/(FILTER_LENGTH);  
-    }
-    else
-    {
-      filt_list[FILTER_LENGTH-1] = filt_list[FILTER_LENGTH-2];
-      avg = avg;
-    }
-
-    
-    
-    return avg;
-  }
-}
+//float filter(float newDist)
+//{
+//  uint16_t delta = 100; //Range in which new reading must be to contribute to average is current average +/- delta
+//  float first_val;
+//
+//  if(newDist > 0)
+//  {
+//    first_val = filt_list[0];
+//    filtCounter = filtCounter + 1;
+//    for(int k = 0; k < FILTER_LENGTH-1; k++)
+//    {
+//      filt_list[k] = filt_list[k + 1];
+//    }
+//  }
+//  
+//  if(filtCounter < FILTER_LENGTH) //If the filter length has not yet been reached don't return anything
+//  {
+//    if(newDist > 0)
+//    {
+//     sum = sum + newDist;
+//     avg = sum/filtCounter; 
+//     filt_list[FILTER_LENGTH-1] = newDist;     
+//    }
+//    return 0;
+//  }
+//  else
+//  {
+//    if(newDist > 0 && newDist >= avg - delta && newDist <= avg + delta)
+//    {
+//      filt_list[FILTER_LENGTH-1] = newDist;    
+//      sum = sum - first_val + newDist;
+//      avg = sum/(FILTER_LENGTH);  
+//    }
+//    else
+//    {
+//      filt_list[FILTER_LENGTH-1] = filt_list[FILTER_LENGTH-2];
+//      avg = avg;
+//    }
+//
+//    
+//    
+//    return avg;
+//  }
+//}
 
 
 void loop() {
@@ -267,7 +258,7 @@ void loop() {
                 computeRangeAsymmetric();
                 //transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
                 float distance = timeComputedRange.getAsMeters()*100;
-                float avg_distance = filter(distance);
+                float avg_distance = Tracker.filter(distance);
                /* String SerialUSBdata = "New Distance = " + String(distance);
                 SerialUSB.println(SerialUSBdata);                
                 SerialUSBdata = "Average Distance = " + String(avg_distance);
