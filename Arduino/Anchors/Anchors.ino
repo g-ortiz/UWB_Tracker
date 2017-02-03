@@ -90,10 +90,10 @@ void setup() {
 
     // ################# FRONT LEFT####################//
     DW1000FR.begin(PIN_IRQ_FR, PIN_RST_FR);    
-    DW1000FR.select(PIN_SS_FL); //    
+    DW1000FR.select(PIN_SS_FR); //    
     DW1000FR.newConfiguration();
     DW1000FR.setDefaults();
-    DW1000FR.setDeviceAddress(1);
+    DW1000FR.setDeviceAddress(3);
     DW1000FR.setNetworkId(12);
     DW1000FR.enableMode(DW1000FL.MODE_LONGDATA_RANGE_LOWPOWER);
     DW1000FR.commitConfiguration();
