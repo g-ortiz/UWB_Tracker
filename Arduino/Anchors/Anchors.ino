@@ -22,15 +22,15 @@ const uint8_t PIN_SS_FR = 7; // spi select pin
 #define POLL_FL 10
 #define POLL_ACK_FL 11
 #define RANGE_FL 12
-#define RANGE_REPORT_FL 13
+#define RANGE_ACK_FL 13
 #define RANGE_FAILED_FL 255
 
 // Expected messages FR
 #define POLL_FR 20
 #define POLL_ACK_FR 21
 #define RANGE_FR 22
-#define RANGE_REPORT_FR 23
-#define RANGE_FAILED_FR 255
+#define RANGE_ACK_FR 23
+#define RANGE_FAILED_FR 127
 
 
 // Anchor Names
@@ -133,10 +133,18 @@ void noteActivity() {
     lastActivity = millis();
 }
 
-void resetInactive() {
+void resetInactiveFL() {
     // when watchdog times out, reset device
     expectedMsgId = POLL_FL;
     receiverFL();
+    noteActivity();
+    //Serial.println("Timeout");
+}
+
+void resetInactiveFR() {
+    // when watchdog times out, reset device
+    expectedMsgId = POLL_FR;
+    receiverFR();
     noteActivity();
     //Serial.println("Timeout");
 }
@@ -173,20 +181,26 @@ void transmitPollAckFR() {
     DW1000FR.startTransmit();
 }
 
-/*void transmitRangeReport(float curRange) {
+void transmitRangeAckFL() {
     DW1000FL.newTransmit();
     DW1000FL.setDefaults();
-    data[0] = RANGE_REPORT;
-    // write final ranging result
-    memcpy(data + 1, &curRange, 4);
+    data[0] = RANGE_ACK_FL;
     DW1000FL.setData(data, LEN_DATA);
     DW1000FL.startTransmit();
-}*/
+}
+
+void transmitRangeAckFR() {
+    DW1000FL.newTransmit();
+    DW1000FL.setDefaults();
+    data[0] = RANGE_ACK_FR;
+    DW1000FL.setData(data, LEN_DATA);
+    DW1000FL.startTransmit();
+}
 
 void transmitRangeFailedFL() {
     DW1000FL.newTransmit();
     DW1000FL.setDefaults();
-    data[0] = RANGE_FAILED_FL;
+    data[0] = RANGE_ACK_FL;
     DW1000FL.setData(data, LEN_DATA);
     DW1000FL.startTransmit();
 }
@@ -194,7 +208,7 @@ void transmitRangeFailedFL() {
 void transmitRangeFailedFR() {
     DW1000FR.newTransmit();
     DW1000FR.setDefaults();
-    data[0] = RANGE_FAILED_FR;
+    data[0] = RANGE_ACK_FR;
     DW1000FR.setData(data, LEN_DATA);
     DW1000FR.startTransmit();
 }
@@ -281,7 +295,11 @@ void loop() {
         // reset if wathcdog timed out
         if (curMillis - lastActivity > resetPeriod) {
             Serial.print("WATCHDOG TIMEOUT \n\r");
-            resetInactive();
+            if(anchorReceiving == F_L){
+                resetInactiveFL();     
+            }else if(anchorReceiving == F_R){
+                resetInactiveFR();     
+            }
         }
         return;
     }
@@ -303,7 +321,7 @@ void loop() {
             DW1000FL.getData(data, LEN_DATA);
             byte msgId = data[0];
             Serial.print("FRONT-LEFT: "); Serial.println(msgId); 
-            if (msgId != expectedMsgId && msgId != POLL_ACK_FR) {
+            if (msgId != expectedMsgId) {
                 // unexpected message, start over again (except if already POLL)
                 protocolFailed = true;
                Serial.print("Received ERROR --FL-- Expected:"); Serial.println(expectedMsgId);        
@@ -317,8 +335,7 @@ void loop() {
                 transmitPollAckFL();
                 // reset watchdog
                 noteActivity();
-            }
-            else if (msgId == RANGE_FL) {
+            }else if (msgId == RANGE_FL) {
                 // get timestamp, change expected message, calculate range and print
                 //Serial.print("Received RANGE --FL-- \n\r");
                 DW1000FL.getReceiveTimestamp(timeRangeReceived);
@@ -328,7 +345,7 @@ void loop() {
                     timePollAckReceived.setTimestamp(data + 6);
                     timeRangeSent.setTimestamp(data + 11);
                     computeRangeAsymmetric();
-                    //transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
+                    transmitRangeAckFL();
                     float distance = timeComputedRange.getAsMeters()*100;
                     float avg_distance = filter(distance);
                    /* String Serialdata = "New Distance = " + String(distance);
@@ -374,7 +391,7 @@ void loop() {
             DW1000FR.getData(data, LEN_DATA);
             byte msgId = data[0];
             Serial.print("FRONT-RIGHT: "); Serial.println(msgId); 
-            if (msgId != expectedMsgId && msgId != POLL_ACK_FR) {
+            if (msgId != expectedMsgId) {
                 // unexpected message, start over again (except if already POLL)
                 protocolFailed = true;
                Serial.print("Received ERROR --FR-- Expected:"); Serial.println(expectedMsgId);             
@@ -399,7 +416,7 @@ void loop() {
                     timePollAckReceived.setTimestamp(data + 6);
                     timeRangeSent.setTimestamp(data + 11);
                     computeRangeAsymmetric();
-                    //transmitRangeReport(timeComputedRange.getAsMicroSeconds()); // Send range report to TAG, why?
+                    transmitRangeAckFR();
                     float distance = timeComputedRange.getAsMeters()*100;
                     float avg_distance = filter(distance);
                    /* String Serialdata = "New Distance = " + String(distance);
@@ -409,7 +426,7 @@ void loop() {
                     String Serialdata = "0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
                     Serial.print(Serialdata);
                     //Change Receiver anchor
-                    DW1000FR.receivePermanently(false);
+                    DW1000FR.receivePermanently(false); //CHANGE THIS IN THE LIBRARIES, it is not setting the bit back
                     anchorReceiving = F_L;
                     receiverFL();  
                     // update sampling rate (each second)
