@@ -1184,7 +1184,7 @@ void DW1000FRClass::setDefaults() {
 		interruptOnReceiveFailed(true);
 		interruptOnReceiveTimestampAvailable(false);
 		interruptOnAutomaticAcknowledgeTrigger(true);
-		setReceiverAutoReenable(false);
+		setReceiverAutoReenable(true);
 		// default mode when powering up the chip
 		// still explicitly selected for later tuning
 		enableMode(MODE_LONGDATA_RANGE_LOWPOWER);
