@@ -135,7 +135,7 @@ void noteActivity() {
 
 void resetInactiveFL() {
     // when watchdog times out, reset device
-    expectedMsgId = POLL_FL;
+    //expectedMsgId = POLL_FL;
     receiverFL();
     noteActivity();
     //Serial.println("Timeout");
@@ -143,7 +143,7 @@ void resetInactiveFL() {
 
 void resetInactiveFR() {
     // when watchdog times out, reset device
-    expectedMsgId = POLL_FR;
+    //expectedMsgId = POLL_FR;
     receiverFR();
     noteActivity();
     //Serial.println("Timeout");
@@ -300,6 +300,7 @@ void loop() {
             }else if(anchorReceiving == F_R){
                 resetInactiveFR();     
             }
+
         }
         return;
     }
