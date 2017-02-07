@@ -105,7 +105,7 @@ void handleReceived() {
 void transmitPollAck() {
     DW1000.newTransmit();
     DW1000.setDefaults();
-    Serial.println("Send POLL_ACK");
+    //Serial.println("Send POLL_ACK");
     data[0] = POLL_ACK;
     // delay the same amount as ranging tag
     DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
@@ -119,7 +119,7 @@ void transmitPollAck() {
 void transmitRangeAck() {
     DW1000.newTransmit();
     DW1000.setDefaults();
-    Serial.println("Send RANGE_ACK");
+    //Serial.println("Send RANGE_ACK");
     data[0] = RANGE_ACK;
     // delay the same amount as ranging tag  
     timeRangeReceived.getTimestamp(data + 1);
@@ -148,7 +148,7 @@ void loop() {
     if (!sentAck && !receivedAck) {
         // reset if wathcdog timed out
         if (millis() - lastActivity > resetPeriod) {
-            Serial.println("WATCHDOG TIMEOUT");
+            //Serial.println("WATCHDOG TIMEOUT");
                 resetInactive();
         }
         return;
@@ -157,6 +157,7 @@ void loop() {
     if (sentAck) {
         sentAck = false;
         byte msgId = data[0];
+        Serial.print("Sent:   "); Serial.println(msgId);        
         if (msgId == POLL_ACK) {
             DW1000.getTransmitTimestamp(timePollAckSent);
             // reset watchdog
@@ -168,16 +169,17 @@ void loop() {
         // get message
         DW1000.getData(data, LEN_DATA);
         byte msgId = data[0];
-        Serial.println(msgId); 
+        Serial.print("Received:   "); Serial.println(msgId); 
         if (msgId != expectedMsgId) {
             // unexpected message, start over again (except if already POLL)
             protocolFailed = true;
-           Serial.print("Received ERROR Expected:"); Serial.println(expectedMsgId);        
+            expectedMsgId = POLL;
+           //Serial.print("Received ERROR Expected:"); Serial.println(expectedMsgId);        
         }
         if (msgId == POLL) {
             DW1000.getReceiveTimestamp(timePollReceived);
             // get timestamp, change expected message and send POLL_ACK
-            Serial.print("Received POLL\n\r");
+            //Serial.print("Received POLL\n\r");
             protocolFailed = false;
             expectedMsgId = RANGE;
             transmitPollAck();
@@ -186,7 +188,7 @@ void loop() {
         }else if (msgId == RANGE) {
             DW1000.getReceiveTimestamp(timeRangeReceived);
             // get timestamp, change expected message, calculate range and print
-            Serial.print("Received RANGE\n\r");
+            //Serial.print("Received RANGE\n\r");
             expectedMsgId = POLL;           
             transmitRangeAck();             
             noteActivity(); // reset watchdog

@@ -32,6 +32,9 @@ const uint8_t PIN_SS_FR = 7; // spi select pin
 #define R_R 2
 #define R_L 3
 
+uint8_t Gob = 16;
+uint8_t Gab = 17;
+
 // Receiving anchor
 uint8_t anchorRanging = F_L;
 // message flow state
@@ -55,7 +58,7 @@ DW1000Time timeComputedRange;
 byte data[LEN_DATA];
 // watchdog and reset period
 uint32_t lastActivity;
-uint32_t resetPeriod = 1000;
+uint32_t resetPeriod = 250;
 // reply times (same on both sides for symm. ranging)
 uint16_t replyDelayTimeUS = 3000;
 // ranging counter (per second)
@@ -103,9 +106,12 @@ void setup() {
     // set function callbacks for sent and received messages
     DW1000FR.attachSentHandler(handleSent);
     DW1000FR.attachReceivedHandler(handleReceived);    
+    Serial.println("start");
 
     DW1000FR.receivePermanently(false);
     // start receive mode, wait for POLL message
+    SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FL));
+    attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FL), DW1000FL.handleInterrupt, RISING);    
     receiverFL();
     transmitPollFL();
     // reset watchdog
@@ -124,6 +130,8 @@ void resetInactiveFL() {
     expectedMsgId = POLL_ACK;
     transmitPollFL();
     noteActivity();
+    delay(5);    
+    receiverFL();
     ////Serial.println("Timeout");
 }
 
@@ -132,6 +140,8 @@ void resetInactiveFR() {
     expectedMsgId = POLL_ACK;
     transmitPollFR();
     noteActivity();
+    delay(5);
+    receiverFR();
     ////Serial.println("Timeout");
 }
 
@@ -152,14 +162,14 @@ void transmitPollFL() {
     //Serial.println("Sent POLL_FL");
     data[0] = POLL;
     DW1000FL.setData(data, LEN_DATA);
-    DW1000FL.startTransmit();
+    DW1000FL.startTransmit();  
 }
 
 void transmitPollFR() {
     DW1000FR.newTransmit();
     DW1000FR.setDefaults();
     //Serial.println("Sent POLL_FR");
-    data[0] = POLL;
+    data[0] = POLL; 
     DW1000FR.setData(data, LEN_DATA);
     DW1000FR.startTransmit();
 }
@@ -182,7 +192,7 @@ void transmitRangeFR() {
     DW1000FR.newTransmit();
     DW1000FR.setDefaults();
     //Serial.println("Send Range_FR");
-    data[0] = RANGE;
+    data[0] = RANGE;   
     // delay sending the message and remember expected future sent timestamp
     DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
     timeRangeSent = DW1000FR.setDelay(deltaTime);
@@ -213,15 +223,15 @@ void receiverFR() {
 void computeRangeAsymmetric() {
     // asymmetric two-way ranging (more computation intense, less error prone)
     DW1000Time round1 = (timePollAckReceived - timePollSent).wrap();
-    Serial.print("round1:   "); Serial.println(round1);     
+    //Serial.print("round1:   "); Serial.println(round1);     
     DW1000Time reply1 = (timePollAckSent - timePollReceived).wrap();
-    Serial.print("reply1:   "); Serial.println(reply1); 
+    //Serial.print("reply1:   "); Serial.println(reply1); 
     DW1000Time round2 = (timeRangeReceived - timePollAckSent).wrap();
-    Serial.print("round2:   "); Serial.println(round2); 
+    //Serial.print("round2:   "); Serial.println(round2); 
     DW1000Time reply2 = (timeRangeSent - timePollAckReceived).wrap();
-    Serial.print("reply2:   "); Serial.println(reply2);     
+    //Serial.print("reply2:   "); Serial.println(reply2);     
     DW1000Time tof = (round1 * round2 - reply1 * reply2) / (round1 + round2 + reply1 + reply2);
-    Serial.print("TIME-OF-FLIGHT:   "); Serial.println(tof); 
+    //Serial.print("TIME-OF-FLIGHT:   "); Serial.println(tof); 
     // set tof timestamp
     timeComputedRange.setTimestamp(tof);
 }
@@ -231,6 +241,7 @@ void loop() {
     int32_t curMillis = millis(); // get current time
     if (!sentAck && !receivedAck) {
         if (curMillis - lastActivity > resetPeriod) {
+            //Serial.println("WATCHDOG TIMEOUT");
             if (anchorRanging == F_L){
                 resetInactiveFL();
             }else if(anchorRanging == F_R){
@@ -239,11 +250,11 @@ void loop() {
         }
         return;
     }
-    if (anchorRanging == F_L){     
-        if (sentAck) {
+    if (anchorRanging == F_L){    
+        if (sentAck) {               
             sentAck = false;
             byte msgId = data[0];
-            Serial.print("FRONT-LEFT SENDS:   "); Serial.println(msgId);              
+            //Serial.print("FRONT-LEFT SENDS:   "); Serial.println(msgId);              
             if (msgId == POLL){
                 DW1000FL.getTransmitTimestamp(timePollSent);
                 //Serial.print("Sent POLL_FL @ "); Serial.println(timePollSent);                   
@@ -254,21 +265,21 @@ void loop() {
                 noteActivity();
             }
         }
-        if (receivedAck) {
+        if (receivedAck) {            
             receivedAck = false;
             // get message and parse
             DW1000FL.getData(data, LEN_DATA);
-            byte msgId = data[0];
+            byte msgId = data[0];            
             //Serial.print("FRONT-LEFT Received:   "); Serial.println(msgId);
             if (msgId != expectedMsgId) {
                 // unexpected message, start over again
-                expectedMsgId = POLL_ACK;
-                transmitPollFL();
+                expectedMsgId = POLL_ACK;                              
+                //transmitPollFL();
+                //Serial.print("Received:   "); Serial.print(msgId);Serial.print(" ERROR_FL Expected: "); Serial.println(expectedMsgId);
                 return;
-                //Serial.print("Received ERROR_FL Expected: "); //Serial.println(expectedMsgId);
             }
-            if (msgId == POLL_ACK) {
-                protocolFailed = false;
+            if (msgId == POLL_ACK) {                 
+                //protocolFailed = false;
                 //Serial.println("Received POLL_ACK_FL");
                 DW1000FL.getReceiveTimestamp(timePollAckReceived);
                 //Serial.print("Received POLL_ACK_FL @ "); Serial.println(timePollAckReceived);                 
@@ -278,6 +289,8 @@ void loop() {
                 //Serial.print("Sent POLL_ACK_FL @ "); Serial.println(timePollAckSent);                        
                 expectedMsgId = RANGE_ACK;
                 transmitRangeFL();
+                DW1000FL.receivePermanently(false);
+                DW1000FR.receivePermanently(true);
                 noteActivity();
             } else if (msgId == RANGE_ACK) {
                     //Serial.println("Received RANGE_ACK_FL");          
@@ -294,12 +307,15 @@ void loop() {
                         rangingCountPeriod = curMillis;
                         successRangingCount = 0;
                     }                              
-                    anchorRanging = F_R;          
+                    anchorRanging = F_R;         
                     expectedMsgId = POLL_ACK;
-                    DW1000FL.receivePermanently(false);
-                    DW1000FR.receivePermanently(true);
+                    //DW1000FR.clearAllStatus();                    
+                    //DW1000FL.receivePermanently(false);
+                    //DW1000FR.receivePermanently(true);
                     SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FR));
-                    transmitPollFR();                                              
+                    attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FR), DW1000FR.handleInterrupt, RISING);                    
+                    //delay(100); 
+                    transmitPollFR();                                             
                     noteActivity();   
             } else if (msgId == RANGE_FAILED) {
                 //Serial.println("Received Range_FAILED_FL");                       
@@ -312,7 +328,7 @@ void loop() {
         if (sentAck) {
             sentAck = false;
             byte msgId = data[0];
-            Serial.print("FRONT-RIGHT SENDS:   "); Serial.println(msgId);             
+            //Serial.print("FRONT-RIGHT SENDS:   "); Serial.println(msgId);             
             if (msgId == POLL){
                 DW1000FR.getTransmitTimestamp(timePollSent);
                 //Serial.print("Sent POLL_FR @ "); Serial.println(timePollSent);                 
@@ -328,15 +344,17 @@ void loop() {
             // get message and parse
             DW1000FR.getData(data, LEN_DATA);
             byte msgId = data[0];
+            
             //Serial.print("FRONT-RIGHT Received:   "); Serial.println(msgId);
             if (msgId != expectedMsgId) {
                 // unexpected message, start over again
                 expectedMsgId = POLL_ACK;
-                transmitPollFR();
+                //transmitPollFR();
+                //Serial.print("Received:   "); Serial.print(msgId); Serial.print(" ERROR_FR Expected: "); Serial.println(expectedMsgId);            
                 return;                
-                //Serial.print("Received ERROR_FR Expected: "); //Serial.println(expectedMsgId);
             }
-            if (msgId == POLL_ACK) {             
+            if (msgId == POLL_ACK) { 
+                //protocolFailed = false;
                 //Serial.println("Received POLL_ACK_FR");
                 DW1000FR.getReceiveTimestamp(timePollAckReceived);
                 //Serial.print("Received POLL_ACK_FR @ "); Serial.println(timePollAckReceived);                 
@@ -346,9 +364,12 @@ void loop() {
                 //Serial.print("Sent POLL_ACK_FR @ "); Serial.println(timePollAckSent);                        
                 expectedMsgId = RANGE_ACK;
                 transmitRangeFR();
+                DW1000FR.receivePermanently(false); 
+                DW1000FL.receivePermanently(true);                                    
                 noteActivity();
             } else if (msgId == RANGE_ACK) {
-                    //Serial.println("Received RANGE_ACK_FR");          
+                    //Serial.println("Received RANGE_ACK_FR");
+                    //Serial.print("Second value"); Serial.println(data[2]);            
                     timeRangeReceived.setTimestamp(data + 1);
                     //Serial.print("Received RANGE_FR @ "); Serial.println(timeRangeReceived);                     
                     computeRangeAsymmetric();  
@@ -363,12 +384,13 @@ void loop() {
                         successRangingCount = 0;
                     }                              
                     anchorRanging = F_L;          
-                    expectedMsgId = POLL_ACK;                   
-                    DW1000FR.receivePermanently(false);
-                    DW1000FL.receivePermanently(true);
-                    SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FL));                  
-                    transmitPollFL(); 
-                    noteActivity();                                                   
+                    expectedMsgId = POLL_ACK;   
+                    //DW1000FL.clearAllStatus();                               
+                    SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FL));
+                    attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FL), DW1000FL.handleInterrupt, RISING);
+                    //delay(100);                 
+                    transmitPollFL();                   
+                    noteActivity();
             } else if (msgId == RANGE_FAILED) {   
                 //Serial.println("Received Range_FAILED_FR");                                     
                 expectedMsgId = POLL_ACK;
