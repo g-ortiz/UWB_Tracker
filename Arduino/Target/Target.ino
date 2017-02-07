@@ -148,7 +148,7 @@ void loop() {
     if (!sentAck && !receivedAck) {
         // reset if wathcdog timed out
         if (millis() - lastActivity > resetPeriod) {
-            //Serial.println("WATCHDOG TIMEOUT");
+                Serial.println("WATCHDOG TIMEOUT");
                 resetInactive();
         }
         return;
