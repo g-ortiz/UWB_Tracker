@@ -42,8 +42,8 @@ const uint8_t PIN_SS_RL = A1; // spi select pin
 #define R_R 2
 #define R_L 3
 
-uint8_t Gob = 16;
-uint8_t Gab = 17;
+float Xcoor = 0;
+float Ycoor = 0;
 
 // Receiving anchor
 uint8_t anchorRanging = F_L;
@@ -146,8 +146,9 @@ void setup() {
     
     Serial.println("start");
 
-	//Initialize filter
+	//Initialize filter and multilateration
     Tracker.initFilter();
+    Tracker.initLoc();    
 
     DW1000FR.receivePermanently(false);
     DW1000RR.receivePermanently(false);   
@@ -425,9 +426,13 @@ void loop() {
                     //Serial.print("Received RANGE_FL @ "); Serial.println(timeRangeReceived);                      
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    float avg_distance = Tracker.filter(distance);
+                    float avg_distance = Tracker.filter(distance ,F_L);
+                    Tracker.loc(avg_distance, F_L);
+                    Xcoor = Tracker.getX();
+                    Ycoor = Tracker.getY();                    
                     String Serialdata = "FRONT-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
-                    Serial.print(Serialdata);    
+                    //Serial.print(Serialdata);  
+                    Serial.println(avg_distance);
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -501,9 +506,13 @@ void loop() {
                     //Serial.print("Received RANGE_FR @ "); Serial.println(timeRangeReceived);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    float avg_distance = Tracker.filter(distance);
+                    float avg_distance = Tracker.filter(distance , 3);
+                    Tracker.loc(avg_distance, 3);
+                    Xcoor = Tracker.getX();
+                    Ycoor = Tracker.getY();   
                     String Serialdata = "FRONT-RIGHT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FR.getReceivePower()) + "," + String(DW1000FR.getReceiveQuality()) + "\n\r";                
-                    Serial.print(Serialdata);    
+                    //Serial.print(Serialdata); 
+                    Serial.println(avg_distance);
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -574,9 +583,13 @@ void loop() {
                     //Serial.print("Received RANGE_RR @ "); Serial.println(timeRangeReceived);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    float avg_distance = Tracker.filter(distance);
+                    float avg_distance = Tracker.filter(distance ,R_R);
+                    Tracker.loc(avg_distance, R_R);
+                    Xcoor = Tracker.getX();
+                    Ycoor = Tracker.getY();
                     String Serialdata = "REAR-RIGHT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RR.getReceivePower()) + "," + String(DW1000RR.getReceiveQuality()) + "\n\r";                
-                    Serial.print(Serialdata);    
+                    //Serial.print(Serialdata); 
+                    Serial.println(avg_distance);    
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -648,9 +661,14 @@ void loop() {
                     //Serial.print("Received RANGE_RL @ "); Serial.println(timeRangeReceived);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    float avg_distance = Tracker.filter(distance);
-                    String Serialdata = "REAR-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
-                    Serial.print(Serialdata);    
+                    float avg_distance = Tracker.filter(distance ,1);
+                    Tracker.loc(avg_distance, 1);
+                    Xcoor = Tracker.getX();
+                    Ycoor = Tracker.getY();
+                    //String Serialdata = "REAR-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
+                    String Serialdata = "(" + String(Xcoor) + " , " + String(Ycoor) + ")"; 
+                    Serial.println(avg_distance);
+                    Serial.println(Serialdata);    
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
