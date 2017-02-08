@@ -1140,6 +1140,9 @@ void DW1000FLClass::receivePermanently(boolean val) {
 		// in case permanent, also reenable receiver once failed
 		setReceiverAutoReenable(true);
 		writeSystemConfigurationRegister();
+	}else {
+		setReceiverAutoReenable(false);
+		writeSystemConfigurationRegister();
 	}
 }
 
