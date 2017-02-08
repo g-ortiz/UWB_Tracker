@@ -11,6 +11,7 @@
 #include <DW1000FR.h>
 #include <Tracker.h>
 
+
 // Pins in Arduino M0 Pro
 const uint8_t PIN_RST_FL = 12; // reset pin
 const uint8_t PIN_RST_FR = 13; // reset pin
@@ -111,7 +112,7 @@ void setup() {
 
 	//Initialize filter
     Tracker.initFilter();
-	
+
     DW1000FR.receivePermanently(false);
     // start receive mode, wait for POLL message
     SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FL));
@@ -402,5 +403,7 @@ void loop() {
                 noteActivity();
             }
         }
-    }
+	}	
  }
+
+
