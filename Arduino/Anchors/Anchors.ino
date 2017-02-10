@@ -15,12 +15,12 @@
 
 
 // Pins in Arduino M0 Pro
-const uint8_t PIN_RST_FL = 12; // reset pin
-const uint8_t PIN_IRQ_FL = 3; // irq pin
+const uint8_t PIN_RST_FL = 7; // reset pin
+const uint8_t PIN_IRQ_FL = 5; // irq pin
 const uint8_t PIN_SS_FL = 6; // spi select pin
 const uint8_t PIN_RST_FR = 13; // reset pin
-const uint8_t PIN_IRQ_FR = 4; // irq pin
-const uint8_t PIN_SS_FR = 7; // spi select pin
+const uint8_t PIN_IRQ_FR = 11; // irq pin
+const uint8_t PIN_SS_FR = 12; // spi select pin
 const uint8_t PIN_RST_RR = A3; // reset pin
 const uint8_t PIN_IRQ_RR = A5; // irq pin
 const uint8_t PIN_SS_RR = A4; // spi select pin
