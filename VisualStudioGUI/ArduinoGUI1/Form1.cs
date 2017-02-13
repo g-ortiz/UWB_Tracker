@@ -90,9 +90,9 @@ namespace ArduinoGUI1
                 xPlot = float.Parse(xFilterRaw, CultureInfo.InvariantCulture.NumberFormat);
                 yPlot = float.Parse(yFilterRaw, CultureInfo.InvariantCulture.NumberFormat);
                 chart1.Series["Target"].Points.Clear();
-                chart1.Series["Target"].Points.AddXY(0,yPlot);
+                chart1.Series["Target"].Points.AddXY(xPlot, yPlot);
             //label1.Text = "Distance: (" + xPlot.ToString("0.00") + ", " + yPlot.ToString("0.00") + ")";
-                label1.Text = "Distance: " + yPlot.ToString("0.00") + "cm";
+                label1.Text = "Distance: " + yRaw + "cm";
                 label5.Text = "Power: " + PowerRaw + "dBm";
                 label4.Text = "Sampling: " + SamplingRaw;
                 Plots.Clear();            

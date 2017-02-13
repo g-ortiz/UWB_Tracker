@@ -79,9 +79,9 @@ float samplingRate = 0;
 
 void setup() {
     // Setup Code
-    // Begin //Serial communication
-    ////Serial1.begin(9600);
-    Serial.begin(115200);
+    // Begin //SerialUSB communication
+    ////SerialUSB1.begin(9600);
+    SerialUSB.begin(115200);
     delay(1000);
     // ################# FRONT LEFT####################//
     DW1000FL.begin(PIN_IRQ_FL, PIN_RST_FL);    
@@ -144,7 +144,7 @@ void setup() {
     DW1000RL.attachSentHandler(handleSent);
     DW1000RL.attachReceivedHandler(handleReceived);            
     
-    Serial.println("start");
+    SerialUSB.println("start");
 
 	//Initialize filter and multilateration
     Tracker.initFilter();
@@ -176,7 +176,7 @@ void resetInactiveFL() {
     noteActivity();
     delay(5);    
     receiverFL();
-    ////Serial.println("Timeout");
+    ////SerialUSB.println("Timeout");
 }
 
 void resetInactiveFR() {
@@ -186,7 +186,7 @@ void resetInactiveFR() {
     noteActivity();
     delay(5);
     receiverFR();
-    ////Serial.println("Timeout");
+    ////SerialUSB.println("Timeout");
 }
 
 void resetInactiveRR() {
@@ -196,7 +196,7 @@ void resetInactiveRR() {
     noteActivity();
     delay(5);
     receiverRR();
-    ////Serial.println("Timeout");
+    ////SerialUSB.println("Timeout");
 }
 
 void resetInactiveRL() {
@@ -206,7 +206,7 @@ void resetInactiveRL() {
     noteActivity();
     delay(5);
     receiverRL();
-    ////Serial.println("Timeout");
+    ////SerialUSB.println("Timeout");
 }
 
 void handleSent() {
@@ -222,7 +222,7 @@ void handleReceived() {
 void transmitPollFL() {
     DW1000FL.newTransmit();
     DW1000FL.setDefaults();
-    //Serial.println("Sent POLL_FL");
+    //SerialUSB.println("Sent POLL_FL");
     data[0] = POLL;
     DW1000FL.setData(data, LEN_DATA);
     DW1000FL.startTransmit();  
@@ -231,7 +231,7 @@ void transmitPollFL() {
 void transmitPollFR() {
     DW1000FR.newTransmit();
     DW1000FR.setDefaults();
-    //Serial.println("Sent POLL_FR");
+    //SerialUSB.println("Sent POLL_FR");
     data[0] = POLL; 
     DW1000FR.setData(data, LEN_DATA);
     DW1000FR.startTransmit();
@@ -240,7 +240,7 @@ void transmitPollFR() {
 void transmitPollRR() {
     DW1000RR.newTransmit();
     DW1000RR.setDefaults();
-    //Serial.println("Sent POLL_RR");
+    //SerialUSB.println("Sent POLL_RR");
     data[0] = POLL; 
     DW1000RR.setData(data, LEN_DATA);
     DW1000RR.startTransmit();
@@ -249,7 +249,7 @@ void transmitPollRR() {
 void transmitPollRL() {
     DW1000RL.newTransmit();
     DW1000RL.setDefaults();
-    //Serial.println("Sent POLL_RL");
+    //SerialUSB.println("Sent POLL_RL");
     data[0] = POLL; 
     DW1000RL.setData(data, LEN_DATA);
     DW1000RL.startTransmit();
@@ -258,7 +258,7 @@ void transmitPollRL() {
 void transmitRangeFL() {
     DW1000FL.newTransmit();
     DW1000FL.setDefaults();
-    //Serial.println("Send Range_FL");
+    //SerialUSB.println("Send Range_FL");
     data[0] = RANGE;
     // delay sending the message and remember expected future sent timestamp
     DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
@@ -272,7 +272,7 @@ void transmitRangeFL() {
 void transmitRangeFR() {
     DW1000FR.newTransmit();
     DW1000FR.setDefaults();
-    //Serial.println("Send Range_FR");
+    //SerialUSB.println("Send Range_FR");
     data[0] = RANGE;   
     // delay sending the message and remember expected future sent timestamp
     DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
@@ -286,7 +286,7 @@ void transmitRangeFR() {
 void transmitRangeRR() {
     DW1000RR.newTransmit();
     DW1000RR.setDefaults();
-    //Serial.println("Send Range_RR");
+    //SerialUSB.println("Send Range_RR");
     data[0] = RANGE;   
     // delay sending the message and remember expected future sent timestamp
     DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
@@ -300,7 +300,7 @@ void transmitRangeRR() {
 void transmitRangeRL() {
     DW1000RL.newTransmit();
     DW1000RL.setDefaults();
-    //Serial.println("Send Range_RL");
+    //SerialUSB.println("Send Range_RL");
     data[0] = RANGE;   
     // delay sending the message and remember expected future sent timestamp
     DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
@@ -347,15 +347,15 @@ void receiverRL() {
 void computeRangeAsymmetric() {
     // asymmetric two-way ranging (more computation intense, less error prone)
     DW1000Time round1 = (timePollAckReceived - timePollSent).wrap();
-    //Serial.print("round1:   "); Serial.println(round1);     
+    //SerialUSB.print("round1:   "); SerialUSB.println(round1);     
     DW1000Time reply1 = (timePollAckSent - timePollReceived).wrap();
-    //Serial.print("reply1:   "); Serial.println(reply1); 
+    //SerialUSB.print("reply1:   "); SerialUSB.println(reply1); 
     DW1000Time round2 = (timeRangeReceived - timePollAckSent).wrap();
-    //Serial.print("round2:   "); Serial.println(round2); 
+    //SerialUSB.print("round2:   "); SerialUSB.println(round2); 
     DW1000Time reply2 = (timeRangeSent - timePollAckReceived).wrap();
-    //Serial.print("reply2:   "); Serial.println(reply2);     
+    //SerialUSB.print("reply2:   "); SerialUSB.println(reply2);     
     DW1000Time tof = (round1 * round2 - reply1 * reply2) / (round1 + round2 + reply1 + reply2);
-    //Serial.print("TIME-OF-FLIGHT:   "); Serial.println(tof); 
+    //SerialUSB.print("TIME-OF-FLIGHT:   "); SerialUSB.println(tof); 
     // set tof timestamp
     timeComputedRange.setTimestamp(tof);
 }
@@ -365,7 +365,7 @@ void loop() {
     int32_t curMillis = millis(); // get current time
     if (!sentAck && !receivedAck) {
         if (curMillis - lastActivity > resetPeriod) {
-            //Serial.println("WATCHDOG TIMEOUT");
+            //SerialUSB.println("WATCHDOG TIMEOUT");
             if (anchorRanging == F_L){
                 resetInactiveFL();
             }else if(anchorRanging == F_R){
@@ -382,14 +382,14 @@ void loop() {
         if (sentAck) {               
             sentAck = false;
             byte msgId = data[0];
-            //Serial.print("FRONT-LEFT SENDS:   "); Serial.println(msgId);              
+            //SerialUSB.print("FRONT-LEFT SENDS:   "); SerialUSB.println(msgId);              
             if (msgId == POLL){
                 DW1000FL.getTransmitTimestamp(timePollSent);
-                //Serial.print("Sent POLL_FL @ "); Serial.println(timePollSent);                   
+                //SerialUSB.print("Sent POLL_FL @ "); SerialUSB.println(timePollSent);                   
                 noteActivity();          
             }else if (msgId == RANGE){
                 DW1000FL.getTransmitTimestamp(timeRangeSent);
-                //Serial.print("Sent RANGE_FL @ "); Serial.println(timeRangeSent);                  
+                //SerialUSB.print("Sent RANGE_FL @ "); SerialUSB.println(timeRangeSent);                  
                 noteActivity();
             }
         }
@@ -398,41 +398,41 @@ void loop() {
             // get message and parse
             DW1000FL.getData(data, LEN_DATA);
             byte msgId = data[0];            
-            //Serial.print("FRONT-LEFT Received:   "); Serial.println(msgId);
+            //SerialUSB.print("FRONT-LEFT Received:   "); SerialUSB.println(msgId);
             if (msgId != expectedMsgId) {
                 // unexpected message, start over again
                 expectedMsgId = POLL_ACK;                              
                 //transmitPollFL();
-                //Serial.print("Received:   "); Serial.print(msgId);Serial.print(" ERROR_FL Expected: "); Serial.println(expectedMsgId);
+                //SerialUSB.print("Received:   "); SerialUSB.print(msgId);SerialUSB.print(" ERROR_FL Expected: "); SerialUSB.println(expectedMsgId);
                 return;
             }
             if (msgId == POLL_ACK) {                 
                 //protocolFailed = false;
-                //Serial.println("Received POLL_ACK_FL");
+                //SerialUSB.println("Received POLL_ACK_FL");
                 DW1000FL.getReceiveTimestamp(timePollAckReceived);
-                //Serial.print("Received POLL_ACK_FL @ "); Serial.println(timePollAckReceived);                 
+                //SerialUSB.print("Received POLL_ACK_FL @ "); SerialUSB.println(timePollAckReceived);                 
                 timePollReceived.setTimestamp(data + 1);
-                //Serial.print("Received POLL_FL @ "); Serial.println(timePollReceived);
+                //SerialUSB.print("Received POLL_FL @ "); SerialUSB.println(timePollReceived);
                 timePollAckSent.setTimestamp(data + 6);
-                //Serial.print("Sent POLL_ACK_FL @ "); Serial.println(timePollAckSent);                        
+                //SerialUSB.print("Sent POLL_ACK_FL @ "); SerialUSB.println(timePollAckSent);                        
                 expectedMsgId = RANGE_ACK;
                 transmitRangeFL();
                 DW1000FL.receivePermanently(false);
                 DW1000FR.receivePermanently(true);
                 noteActivity();
             } else if (msgId == RANGE_ACK) {
-                    //Serial.println("Received RANGE_ACK_FL");          
+                    //SerialUSB.println("Received RANGE_ACK_FL");          
                     timeRangeReceived.setTimestamp(data + 1);
-                    //Serial.print("Received RANGE_FL @ "); Serial.println(timeRangeReceived);                      
+                    //SerialUSB.print("Received RANGE_FL @ "); SerialUSB.println(timeRangeReceived);                      
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
                     float avg_distance = Tracker.filter(distance ,F_L);
                     Tracker.loc(avg_distance, F_L);
                     Xcoor = Tracker.getX();
                     Ycoor = Tracker.getY();                    
-                    String Serialdata = "FRONT-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
-                    //Serial.print(Serialdata);  
-                    Serial.println(avg_distance);
+                    String SerialUSBdata = "FRONT-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
+                    //SerialUSB.print(SerialUSBdata);  
+                    //SerialUSB.println(avg_distance);
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -450,7 +450,7 @@ void loop() {
                     transmitPollFR();                                             
                     noteActivity();   
             } else if (msgId == RANGE_FAILED) {
-                //Serial.println("Received Range_FAILED_FL");                       
+                //SerialUSB.println("Received Range_FAILED_FL");                       
                 expectedMsgId = POLL_ACK;
                 transmitPollFL();
                 noteActivity();
@@ -460,14 +460,14 @@ void loop() {
         if (sentAck) {
             sentAck = false;
             byte msgId = data[0];
-            //Serial.print("FRONT-RIGHT SENDS:   "); Serial.println(msgId);             
+            //SerialUSB.print("FRONT-RIGHT SENDS:   "); SerialUSB.println(msgId);             
             if (msgId == POLL){
                 DW1000FR.getTransmitTimestamp(timePollSent);
-                //Serial.print("Sent POLL_FR @ "); Serial.println(timePollSent);                 
+                //SerialUSB.print("Sent POLL_FR @ "); SerialUSB.println(timePollSent);                 
                 noteActivity();          
             }else if (msgId == RANGE){
                 DW1000FR.getTransmitTimestamp(timeRangeSent);
-                //Serial.print("Sent RANGE_FR @ "); Serial.println(timeRangeSent);                   
+                //SerialUSB.print("Sent RANGE_FR @ "); SerialUSB.println(timeRangeSent);                   
                 noteActivity();
             }
         }
@@ -477,42 +477,42 @@ void loop() {
             DW1000FR.getData(data, LEN_DATA);
             byte msgId = data[0];
             
-            //Serial.print("FRONT-RIGHT Received:   "); Serial.println(msgId);
+            //SerialUSB.print("FRONT-RIGHT Received:   "); SerialUSB.println(msgId);
             if (msgId != expectedMsgId) {
                 // unexpected message, start over again
                 expectedMsgId = POLL_ACK;
                 //transmitPollFR();
-                //Serial.print("Received:   "); Serial.print(msgId); Serial.print(" ERROR_FR Expected: "); Serial.println(expectedMsgId);            
+                //SerialUSB.print("Received:   "); SerialUSB.print(msgId); SerialUSB.print(" ERROR_FR Expected: "); SerialUSB.println(expectedMsgId);            
                 return;                
             }
             if (msgId == POLL_ACK) { 
                 //protocolFailed = false;
-                //Serial.println("Received POLL_ACK_FR");
+                //SerialUSB.println("Received POLL_ACK_FR");
                 DW1000FR.getReceiveTimestamp(timePollAckReceived);
-                //Serial.print("Received POLL_ACK_FR @ "); Serial.println(timePollAckReceived);                 
+                //SerialUSB.print("Received POLL_ACK_FR @ "); SerialUSB.println(timePollAckReceived);                 
                 timePollReceived.setTimestamp(data + 1);
-                //Serial.print("Received POLL_FR @ "); Serial.println(timePollReceived);
+                //SerialUSB.print("Received POLL_FR @ "); SerialUSB.println(timePollReceived);
                 timePollAckSent.setTimestamp(data + 6);
-                //Serial.print("Sent POLL_ACK_FR @ "); Serial.println(timePollAckSent);                        
+                //SerialUSB.print("Sent POLL_ACK_FR @ "); SerialUSB.println(timePollAckSent);                        
                 expectedMsgId = RANGE_ACK;
                 transmitRangeFR();
                 DW1000FR.receivePermanently(false); 
                 DW1000RR.receivePermanently(true);                                    
                 noteActivity();
             } else if (msgId == RANGE_ACK) {
-                    //Serial.println("Received RANGE_ACK_FR");
-                    //Serial.print("Second value"); Serial.println(data[2]);            
+                    //SerialUSB.println("Received RANGE_ACK_FR");
+                    //SerialUSB.print("Second value"); SerialUSB.println(data[2]);            
                     timeRangeReceived.setTimestamp(data + 1);
-                    //Serial.print("Received RANGE_FR @ "); Serial.println(timeRangeReceived);                     
+                    //SerialUSB.print("Received RANGE_FR @ "); SerialUSB.println(timeRangeReceived);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    float avg_distance = Tracker.filter(distance , 3);
-                    Tracker.loc(avg_distance, 3);
+                    float avg_distance = Tracker.filter(distance , F_R);
+                    Tracker.loc(avg_distance, F_R);
                     Xcoor = Tracker.getX();
                     Ycoor = Tracker.getY();   
-                    String Serialdata = "FRONT-RIGHT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FR.getReceivePower()) + "," + String(DW1000FR.getReceiveQuality()) + "\n\r";                
-                    //Serial.print(Serialdata); 
-                    Serial.println(avg_distance);
+                    String SerialUSBdata = "FRONT-RIGHT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FR.getReceivePower()) + "," + String(DW1000FR.getReceiveQuality()) + "\n\r";                
+                    //SerialUSB.print(SerialUSBdata); 
+                    //SerialUSB.println(avg_distance);
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -527,7 +527,7 @@ void loop() {
                     transmitPollRR();                   
                     noteActivity();
             } else if (msgId == RANGE_FAILED) {   
-                //Serial.println("Received Range_FAILED_FR");                                     
+                //SerialUSB.println("Received Range_FAILED_FR");                                     
                 expectedMsgId = POLL_ACK;
                 transmitPollFR();
                 noteActivity();
@@ -537,14 +537,14 @@ void loop() {
         if (sentAck) {
             sentAck = false;
             byte msgId = data[0];
-            //Serial.print("REAR-RIGHT SENDS:   "); Serial.println(msgId);             
+            //SerialUSB.print("REAR-RIGHT SENDS:   "); SerialUSB.println(msgId);             
             if (msgId == POLL){
                 DW1000RR.getTransmitTimestamp(timePollSent);
-                //Serial.print("Sent POLL_RR @ "); Serial.println(timePollSent);                 
+                //SerialUSB.print("Sent POLL_RR @ "); SerialUSB.println(timePollSent);                 
                 noteActivity();          
             }else if (msgId == RANGE){
                 DW1000RR.getTransmitTimestamp(timeRangeSent);
-                //Serial.print("Sent RANGE_RR @ "); Serial.println(timeRangeSent);                   
+                //SerialUSB.print("Sent RANGE_RR @ "); SerialUSB.println(timeRangeSent);                   
                 noteActivity();
             }
         }
@@ -554,42 +554,42 @@ void loop() {
             DW1000RR.getData(data, LEN_DATA);
             byte msgId = data[0];
             
-            //Serial.print("REAR-RIGHT Received:   "); Serial.println(msgId);
+            //SerialUSB.print("REAR-RIGHT Received:   "); SerialUSB.println(msgId);
             if (msgId != expectedMsgId) {
                 // unexpected message, start over again
                 expectedMsgId = POLL_ACK;
                 //transmitPollRR();
-                //Serial.print("Received:   "); Serial.print(msgId); Serial.print(" ERROR_RR Expected: "); Serial.println(expectedMsgId);            
+                //SerialUSB.print("Received:   "); SerialUSB.print(msgId); SerialUSB.print(" ERROR_RR Expected: "); SerialUSB.println(expectedMsgId);            
                 return;                
             }
             if (msgId == POLL_ACK) { 
                 //protocolFailed = false;
-                //Serial.println("Received POLL_ACK_RR");
+                //SerialUSB.println("Received POLL_ACK_RR");
                 DW1000RR.getReceiveTimestamp(timePollAckReceived);
-                //Serial.print("Received POLL_ACK_RR @ "); Serial.println(timePollAckReceived);                 
+                //SerialUSB.print("Received POLL_ACK_RR @ "); SerialUSB.println(timePollAckReceived);                 
                 timePollReceived.setTimestamp(data + 1);
-                //Serial.print("Received POLL_RR @ "); Serial.println(timePollReceived);
+                //SerialUSB.print("Received POLL_RR @ "); SerialUSB.println(timePollReceived);
                 timePollAckSent.setTimestamp(data + 6);
-                //Serial.print("Sent POLL_ACK_RR @ "); Serial.println(timePollAckSent);                        
+                //SerialUSB.print("Sent POLL_ACK_RR @ "); SerialUSB.println(timePollAckSent);                        
                 expectedMsgId = RANGE_ACK;
                 transmitRangeRR();
                 DW1000RR.receivePermanently(false); 
                 DW1000RL.receivePermanently(true);                                    
                 noteActivity();
             } else if (msgId == RANGE_ACK) {
-                    //Serial.println("Received RANGE_ACK_RR");
-                    //Serial.print("Second value"); Serial.println(data[2]);            
+                    //SerialUSB.println("Received RANGE_ACK_RR");
+                    //SerialUSB.print("Second value"); SerialUSB.println(data[2]);            
                     timeRangeReceived.setTimestamp(data + 1);
-                    //Serial.print("Received RANGE_RR @ "); Serial.println(timeRangeReceived);                     
+                    //SerialUSB.print("Received RANGE_RR @ "); SerialUSB.println(timeRangeReceived);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
                     float avg_distance = Tracker.filter(distance ,R_R);
                     Tracker.loc(avg_distance, R_R);
                     Xcoor = Tracker.getX();
                     Ycoor = Tracker.getY();
-                    String Serialdata = "REAR-RIGHT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RR.getReceivePower()) + "," + String(DW1000RR.getReceiveQuality()) + "\n\r";                
-                    //Serial.print(Serialdata); 
-                    Serial.println(avg_distance);    
+                    String SerialUSBdata = "REAR-RIGHT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RR.getReceivePower()) + "," + String(DW1000RR.getReceiveQuality()) + "\n\r";                
+                    //SerialUSB.print(SerialUSBdata); 
+                    //SerialUSB.println(avg_distance);    
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -605,7 +605,7 @@ void loop() {
                     transmitPollRL();                   
                     noteActivity();
             } else if (msgId == RANGE_FAILED) {   
-                //Serial.println("Received Range_FAILED_RR");                                     
+                //SerialUSB.println("Received Range_FAILED_RR");                                     
                 expectedMsgId = POLL_ACK;
                 transmitPollRR();
                 noteActivity();
@@ -615,14 +615,14 @@ void loop() {
         if (sentAck) {
             sentAck = false;
             byte msgId = data[0];
-            //Serial.print("REAR-RIGHT SENDS:   "); Serial.println(msgId);             
+            //SerialUSB.print("REAR-RIGHT SENDS:   "); SerialUSB.println(msgId);             
             if (msgId == POLL){
                 DW1000RL.getTransmitTimestamp(timePollSent);
-                //Serial.print("Sent POLL_RL @ "); Serial.println(timePollSent);                 
+                //SerialUSB.print("Sent POLL_RL @ "); SerialUSB.println(timePollSent);                 
                 noteActivity();          
             }else if (msgId == RANGE){
                 DW1000RL.getTransmitTimestamp(timeRangeSent);
-                //Serial.print("Sent RANGE_RL @ "); Serial.println(timeRangeSent);                   
+                //SerialUSB.print("Sent RANGE_RL @ "); SerialUSB.println(timeRangeSent);                   
                 noteActivity();
             }
         }
@@ -632,43 +632,45 @@ void loop() {
             DW1000RL.getData(data, LEN_DATA);
             byte msgId = data[0];
             
-            //Serial.print("REAR-RIGHT Received:   "); Serial.println(msgId);
+            //SerialUSB.print("REAR-RIGHT Received:   "); SerialUSB.println(msgId);
             if (msgId != expectedMsgId) {
                 // unexpected message, start over again
                 expectedMsgId = POLL_ACK;
                 //transmitPollRL();
-                //Serial.print("Received:   "); Serial.print(msgId); Serial.print(" ERLOR_RL Expected: "); Serial.println(expectedMsgId);            
+                //SerialUSB.print("Received:   "); SerialUSB.print(msgId); SerialUSB.print(" ERLOR_RL Expected: "); SerialUSB.println(expectedMsgId);            
                 return;                
             }
             if (msgId == POLL_ACK) { 
                 //protocolFailed = false;
-                //Serial.println("Received POLL_ACK_RL");
+                //SerialUSB.println("Received POLL_ACK_RL");
                 DW1000RL.getReceiveTimestamp(timePollAckReceived);
-                //Serial.print("Received POLL_ACK_RL @ "); Serial.println(timePollAckReceived);                 
+                //SerialUSB.print("Received POLL_ACK_RL @ "); SerialUSB.println(timePollAckReceived);                 
                 timePollReceived.setTimestamp(data + 1);
-                //Serial.print("Received POLL_RL @ "); Serial.println(timePollReceived);
+                //SerialUSB.print("Received POLL_RL @ "); SerialUSB.println(timePollReceived);
                 timePollAckSent.setTimestamp(data + 6);
-                //Serial.print("Sent POLL_ACK_RL @ "); Serial.println(timePollAckSent);                        
+                //SerialUSB.print("Sent POLL_ACK_RL @ "); SerialUSB.println(timePollAckSent);                        
                 expectedMsgId = RANGE_ACK;
                 transmitRangeRL();
                 DW1000RL.receivePermanently(false); 
                 DW1000FL.receivePermanently(true);                                    
                 noteActivity();
             } else if (msgId == RANGE_ACK) {
-                    //Serial.println("Received RANGE_ACK_RL");
-                    //Serial.print("Second value"); Serial.println(data[2]);            
+                    //SerialUSB.println("Received RANGE_ACK_RL");
+                    //SerialUSB.print("Second value"); SerialUSB.println(data[2]);            
                     timeRangeReceived.setTimestamp(data + 1);
-                    //Serial.print("Received RANGE_RL @ "); Serial.println(timeRangeReceived);                     
+                    //SerialUSB.print("Received RANGE_RL @ "); SerialUSB.println(timeRangeReceived);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    float avg_distance = Tracker.filter(distance ,1);
-                    Tracker.loc(avg_distance, 1);
+                    float avg_distance = Tracker.filter(distance , R_L);
+                    Tracker.loc(avg_distance, R_L);
                     Xcoor = Tracker.getX();
                     Ycoor = Tracker.getY();
-                    //String Serialdata = "REAR-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
-                    String Serialdata = "(" + String(Xcoor) + " , " + String(Ycoor) + ")"; 
-                    Serial.println(avg_distance);
-                    Serial.println(Serialdata);    
+                    //String SerialUSBdata = "REAR-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
+                    //String SerialUSBdata = "(" + String(Xcoor) + " , " + String(Ycoor) + ")"; 
+                    //SerialUSB.println(avg_distance);
+                    //SerialUSB.println(SerialUSBdata);    
+                    String SerialUSBdata = "0," + String(distance) + "," + String(Xcoor) + "," + String(Ycoor) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
+                    SerialUSB.print(SerialUSBdata);
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -684,7 +686,7 @@ void loop() {
                     transmitPollFL();                   
                     noteActivity();
             } else if (msgId == RANGE_FAILED) {   
-                //Serial.println("Received Range_FAILED_RL");                                     
+                //SerialUSB.println("Received Range_FAILED_RL");                                     
                 expectedMsgId = POLL_ACK;
                 transmitPollRL();
                 noteActivity();
@@ -692,5 +694,6 @@ void loop() {
         }
    }   	
  }
+
 
 

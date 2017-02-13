@@ -28,10 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.label1 = new System.Windows.Forms.Label();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.cmbSerialPorts = new System.Windows.Forms.ComboBox();
@@ -57,38 +57,42 @@
             // 
             // chart1
             // 
-            chartArea3.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Cursor;
-            chartArea3.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea3.AxisX.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea3.AxisX.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea3.AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea3.AxisX2.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea3.AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea3.AxisY.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea3.AxisY.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea3.AxisY2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea3.AxisY2.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea3.Name = "Chart1";
-            this.chart1.ChartAreas.Add(chartArea3);
-            legend3.Font = new System.Drawing.Font("Arial", 8F);
-            legend3.IsTextAutoFit = false;
-            legend3.Name = "Legend1";
-            legend3.TitleFont = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Bold);
-            this.chart1.Legends.Add(legend3);
+            chartArea1.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Cursor;
+            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisX.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea1.AxisX.Maximum = 400D;
+            chartArea1.AxisX.Minimum = -400D;
+            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisX2.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisY.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea1.AxisY.Maximum = 400D;
+            chartArea1.AxisY.Minimum = -400D;
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisY2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisY2.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea1.Name = "Chart1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            legend1.Font = new System.Drawing.Font("Arial", 8F);
+            legend1.IsTextAutoFit = false;
+            legend1.Name = "Legend1";
+            legend1.TitleFont = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Bold);
+            this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(70, 79);
             this.chart1.Name = "chart1";
-            series5.ChartArea = "Chart1";
-            series5.Legend = "Legend1";
-            series5.MarkerSize = 10;
-            series5.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star10;
-            series5.Name = "Target";
-            series6.ChartArea = "Chart1";
-            series6.Legend = "Legend1";
-            series6.MarkerSize = 20;
-            series6.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Square;
-            series6.Name = "Robot";
-            this.chart1.Series.Add(series5);
-            this.chart1.Series.Add(series6);
+            series1.ChartArea = "Chart1";
+            series1.Legend = "Legend1";
+            series1.MarkerSize = 10;
+            series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star10;
+            series1.Name = "Target";
+            series2.ChartArea = "Chart1";
+            series2.Legend = "Legend1";
+            series2.MarkerSize = 20;
+            series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Square;
+            series2.Name = "Robot";
+            this.chart1.Series.Add(series1);
+            this.chart1.Series.Add(series2);
             this.chart1.Size = new System.Drawing.Size(591, 454);
             this.chart1.TabIndex = 1;
             this.chart1.Text = "chart1";
