@@ -48,8 +48,7 @@ const uint8_t PIN_Right_B = 3;
 #define R_R 2
 #define R_L 3
 
-float Xcoor = 0;
-float Ycoor = 0;
+float coords[2];
 
 // Receiving anchor
 uint8_t anchorRanging = F_L;
@@ -160,9 +159,8 @@ void setup() {
   
     SerialUSB.println("start");
 
-	//Initialize filter and multilateration
-    Tracker.initFilter();
-    Tracker.initLoc();    
+	  //Initialize filter and multilateration   
+    Tracker.initTracker();    
 
     DW1000FR.receivePermanently(false);
     DW1000RR.receivePermanently(false);   
@@ -440,10 +438,7 @@ void loop() {
                     //SerialUSB.print("Received RANGE_FL @ "); SerialUSB.println(timeRangeReceived);                      
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    float avg_distance = Tracker.filter(distance ,F_L);
-                    Tracker.loc(avg_distance, F_L);
-                    Xcoor = Tracker.getX();
-                    Ycoor = Tracker.getY();                    
+                    float avg_distance = Tracker.filter(distance ,F_L, coords);          
                     String SerialUSBdata = "FRONT-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata);  
                     SerialUSB.println(avg_distance);
@@ -520,10 +515,7 @@ void loop() {
                     //SerialUSB.print("Received RANGE_FR @ "); SerialUSB.println(timeRangeReceived);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    float avg_distance = Tracker.filter(distance , F_R);
-                    Tracker.loc(avg_distance, F_R);
-                    Xcoor = Tracker.getX();
-                    Ycoor = Tracker.getY();   
+                    float avg_distance = Tracker.filter(distance , F_R, coords);   
                     String SerialUSBdata = "FRONT-RIGHT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FR.getReceivePower()) + "," + String(DW1000FR.getReceiveQuality()) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata); 
                     SerialUSB.println(avg_distance);
@@ -597,10 +589,7 @@ void loop() {
                     //SerialUSB.print("Received RANGE_RR @ "); SerialUSB.println(timeRangeReceived);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    float avg_distance = Tracker.filter(distance ,R_R);
-                    Tracker.loc(avg_distance, R_R);
-                    Xcoor = Tracker.getX();
-                    Ycoor = Tracker.getY();
+                    float avg_distance = Tracker.filter(distance ,R_R, coords);   
                     String SerialUSBdata = "REAR-RIGHT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RR.getReceivePower()) + "," + String(DW1000RR.getReceiveQuality()) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata); 
                     SerialUSB.println(avg_distance);    
@@ -675,19 +664,16 @@ void loop() {
                     //SerialUSB.print("Received RANGE_RL @ "); SerialUSB.println(timeRangeReceived);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    float avg_distance = Tracker.filter(distance , R_L);
-                    Tracker.loc(avg_distance, R_L);
-                    Xcoor = Tracker.getX();
-                    Ycoor = Tracker.getY();
+                    float avg_distance = Tracker.filter(distance , R_L, coords);   
                     SerialUSB.println(avg_distance);
                     //String SerialUSBdata = "REAR-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
-                    String SerialUSBdata = "(" + String(Xcoor) + " , " + String(Ycoor) + ")"; 
+                    String SerialUSBdata = "(" + String(coords[0]) + " , " + String(coords[1]) + ")"; 
                     SerialUSB.println(SerialUSBdata);    
                     //String SerialUSBdata = "0," + String(distance) + "," + String(Xcoor) + "," + String(Ycoor) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata);
 
                     if (curMillis - movementPeriod > 1000){
-                        Tracker.movement(Xcoor,Ycoor);
+                        Tracker.movement(coords);
                         movementPeriod = curMillis;
                     }
              
