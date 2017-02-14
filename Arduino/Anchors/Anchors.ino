@@ -28,6 +28,12 @@ const uint8_t PIN_RST_RL = A0; // reset pin
 const uint8_t PIN_IRQ_RL = A2; // irq pin
 const uint8_t PIN_SS_RL = A1; // spi select pin
 
+const uint8_t PIN_Left_F = 9;
+const uint8_t PIN_Right_F = 8;
+const uint8_t PIN_Left_B = 4;
+const uint8_t PIN_Right_B = 3;
+
+
 // Expected messages FL
 #define POLL 0
 #define POLL_ACK 1
@@ -76,6 +82,7 @@ uint16_t successRangingCount = 0;
 uint32_t rangingCountPeriod = 0;
 float samplingRate = 0;
 
+uint32_t movementPeriod = 0;
 
 void setup() {
     // Setup Code
@@ -143,7 +150,14 @@ void setup() {
     // set function callbacks for sent and received messages
     DW1000RL.attachSentHandler(handleSent);
     DW1000RL.attachReceivedHandler(handleReceived);            
-    
+
+
+    //Movement setup
+    pinMode(PIN_Left_F, OUTPUT); // Leflt Forward
+    pinMode(PIN_Right_F, OUTPUT); // Right Forward
+    pinMode(PIN_Left_B, OUTPUT); // Left backwards
+    pinMode(PIN_Right_B, OUTPUT); //  right barckwards   
+  
     SerialUSB.println("start");
 
 	//Initialize filter and multilateration
@@ -432,7 +446,7 @@ void loop() {
                     Ycoor = Tracker.getY();                    
                     String SerialUSBdata = "FRONT-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FL.getReceivePower()) + "," + String(DW1000FL.getReceiveQuality()) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata);  
-                    //SerialUSB.println(avg_distance);
+                    SerialUSB.println(avg_distance);
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -512,7 +526,7 @@ void loop() {
                     Ycoor = Tracker.getY();   
                     String SerialUSBdata = "FRONT-RIGHT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000FR.getReceivePower()) + "," + String(DW1000FR.getReceiveQuality()) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata); 
-                    //SerialUSB.println(avg_distance);
+                    SerialUSB.println(avg_distance);
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -589,7 +603,7 @@ void loop() {
                     Ycoor = Tracker.getY();
                     String SerialUSBdata = "REAR-RIGHT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RR.getReceivePower()) + "," + String(DW1000RR.getReceiveQuality()) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata); 
-                    //SerialUSB.println(avg_distance);    
+                    SerialUSB.println(avg_distance);    
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -665,12 +679,19 @@ void loop() {
                     Tracker.loc(avg_distance, R_L);
                     Xcoor = Tracker.getX();
                     Ycoor = Tracker.getY();
+                    SerialUSB.println(avg_distance);
                     //String SerialUSBdata = "REAR-LEFT: 0," + String(distance) + ",0," + String(avg_distance) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
-                    //String SerialUSBdata = "(" + String(Xcoor) + " , " + String(Ycoor) + ")"; 
-                    //SerialUSB.println(avg_distance);
-                    //SerialUSB.println(SerialUSBdata);    
-                    String SerialUSBdata = "0," + String(distance) + "," + String(Xcoor) + "," + String(Ycoor) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
-                    SerialUSB.print(SerialUSBdata);
+                    String SerialUSBdata = "(" + String(Xcoor) + " , " + String(Ycoor) + ")"; 
+                    SerialUSB.println(SerialUSBdata);    
+                    //String SerialUSBdata = "0," + String(distance) + "," + String(Xcoor) + "," + String(Ycoor) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
+                    //SerialUSB.print(SerialUSBdata);
+
+                    if (curMillis - movementPeriod > 1000){
+                        Tracker.movement(Xcoor,Ycoor);
+                        movementPeriod = curMillis;
+                    }
+             
+                    
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);

@@ -25,12 +25,12 @@ const float TrackerClass::SEPARATION = 31.0; //Distance between all anchors in b
 											 /* Coordinates of anchors with respect to reference point RL (0,0) */
 float TrackerClass::FLx = 0.0;
 float TrackerClass::FLy = SEPARATION;
-float TrackerClass::FRx = SEPARATION;
-float TrackerClass::FRy = SEPARATION;
-float TrackerClass::RRx = SEPARATION;
-float TrackerClass::RRy = 0.0;
 float TrackerClass::RLx = 0.0;
 float TrackerClass::RLy = 0.0;
+float TrackerClass::RRx = SEPARATION;
+float TrackerClass::RRy = 0.0;
+float TrackerClass::FRx = SEPARATION;
+float TrackerClass::FRy = SEPARATION;
 
 //Position of target
 float TrackerClass::xcoord;
@@ -38,9 +38,16 @@ float TrackerClass::ycoord;
 
 /*Distances being read in (keep track as global vars) */
 float TrackerClass::d1; //Distance in from FL
-float TrackerClass::d2; //Distance in from FR
+float TrackerClass::d2; //Distance in from RL
 float TrackerClass::d3; //Distance in from RR
-float TrackerClass::d4; //Distance in from RL
+float TrackerClass::d4; //Distance in from FR
+
+//Movement PINS
+uint8_t TrackerClass::_PIN_Left_F = 9;
+uint8_t TrackerClass::_PIN_Right_F = 8;
+uint8_t TrackerClass::_PIN_Left_B = 4;
+uint8_t TrackerClass::_PIN_Right_B = 3;
+
 
 void TrackerClass::initLoc()
 {
@@ -288,4 +295,36 @@ float TrackerClass::filter(float newDist, uint8_t anchor)
 		}
 		return filt_list[vars_ptr + 1]; //Return the specified anchor's average
 	}
+}
+
+
+
+void TrackerClass::movement(float Xcoor, float Ycoor)
+{
+	digitalWrite(_PIN_Left_F, LOW);
+	digitalWrite(_PIN_Right_F, LOW); 
+	digitalWrite(_PIN_Left_B, LOW);
+	digitalWrite(_PIN_Right_B, LOW);  
+	if (Xcoor != 0){
+	  if (Xcoor>0) {
+		  digitalWrite(_PIN_Left_F, HIGH);
+		  digitalWrite(_PIN_Right_B, HIGH);
+		  delay(100);
+		  digitalWrite(_PIN_Left_F, LOW);
+		  digitalWrite(_PIN_Right_B, LOW);    
+		}else if (Xcoor<0) {
+		  digitalWrite(_PIN_Right_F, HIGH);
+		  digitalWrite(_PIN_Left_B, HIGH);
+		  delay(100);
+		  digitalWrite(_PIN_Right_F, LOW);
+		  digitalWrite(_PIN_Left_B, LOW);   
+		}
+		if(Ycoor > 200){
+		  digitalWrite(_PIN_Left_F, HIGH);
+		  digitalWrite(_PIN_Right_F, HIGH); 
+		} else if(Ycoor < 100){
+		  digitalWrite(_PIN_Left_B, HIGH);
+		  digitalWrite(_PIN_Right_B, HIGH);  
+	   }                                            
+	}    
 }

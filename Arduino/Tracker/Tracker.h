@@ -27,6 +27,9 @@ public:
 	static void loc(float distance, uint8_t anchor);
 	static uint8_t numDists();
 	
+	//Movement
+	static void movement(float Xcoor, float Ycoor);
+	
 	/* ##############Variables############# */
 	//Filter
 	static uint16_t delta, filtCounter;
@@ -38,6 +41,9 @@ public:
 	static float FLx, FLy, RLx, RLy, RRx, RRy, FRx, FRy;
 	static float d1, d2, d3, d4;
 	static float xcoord, ycoord;
+	
+	//Movement
+	static uint8_t _PIN_Left_F, _PIN_Right_F, _PIN_Left_B, _PIN_Right_B;
 };
 
 extern TrackerClass Tracker;
