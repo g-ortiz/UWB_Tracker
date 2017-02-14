@@ -19,7 +19,6 @@ float TrackerClass::avg, TrackerClass::sum;
 float filt_list[4 * FILTER_LENGTH + 4 * NUM_VARS];
 uint8_t array_ptr, vars_ptr;
 
-
 //Variables for multi-lat
 const float TrackerClass::SEPARATION = 31.0; //Distance between all anchors in both x and y directions (cm)
 											 /* Coordinates of anchors with respect to reference point RL (0,0) */
@@ -49,15 +48,43 @@ uint8_t TrackerClass::_PIN_Left_B = 4;
 uint8_t TrackerClass::_PIN_Right_B = 3;
 
 
-void TrackerClass::initLoc()
+void TrackerClass::initTracker()
 {
+	//For filter
+	init_val = 30;
+	sum = init_val; //Sum needs to be set to intial value for finding the first average (no large bearing on code)
+	filtCounter = 0;
+
+	//Populate filter (for all anchors)
+	for (int i = 0; i < 4 * FILTER_LENGTH + 4 * NUM_VARS; i++)
+	{
+		filt_list[i] = init_val;
+	}
+
+	//Now set values for each anchor's sum and counter (initial avg is trivial)
+	/* Note: in the array 1st = FL, 2nd = RL (the reference point), 3rd = RR, 4th = FR */
+	for (int i = 0; i < 4; i++)
+	{
+		filt_list[i*FILTER_LENGTH + i*NUM_VARS + FILTER_LENGTH] = sum;
+		filt_list[i*FILTER_LENGTH + i*NUM_VARS + FILTER_LENGTH + 2] = filtCounter;
+	}
+
+
+	/* 	for(int i = 0; i < 4*FILTER_LENGTH + 4*NUM_VARS; i++)
+	{
+	Serial.print(i);
+	Serial.print(": ");
+	Serial.println(filt_list[i]);
+	} */
+	
+	//For multilat
 	d1 = 0.0;
 	d2 = 0.0;
 	d3 = 0.0;
 	d4 = 0.0;
 }
 
-void TrackerClass::loc(float distance, uint8_t anchor)
+void TrackerClass::loc(float distance, uint8_t anchor, float coord[])
 {
 	switch (anchor) //Determine which anchor the distance is being read in from an update that distance
 	{
@@ -186,22 +213,57 @@ void TrackerClass::loc(float distance, uint8_t anchor)
 			}
 		}
 
-		xcoord = P[0][0];
-		ycoord = P[1][0];
-
-
+		/*Initial position estimate*/
+		float x_c = P[0][0];
+		float y_c = P[1][0];
+		
+		/*Find minimum distance to project values onto*/
+		
+		float min = 100000; //Set min high initially
+		float ds[4] = {d1, d2, d3, d4}; //Create array of distances
+		float d_min; //Minimum distance
+		
+		for (int j = 0; j < number; j++) //Recall: number = number of distances recorded (4)
+		{
+			if(ds[j] < min)
+			{
+				d_min = ds[j]; //Set as minimum distance
+				min = d_min; //Update min
+			}
+		}
+		
+		float dist = sqrt(pow(x_c,2) + pow(y_c,2)); //Distance from origin to point (can maybe use d4 for this?)
+		
+		int8_t sign;
+		
+		//Get sign of y coordinate
+		if(y_c >= 0)
+			sign = 1;
+		else
+			sign = -1;
+		
+		//Determine projected values
+		
+		float x_new = sign*x_c*d_min/dist;
+		float y_new = abs(y_c)*d_min/dist;
+		
+		
+		if(y_c >= 0)
+		{
+			xcoord = x_new;
+			ycoord = y_new;
+		}
+		else
+		{
+			xcoord = -1*x_new;
+			ycoord = -1*y_new;
+		}
 
 	}
-}
-
-float TrackerClass::getX()
-{
-	return xcoord;
-}
-
-float TrackerClass::getY()
-{
-	return ycoord;
+	
+	coord[0] = xcoord;
+	coord[1] = ycoord;
+	return;
 }
 
 uint8_t TrackerClass::numDists()
@@ -218,41 +280,10 @@ uint8_t TrackerClass::numDists()
 		counter += 1;
 
 	return counter;
-
-
-}
-
-void TrackerClass::initFilter()
-{
-	init_val = 30;
-	sum = init_val; //Sum needs to be set to intial value for finding the first average (no large bearing on code)
-	filtCounter = 0;
-
-	//Populate filter (for all anchors)
-	for (int i = 0; i < 4 * FILTER_LENGTH + 4 * NUM_VARS; i++)
-	{
-		filt_list[i] = init_val;
-	}
-
-	//Now set values for each anchor's sum and counter (initial avg is trivial)
-	/* Note: in the array 1st = FL, 2nd = RL (the reference point), 3rd = RR, 4th = FR */
-	for (int i = 0; i < 4; i++)
-	{
-		filt_list[i*FILTER_LENGTH + i*NUM_VARS + FILTER_LENGTH] = sum;
-		filt_list[i*FILTER_LENGTH + i*NUM_VARS + FILTER_LENGTH + 2] = filtCounter;
-	}
-
-
-	/* 	for(int i = 0; i < 4*FILTER_LENGTH + 4*NUM_VARS; i++)
-	{
-	Serial.print(i);
-	Serial.print(": ");
-	Serial.println(filt_list[i]);
-	} */
 }
 
 
-float TrackerClass::filter(float newDist, uint8_t anchor)
+float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 {
 	delta = 100; //Range in which new reading must reside (avg +/- delta)
 	array_ptr = anchor*FILTER_LENGTH + anchor*NUM_VARS; //Points to the start of the specific anchor's array
@@ -293,7 +324,9 @@ float TrackerClass::filter(float newDist, uint8_t anchor)
 			filt_list[vars_ptr - 1] = filt_list[vars_ptr - 2]; //Duplicate second most recent value and keep as most recent
 			filt_list[vars_ptr + 1] = filt_list[vars_ptr + 1]; //Average remains unchanged
 		}
-		return filt_list[vars_ptr + 1]; //Return the specified anchor's average
+		float new_avg = filt_list[vars_ptr + 1]; 
+		loc(new_avg, anchor, coord);
+		return  new_avg;//Return the specified anchor's average (so we can print)
 	}
 }
 

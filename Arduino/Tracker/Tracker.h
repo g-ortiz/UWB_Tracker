@@ -16,15 +16,12 @@ class TrackerClass {
 public:
 	/* ##########Functions############## */
 	
+	static void initTracker();
 	//Filter
-	static void initFilter();
-	static float filter(float newDist, uint8_t anchor);
+	static float filter(float newDist, uint8_t anchor, float coord[]);
 	
 	//Mutlilateration
-	static void initLoc();
-	static float getX();
-	static float getY();
-	static void loc(float distance, uint8_t anchor);
+	static void loc(float distance, uint8_t anchor, float coord[]);
 	static uint8_t numDists();
 	
 	//Movement
