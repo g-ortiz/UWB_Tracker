@@ -672,7 +672,7 @@ void loop() {
                     //String SerialUSBdata = "0," + String(distance) + "," + String(Xcoor) + "," + String(Ycoor) + "," + String(samplingRate) + "," + String(DW1000RL.getReceivePower()) + "," + String(DW1000RL.getReceiveQuality()) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata);
 
-                    if (curMillis - movementPeriod > 1000){
+                    if (curMillis - movementPeriod > 500){
                         Tracker.movement(coords);
                         movementPeriod = curMillis;
                     }
