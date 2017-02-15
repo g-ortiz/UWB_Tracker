@@ -325,8 +325,83 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 			filt_list[vars_ptr + 1] = filt_list[vars_ptr + 1]; //Average remains unchanged
 		}
 		float new_avg = filt_list[vars_ptr + 1]; 
-		loc(new_avg, anchor, coord);
+		//loc(new_avg, anchor, coord);
+		if (anchor=3){
+			array_ptr = (anchor-3)*FILTER_LENGTH + (anchor-3)*NUM_VARS; //Points to the start of the specific anchor's array
+			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
+			float radius0 = filt_list[vars_ptr + 1];
+			array_ptr = (anchor-2)*FILTER_LENGTH + (anchor-2)*NUM_VARS; //Points to the start of the specific anchor's array
+			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
+			float radius1 = filt_list[vars_ptr + 1];
+			array_ptr = (anchor)*FILTER_LENGTH + (anchor)*NUM_VARS; //Points to the start of the specific anchor's array
+			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
+			float radius2 = filt_list[vars_ptr + 1]	;
+			circles(radius0,radius1,radius2,coord);
+		}
+			
 		return  new_avg;//Return the specified anchor's average (so we can print)
+	}
+}
+
+
+void TrackerClass::circles(float radius0, float radius1, float radius2, float coord[])
+{
+	// Find the distance between the centers.
+	float dx = 0 - 31;
+	float dy = 0 - 0;
+	double dist = sqrt(dx * dx + dy * dy);
+
+	// See how many solutions there are.
+	if (dist > radius0 + radius1)
+	{
+		// No solutions, the circles are too far apart.
+		coord[0] = 0; 
+		coord[1] = 0; 
+		return;
+	}
+	else if (dist < abs(radius0 - radius1))
+	{
+		// No solutions, one circle contains the other.
+		coord[0] = 0; 
+		coord[1] = 0; 
+		return;
+	}
+	else if ((dist == 0) && (radius0 == radius1))
+	{
+		// No solutions, the circles coincide.
+		coord[0] = 0; 
+		coord[1] = 0; 
+		return;
+	}
+	else
+	{
+		// Find a and h.
+		double a = (radius0 * radius0 -
+			radius1 * radius1 + dist * dist) / (2 * dist);
+		double h = sqrt(radius0 * radius0 - a * a);
+
+		// Find P2.
+		double cx2 = 0 + a * (31 - 0) / dist;
+		double cy2 = 0 + a * (0 - 0) / dist;
+
+		if (radius0<radius2){
+			if(((float)(cy2 - h * (31 - 0) / dist))>0){
+				coord[0] = (float)(cx2 + h * (0 - 0) / dist);
+				coord[1] = (float)(cy2 - h * (31 - 0) / dist);
+			}else{
+				coord[0] = (float)(cx2 - h * (0 - 0) / dist);
+				coord[1] = (float)(cy2 + h * (31 - 0) / dist);			
+			}
+		}else{
+			if(((float)(cy2 - h * (31 - 0) / dist))<0){
+				coord[0] = (float)(cx2 + h * (0 - 0) / dist);
+				coord[1] = (float)(cy2 - h * (31 - 0) / dist);
+			}else{
+				coord[0] = (float)(cx2 - h * (0 - 0) / dist);
+				coord[1] = (float)(cy2 + h * (31 - 0) / dist);			
+			}
+		}
+		return;
 	}
 }
 

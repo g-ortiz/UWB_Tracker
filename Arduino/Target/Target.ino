@@ -175,11 +175,12 @@ void loop() {
                 hardresetcount++;
                 resetInactive();
         }
+        if (hardresetcount==10){
+            hardresetcount=0;
+            Serial.println("HARD RESET!!!!!");
+            reset();
+        }
         return;
-    }
-    if (hardresetcount==10){
-      reset();
-      Serial.println("HARD RESET!!!!!");
     }
     // SentAck (after receiving first POLL)
     if (sentAck) {
@@ -202,7 +203,7 @@ void loop() {
             // unexpected message, start over again (except if already POLL)
             protocolFailed = true;
             expectedMsgId = POLL;
-           //Serial.print("Received ERROR Expected:"); Serial.println(expectedMsgId);        
+            Serial.print("Received ERROR Expected:"); Serial.println(expectedMsgId);        
         }
         if (msgId == POLL) {
             DW1000.getReceiveTimestamp(timePollReceived);

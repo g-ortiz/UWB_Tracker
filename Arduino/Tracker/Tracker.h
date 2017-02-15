@@ -26,6 +26,7 @@ public:
 	
 	//Movement
 	static void movement(float coord[], uint8_t moveto[]);
+	static void  circles(float radius0, float radius1, float radius2, float coord[]);
 	
 	/* ##############Variables############# */
 	//Filter
