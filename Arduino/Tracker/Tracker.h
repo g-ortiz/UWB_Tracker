@@ -25,7 +25,7 @@ public:
 	static uint8_t numDists();
 	
 	//Movement
-	static void movement(float coord[]);
+	static void movement(float coord[], uint8_t moveto[]);
 	
 	/* ##############Variables############# */
 	//Filter

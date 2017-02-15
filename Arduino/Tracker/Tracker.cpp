@@ -332,32 +332,40 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 
 
 
-void TrackerClass::movement(float coord[])
+void TrackerClass::movement(float coord[], uint8_t moveto[])
 {
-	digitalWrite(_PIN_Left_F, LOW);
-	digitalWrite(_PIN_Right_F, LOW); 
-	digitalWrite(_PIN_Left_B, LOW);
-	digitalWrite(_PIN_Right_B, LOW);  
 	if (coord[0] != 0){
+		digitalWrite(_PIN_Left_F, LOW);
+		digitalWrite(_PIN_Right_F, LOW); 
+		digitalWrite(_PIN_Left_B, LOW);
+		digitalWrite(_PIN_Right_B, LOW);  
 	  if (coord[0]>50) {
+		  moveto[0]= 1;
 		  digitalWrite(_PIN_Left_F, HIGH);
-		  digitalWrite(_PIN_Right_B, HIGH);
+		  digitalWrite(_PIN_Right_B, HIGH);		  
 		  delay(50);
 		  digitalWrite(_PIN_Left_F, LOW);
 		  digitalWrite(_PIN_Right_B, LOW);    
 		}else if (coord[0]<-50) {
+		  moveto[0]= 2;
 		  digitalWrite(_PIN_Right_F, HIGH);
 		  digitalWrite(_PIN_Left_B, HIGH);
 		  delay(50);
 		  digitalWrite(_PIN_Right_F, LOW);
 		  digitalWrite(_PIN_Left_B, LOW);   
+		}else{
+		  moveto[0]= 0;
 		}
 		if(coord[1] > 200){
+		  moveto[1]=1;
 		  digitalWrite(_PIN_Left_F, HIGH);
 		  digitalWrite(_PIN_Right_F, HIGH); 
 		} else if(coord[1] < 100){
+		  moveto[1]=2;			
 		  digitalWrite(_PIN_Left_B, HIGH);
 		  digitalWrite(_PIN_Right_B, HIGH);  
-	   }                                            
+	   }  else{
+		  moveto[1]=0;
+	   }                                          
 	}    
 }
