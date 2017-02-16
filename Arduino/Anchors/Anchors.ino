@@ -422,13 +422,7 @@ void loop() {
                     timeRangeReceived.setTimestamp(data + 1);             
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[0] = Tracker.filter(distance ,F_L, coords);          
-                    successRangingCount++;
-                    if (curMillis - rangingCountPeriod > 1000) {
-                        samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
-                        rangingCountPeriod = curMillis;
-                        successRangingCount = 0;
-                    }                              
+                    ranges[0] = Tracker.filter(distance ,F_L, coords);                                    
                     anchorRanging = F_R;         
                     expectedMsgId = POLL_ACK;
                     SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FR));
@@ -478,13 +472,7 @@ void loop() {
                     timeRangeReceived.setTimestamp(data + 1);                
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[1] = Tracker.filter(distance , F_R, coords);   
-                    successRangingCount++;
-                    if (curMillis - rangingCountPeriod > 1000) {
-                        samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
-                        rangingCountPeriod = curMillis;
-                        successRangingCount = 0;
-                    }                              
+                    ranges[1] = Tracker.filter(distance , F_R, coords);                                
                     anchorRanging = R_R;          
                     expectedMsgId = POLL_ACK;                                 
                     SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_RR));
@@ -532,13 +520,7 @@ void loop() {
                     timeRangeReceived.setTimestamp(data + 1);                  
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[2] = Tracker.filter(distance ,R_R, coords);     
-                    successRangingCount++;
-                    if (curMillis - rangingCountPeriod > 1000) {
-                        samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
-                        rangingCountPeriod = curMillis;
-                        successRangingCount = 0;
-                    }                              
+                    ranges[2] = Tracker.filter(distance ,R_R, coords);                              
                     anchorRanging = R_L;          
                     expectedMsgId = POLL_ACK;   
                     //DW1000FL.clearAllStatus();                               
@@ -591,13 +573,12 @@ void loop() {
                     float distance = timeComputedRange.getAsMeters()*100;
                     ranges[3] = Tracker.filter(distance , R_L, coords);   
                     //if (curMillis - movementPeriod > 200){
-                        Tracker.movement(coords, moveto);
+                        //Tracker.movement(coords+2, moveto);
                       //  movementPeriod = curMillis;
                     //}            
                     String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[4]) + "," + String(coords[5]) + "," + String(coords[6]) + "," + String(coords[7])
-                             + "," + String(coords[8]) + "," + String(coords[9]) + "\n\r";                
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "\n\r";                
                     SerialUSB.print(SerialUSBdata);                                        
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
