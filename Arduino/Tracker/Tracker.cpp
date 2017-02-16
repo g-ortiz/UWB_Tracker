@@ -325,7 +325,7 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 			filt_list[vars_ptr + 1] = filt_list[vars_ptr + 1]; //Average remains unchanged
 		}
 		float new_avg = filt_list[vars_ptr + 1]; 
-		loc(new_avg, anchor, coord+8);
+		loc(new_avg, anchor, coord+2);
 		if (anchor=3){
 			array_ptr = (anchor-3)*FILTER_LENGTH + (anchor-3)*NUM_VARS; //Points to the start of the specific anchor's array
 			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
@@ -340,9 +340,7 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
 			float radiusrl = filt_list[vars_ptr + 1]	;
 			circles(0,SEPARATION,radiusfl,SEPARATION, SEPARATION, radiusfr,radiusrl,coord, Front);
-			circles(0,0,radiusrl,0, SEPARATION, radiusfl,radiusrr,coord+2, Left);
-			circles(0,0,radiusrl,SEPARATION, 0, radiusrr,radiusfr,coord+4, Back);
-			circles(SEPARATION,0,radiusrr,SEPARATION, SEPARATION, radiusfr,radiusfl,coord+6, Right);			
+		
 		}
 			
 		return  new_avg;//Return the specified anchor's average (so we can print)
@@ -476,37 +474,85 @@ void TrackerClass::circles( float cx0, float cy0, float radius0, float cx1, floa
 void TrackerClass::movement(float coord[], uint8_t moveto[])
 {
 	if (coord[0] != 0){
-		digitalWrite(_PIN_Left_F, LOW);
-		digitalWrite(_PIN_Right_F, LOW); 
-		digitalWrite(_PIN_Left_B, LOW);
-		digitalWrite(_PIN_Right_B, LOW);  
-	  if (coord[0]>50) {
-		  moveto[0]= 1;
-		  digitalWrite(_PIN_Left_F, HIGH);
-		  digitalWrite(_PIN_Right_B, HIGH);		  
-		  delay(15);
-		  digitalWrite(_PIN_Left_F, LOW);
-		  digitalWrite(_PIN_Right_B, LOW);    
-		}else if (coord[0]<-50) {
-		  moveto[0]= 2;
-		  digitalWrite(_PIN_Right_F, HIGH);
-		  digitalWrite(_PIN_Left_B, HIGH);
-		  delay(15);
-		  digitalWrite(_PIN_Right_F, LOW);
-		  digitalWrite(_PIN_Left_B, LOW);   
-		}else{
-		  moveto[0]= 0;
+		if(coord[1]<200 && coord[1]>0){
+			digitalWrite(_PIN_Left_F, LOW);
+			digitalWrite(_PIN_Right_F, LOW);
+			if (coord[0]>50) {
+				moveto[0]= 1;
+				digitalWrite(_PIN_Left_F, HIGH);
+				digitalWrite(_PIN_Right_B, HIGH);
+				delay(80);				
+				digitalWrite(_PIN_Left_F, LOW);
+				digitalWrite(_PIN_Right_B, LOW);
+			}else if (coord[0]<-50) {
+				moveto[0]= 2;
+				digitalWrite(_PIN_Right_F, HIGH);
+				digitalWrite(_PIN_Left_B, HIGH);
+				delay(80);				
+				digitalWrite(_PIN_Right_F, LOW);
+				digitalWrite(_PIN_Left_B, LOW);
+			}else{
+				moveto[0]= 0;
+				digitalWrite(_PIN_Left_F, LOW);
+				digitalWrite(_PIN_Right_B, LOW);	
+				digitalWrite(_PIN_Right_F, LOW);
+				digitalWrite(_PIN_Left_B, LOW);
+			}
+		}else if (coord[1]>200){
+			if (coord[0]>200) {
+				moveto[0]= 1;
+				digitalWrite(_PIN_Left_F, HIGH);
+				digitalWrite(_PIN_Right_B, HIGH);
+				delay(80);				
+				digitalWrite(_PIN_Left_F, LOW);
+				digitalWrite(_PIN_Right_B, LOW);
+			}else if (coord[0]<-200) {
+				moveto[0]= 2;
+				digitalWrite(_PIN_Right_F, HIGH);
+				digitalWrite(_PIN_Left_B, HIGH);
+				delay(80);				
+				digitalWrite(_PIN_Right_F, LOW);
+				digitalWrite(_PIN_Left_B, LOW);
+			}else if (coord[0]>0 && coord[0]<200){
+				moveto[0]= 1;
+				digitalWrite(_PIN_Left_F, HIGH);
+				digitalWrite(_PIN_Right_B, HIGH);
+				delay(20);				
+				digitalWrite(_PIN_Left_F, LOW);
+				digitalWrite(_PIN_Right_B, LOW);
+			}else if (coord[0]>-200 && coord[0]<0) {
+				moveto[0]= 2;
+				digitalWrite(_PIN_Right_F, HIGH);
+				digitalWrite(_PIN_Left_B, HIGH);
+				delay(20);				
+				digitalWrite(_PIN_Right_F, LOW);
+				digitalWrite(_PIN_Left_B, LOW);				
+			}else{
+				moveto[0]= 0;
+				digitalWrite(_PIN_Left_F, LOW);
+				digitalWrite(_PIN_Right_B, LOW);	
+				digitalWrite(_PIN_Right_F, LOW);
+				digitalWrite(_PIN_Left_B, LOW);
+			}
+			digitalWrite(_PIN_Left_F, HIGH);
+			digitalWrite(_PIN_Right_F, HIGH);
+	}else if (coord[1]<0){
+			digitalWrite(_PIN_Left_F, LOW);
+			digitalWrite(_PIN_Right_F, LOW);
+			if(coord[0]<0){
+				digitalWrite(_PIN_Left_F, HIGH);
+				digitalWrite(_PIN_Right_B, HIGH);
+				delay(80);				
+				digitalWrite(_PIN_Left_F, LOW);
+				digitalWrite(_PIN_Right_B, LOW);
+			}else{
+				digitalWrite(_PIN_Right_F, HIGH);
+				digitalWrite(_PIN_Left_B, HIGH);
+				delay(80);				
+				digitalWrite(_PIN_Right_F, LOW);
+				digitalWrite(_PIN_Left_B, LOW);
+				
+			}				
 		}
-		if(coord[1] > 200){
-		  moveto[1]=1;
-		  digitalWrite(_PIN_Left_F, HIGH);
-		  digitalWrite(_PIN_Right_F, HIGH); 
-		} else if(coord[1] < 100){
-		  moveto[1]=2;			
-		  digitalWrite(_PIN_Left_B, HIGH);
-		  digitalWrite(_PIN_Right_B, HIGH);  
-	   }  else{
-		  moveto[1]=0;
-	   }                                          
-	}    
+	}	
 }

@@ -149,17 +149,17 @@ namespace ArduinoGUI1
 
             foreach (var s in Plots)
             {
-                //chart1.Series["Front"].Points.Clear();
-                //chart1.Series["Front"].Points.AddXY(s.xPosFront, s.yPosFront);
+                chart1.Series["Front"].Points.Clear();
+                chart1.Series["Front"].Points.AddXY(s.xPosFront, s.yPosFront);
                 //chart1.Series["Left"].Points.Clear();
                 //chart1.Series["Left"].Points.AddXY(s.xPosLeft, s.yPosLeft);
                 //chart1.Series["Back"].Points.Clear();
                 //chart1.Series["Back"].Points.AddXY(s.xPosBack, s.yPosBack);
                 //chart1.Series["Right"].Points.Clear();
                 //chart1.Series["Right"].Points.AddXY(s.xPosRight, s.yPosRight);
-                //chart1.Series["Linear"].Points.Clear();
+                chart1.Series["Linear"].Points.Clear();
                 chart1.Series["Linear"].Points.AddXY(s.xPosLinear, s.yPosLinear);
-                label1.Text = "Position Linear: (" + s.xPosLinear.ToString("0.00") + ", " + s.xPosLinear.ToString("0.00") + ")";
+                label1.Text = "Position Linear: (" + s.xPosFront.ToString("0.00") + ", " + s.yPosFront.ToString("0.00") + ")";
             }
             Plots.Clear();
 
@@ -201,7 +201,10 @@ namespace ArduinoGUI1
                 right.BackColor = Color.White;
                 left.BackColor = Color.White;
             }
-
+            front.BackColor = Color.White;
+            back.BackColor = Color.White;
+            right.BackColor = Color.White;
+            left.BackColor = Color.White;
 
         }
 
