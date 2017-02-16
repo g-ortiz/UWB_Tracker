@@ -8,9 +8,14 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-#define FILTER_LENGTH 12
+#define FILTER_LENGTH 6
 #define NUM_VARS 3
 
+
+#define Front 0
+#define Left 1
+#define Back 2
+#define Right 3
 
 class TrackerClass {
 public:
@@ -26,7 +31,7 @@ public:
 	
 	//Movement
 	static void movement(float coord[], uint8_t moveto[]);
-	static void  circles(float radius0, float radius1, float radius2, float coord[]);
+	static void circles( float cx0, float cy0, float radius0, float cx1, float cy1, float radius1, float radius2, float coord[], uint8_t side);
 	
 	/* ##############Variables############# */
 	//Filter

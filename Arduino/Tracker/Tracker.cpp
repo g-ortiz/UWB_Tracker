@@ -325,18 +325,24 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 			filt_list[vars_ptr + 1] = filt_list[vars_ptr + 1]; //Average remains unchanged
 		}
 		float new_avg = filt_list[vars_ptr + 1]; 
-		//loc(new_avg, anchor, coord);
+		loc(new_avg, anchor, coord+8);
 		if (anchor=3){
 			array_ptr = (anchor-3)*FILTER_LENGTH + (anchor-3)*NUM_VARS; //Points to the start of the specific anchor's array
 			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
-			float radius0 = filt_list[vars_ptr + 1];
+			float radiusfl = filt_list[vars_ptr + 1];
 			array_ptr = (anchor-2)*FILTER_LENGTH + (anchor-2)*NUM_VARS; //Points to the start of the specific anchor's array
 			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
-			float radius1 = filt_list[vars_ptr + 1];
+			float radiusfr = filt_list[vars_ptr + 1];
+			array_ptr = (anchor-1)*FILTER_LENGTH + (anchor-1)*NUM_VARS; //Points to the start of the specific anchor's array
+			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
+			float radiusrr = filt_list[vars_ptr + 1]	;			
 			array_ptr = (anchor)*FILTER_LENGTH + (anchor)*NUM_VARS; //Points to the start of the specific anchor's array
 			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
-			float radius2 = filt_list[vars_ptr + 1]	;
-			circles(radius0,radius1,radius2,coord);
+			float radiusrl = filt_list[vars_ptr + 1]	;
+			circles(0,SEPARATION,radiusfl,SEPARATION, SEPARATION, radiusfr,radiusrl,coord, Front);
+			circles(0,0,radiusrl,0, SEPARATION, radiusfl,radiusrr,coord+2, Left);
+			circles(0,0,radiusrl,SEPARATION, 0, radiusrr,radiusfr,coord+4, Back);
+			circles(SEPARATION,0,radiusrr,SEPARATION, SEPARATION, radiusfr,radiusfl,coord+6, Right);			
 		}
 			
 		return  new_avg;//Return the specified anchor's average (so we can print)
@@ -344,11 +350,11 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 }
 
 
-void TrackerClass::circles(float radius0, float radius1, float radius2, float coord[])
+void TrackerClass::circles( float cx0, float cy0, float radius0, float cx1, float cy1, float radius1, float radius2, float coord[], uint8_t side)
 {
 	// Find the distance between the centers.
-	float dx = 0 - 31;
-	float dy = 0 - 0;
+    float dx = cx0 - cx1;
+    float dy = cy0 - cy1;
 	double dist = sqrt(dx * dx + dy * dy);
 
 	// See how many solutions there are.
@@ -381,26 +387,86 @@ void TrackerClass::circles(float radius0, float radius1, float radius2, float co
 		double h = sqrt(radius0 * radius0 - a * a);
 
 		// Find P2.
-		double cx2 = 0 + a * (31 - 0) / dist;
-		double cy2 = 0 + a * (0 - 0) / dist;
+		double cx2 = cx0 + a * (cx1 - cx0) / dist;
+		double cy2 = cy0 + a * (cy1 - cy0) / dist;
 
-		if (radius0<radius2){
-			if(((float)(cy2 - h * (31 - 0) / dist))>0){
-				coord[0] = (float)(cx2 + h * (0 - 0) / dist);
-				coord[1] = (float)(cy2 - h * (31 - 0) / dist);
+		if (side == Front){
+			if (radius0<radius2){
+				if(((float)(cy2 - h * (cx1 - cx0) / dist))>0){
+					coord[0] = (float)(cx2 + h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 - h * (cx1 - cx0) / dist);
+				}else{
+					coord[0] = (float)(cx2 - h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 + h * (cx1 - cx0) / dist);			
+				}
 			}else{
-				coord[0] = (float)(cx2 - h * (0 - 0) / dist);
-				coord[1] = (float)(cy2 + h * (31 - 0) / dist);			
+				if(((float)(cy2 - h * (cx1 - cx0) / dist))<0){
+					coord[0] = (float)(cx2 + h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 - h * (cx1 - cx0) / dist);
+				}else{
+					coord[0] = (float)(cx2 - h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 + h * (cx1 - cx0 ) / dist);			
+				}
 			}
-		}else{
-			if(((float)(cy2 - h * (31 - 0) / dist))<0){
-				coord[0] = (float)(cx2 + h * (0 - 0) / dist);
-				coord[1] = (float)(cy2 - h * (31 - 0) / dist);
+		}else if (side == Left){
+			if (radius0<radius2){
+				if(((float)(cx2 + h * (cy1 - cy0) / dist))>0){
+					coord[0] = (float)(cx2 + h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 - h * (cx1 - cx0) / dist);
+				}else{
+					coord[0] = (float)(cx2 - h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 + h * (cx1 - cx0) / dist);			
+				}
 			}else{
-				coord[0] = (float)(cx2 - h * (0 - 0) / dist);
-				coord[1] = (float)(cy2 + h * (31 - 0) / dist);			
+				if(((float)(cx2 + h * (cy1 - cy0) / dist))<0){
+					coord[0] = (float)(cx2 + h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 - h * (cx1 - cx0) / dist);
+				}else{
+					coord[0] = (float)(cx2 - h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 + h * (cx1 - cx0 ) / dist);			
+				}
+			}
+		}else if (side == Back){
+			if (radius2<radius0){
+				if(((float)(cy2 - h * (cx1 - cx0) / dist))>0){
+					coord[0] = (float)(cx2 + h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 - h * (cx1 - cx0) / dist);
+				}else{
+					coord[0] = (float)(cx2 - h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 + h * (cx1 - cx0) / dist);			
+				}
+			}else{
+				if(((float)(cy2 - h * (cx1 - cx0) / dist))<0){
+					coord[0] = (float)(cx2 + h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 - h * (cx1 - cx0) / dist);
+				}else{
+					coord[0] = (float)(cx2 - h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 + h * (cx1 - cx0 ) / dist);			
+				}
+			}
+		}else if (side == Left){
+			if (radius2<radius0){
+				if(((float)(cx2 + h * (cy1 - cy0) / dist))>0){
+					coord[0] = (float)(cx2 + h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 - h * (cx1 - cx0) / dist);
+				}else{
+					coord[0] = (float)(cx2 - h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 + h * (cx1 - cx0) / dist);			
+				}
+			}else{
+				if(((float)(cx2 + h * (cy1 - cy0) / dist))<0){
+					coord[0] = (float)(cx2 + h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 - h * (cx1 - cx0) / dist);
+				}else{
+					coord[0] = (float)(cx2 - h * (cy1 - cy0) / dist);
+					coord[1] = (float)(cy2 + h * (cx1 - cx0 ) / dist);			
+				}
 			}
 		}
+		
+		
+		
+		
 		return;
 	}
 }
@@ -418,14 +484,14 @@ void TrackerClass::movement(float coord[], uint8_t moveto[])
 		  moveto[0]= 1;
 		  digitalWrite(_PIN_Left_F, HIGH);
 		  digitalWrite(_PIN_Right_B, HIGH);		  
-		  delay(50);
+		  delay(15);
 		  digitalWrite(_PIN_Left_F, LOW);
 		  digitalWrite(_PIN_Right_B, LOW);    
 		}else if (coord[0]<-50) {
 		  moveto[0]= 2;
 		  digitalWrite(_PIN_Right_F, HIGH);
 		  digitalWrite(_PIN_Left_B, HIGH);
-		  delay(50);
+		  delay(15);
 		  digitalWrite(_PIN_Right_F, LOW);
 		  digitalWrite(_PIN_Left_B, LOW);   
 		}else{

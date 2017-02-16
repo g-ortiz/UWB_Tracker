@@ -33,6 +33,9 @@
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.label1 = new System.Windows.Forms.Label();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.cmbSerialPorts = new System.Windows.Forms.ComboBox();
@@ -62,7 +65,7 @@
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(67, 557);
+            this.label1.Location = new System.Drawing.Point(878, 829);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(520, 42);
             this.label1.TabIndex = 0;
@@ -96,22 +99,37 @@
             this.chart1.Name = "chart1";
             series1.ChartArea = "Chart1";
             series1.Legend = "Legend1";
-            series1.MarkerSize = 10;
-            series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star10;
-            series1.Name = "Target";
+            series1.MarkerSize = 20;
+            series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Square;
+            series1.Name = "Robot";
             series2.ChartArea = "Chart1";
             series2.Legend = "Legend1";
-            series2.MarkerSize = 20;
-            series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Square;
-            series2.Name = "Robot";
+            series2.MarkerSize = 10;
+            series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star10;
+            series2.Name = "Front";
             series3.ChartArea = "Chart1";
             series3.Legend = "Legend1";
-            series3.Name = "Circles";
             series3.MarkerSize = 10;
+            series3.Name = "Left";
+            series4.ChartArea = "Chart1";
+            series4.Legend = "Legend1";
+            series4.Name = "Back";
+            series4.MarkerSize = 10;
+            series5.ChartArea = "Chart1";
+            series5.Legend = "Legend1";
+            series5.Name = "Right";
+            series5.MarkerSize = 10;
+            series6.ChartArea = "Chart1";
+            series6.Legend = "Legend1";
+            series6.Name = "Linear";
+            series6.MarkerSize = 10;
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
             this.chart1.Series.Add(series3);
-            this.chart1.Size = new System.Drawing.Size(591, 454);
+            this.chart1.Series.Add(series4);
+            this.chart1.Series.Add(series5);
+            this.chart1.Series.Add(series6);
+            this.chart1.Size = new System.Drawing.Size(1019, 747);
             this.chart1.TabIndex = 1;
             this.chart1.Text = "chart1";
             // 
@@ -191,7 +209,7 @@
             // label5
             // 
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(67, 599);
+            this.label5.Location = new System.Drawing.Point(878, 871);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(520, 42);
             this.label5.TabIndex = 11;
@@ -200,7 +218,7 @@
             // front
             // 
             this.front.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.front.Location = new System.Drawing.Point(702, 154);
+            this.front.Location = new System.Drawing.Point(1196, 125);
             this.front.Name = "front";
             this.front.Size = new System.Drawing.Size(101, 89);
             this.front.TabIndex = 12;
@@ -209,7 +227,7 @@
             // back
             // 
             this.back.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.back.Location = new System.Drawing.Point(702, 334);
+            this.back.Location = new System.Drawing.Point(1196, 305);
             this.back.Name = "back";
             this.back.Size = new System.Drawing.Size(101, 89);
             this.back.TabIndex = 13;
@@ -218,7 +236,7 @@
             // left
             // 
             this.left.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.left.Location = new System.Drawing.Point(601, 242);
+            this.left.Location = new System.Drawing.Point(1095, 213);
             this.left.Name = "left";
             this.left.Size = new System.Drawing.Size(102, 93);
             this.left.TabIndex = 14;
@@ -227,7 +245,7 @@
             // right
             // 
             this.right.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.right.Location = new System.Drawing.Point(802, 242);
+            this.right.Location = new System.Drawing.Point(1296, 213);
             this.right.Name = "right";
             this.right.Size = new System.Drawing.Size(102, 93);
             this.right.TabIndex = 15;
@@ -237,7 +255,7 @@
             // 
             this.flrange.AutoSize = true;
             this.flrange.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.flrange.Location = new System.Drawing.Point(596, 536);
+            this.flrange.Location = new System.Drawing.Point(1194, 487);
             this.flrange.Name = "flrange";
             this.flrange.Size = new System.Drawing.Size(112, 25);
             this.flrange.TabIndex = 16;
@@ -247,7 +265,7 @@
             // 
             this.frrange.AutoSize = true;
             this.frrange.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.frrange.Location = new System.Drawing.Point(596, 561);
+            this.frrange.Location = new System.Drawing.Point(1194, 512);
             this.frrange.Name = "frrange";
             this.frrange.Size = new System.Drawing.Size(115, 25);
             this.frrange.TabIndex = 17;
@@ -257,7 +275,7 @@
             // 
             this.rrrange.AutoSize = true;
             this.rrrange.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rrrange.Location = new System.Drawing.Point(593, 586);
+            this.rrrange.Location = new System.Drawing.Point(1191, 537);
             this.rrrange.Name = "rrrange";
             this.rrrange.Size = new System.Drawing.Size(117, 25);
             this.rrrange.TabIndex = 18;
@@ -267,7 +285,7 @@
             // 
             this.rlrange.AutoSize = true;
             this.rlrange.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rlrange.Location = new System.Drawing.Point(594, 611);
+            this.rlrange.Location = new System.Drawing.Point(1192, 562);
             this.rlrange.Name = "rlrange";
             this.rlrange.Size = new System.Drawing.Size(114, 25);
             this.rlrange.TabIndex = 19;
@@ -278,7 +296,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(988, 762);
+            this.ClientSize = new System.Drawing.Size(1463, 922);
             this.Controls.Add(this.rlrange);
             this.Controls.Add(this.rrrange);
             this.Controls.Add(this.frrange);

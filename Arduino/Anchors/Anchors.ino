@@ -48,7 +48,7 @@ const uint8_t PIN_Right_B = 3;
 #define R_R 2
 #define R_L 3
 
-float coords[2];
+float coords[10];
 uint8_t moveto[2];
 float ranges[4];
 
@@ -590,12 +590,14 @@ void loop() {
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
                     ranges[3] = Tracker.filter(distance , R_L, coords);   
-                    if (curMillis - movementPeriod > 500){
+                    if (curMillis - movementPeriod > 200){
                         Tracker.movement(coords, moveto);
                         movementPeriod = curMillis;
                     }           
-                    String SerialUSBdata = "0," + String(distance) + "," + String(coords[0]) + "," + String(coords[1]) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
-                             + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "\n\r";                
+                    String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
+                             + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[4]) + "," + String(coords[5]) + "," + String(coords[6]) + "," + String(coords[7])
+                             + "," + String(coords[8]) + "," + String(coords[9]) + "\n\r";                
                     SerialUSB.print(SerialUSBdata);                                        
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
