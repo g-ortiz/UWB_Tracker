@@ -12,6 +12,7 @@
 #include <DW1000RR.h>
 #include <DW1000RL.h>
 #include <Tracker.h>
+#include <Wire.h>
 
 
 // Pins in Arduino M0 Pro
@@ -90,6 +91,7 @@ void setup() {
     // Begin //SerialUSB communication
     ////SerialUSB1.begin(9600);
     SerialUSB.begin(115200);
+    Wire.begin(); // start I2C
     delay(1000);
     // ################# FRONT LEFT####################//
     DW1000FL.begin(PIN_IRQ_FL, PIN_RST_FL);    
@@ -571,15 +573,31 @@ void loop() {
                     timeRangeReceived.setTimestamp(data + 1);                   
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[3] = Tracker.filter(distance , R_L, coords);   
-                    //if (curMillis - movementPeriod > 200){
-                        //Tracker.movement(coords+2, moveto);
-                      //  movementPeriod = curMillis;
-                    //}            
+                    ranges[3] = Tracker.filter(distance , R_L, coords);         
                     String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
                              + "," + String(coords[2]) + "," + String(coords[3]) + "\n\r";                
-                    SerialUSB.print(SerialUSBdata);                                        
+                    SerialUSB.print(SerialUSBdata);
+                    byte *bvalX;
+                    byte *bvalY;
+                    if (coords[0] != 0 && coords[3]>0){
+                        bvalX = (byte *)&coords[0];
+                        bvalY = (byte *)&coords[1];                      
+                    }else{
+                        bvalX = (byte *)&coords[2];
+                        bvalY = (byte *)&coords[3];                      
+                    }
+
+                    Wire.beginTransmission(4); // transmit to device #4
+                    Wire.write((int)bvalX[0]);              // sends one byte  
+                    Wire.write((int) bvalX[1]);              // sends one byte  
+                    Wire.write((int)bvalX[2]);              // sends one byte  
+                    Wire.write((int) bvalX[3]);              // sends one byte 
+                    Wire.write((int)bvalY[0]);              // sends one byte  
+                    Wire.write((int) bvalY[1]);              // sends one byte  
+                    Wire.write((int)bvalY[2]);              // sends one byte  
+                    Wire.write((int) bvalY[3]);              // sends one byte                      
+                    Wire.endTransmission();    // stop transmitting                                        
                     successRangingCount++;
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);

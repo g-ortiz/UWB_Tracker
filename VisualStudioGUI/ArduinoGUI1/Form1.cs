@@ -126,13 +126,14 @@ namespace ArduinoGUI1
                 chart1.Series["Front"].Points.AddXY(s.xPosFront, s.yPosFront);
                 chart1.Series["Linear"].Points.Clear();
                 chart1.Series["Linear"].Points.AddXY(s.xPosLinear, s.yPosLinear);
-                label1.Text = "Position Linear: (" + s.xPosFront.ToString("0.00") + ", " + s.yPosFront.ToString("0.00") + ")";
+                label1.Text = "Position Linear: (" + s.xPosLinear.ToString("0.00") + ", " + s.yPosLinear.ToString("0.00") + ")";
+                label5.Text = "Position Circles: (" + s.xPosFront.ToString("0.00") + ", " + s.yPosFront.ToString("0.00") + ")";
             }
             Plots.Clear();
 
 
 
-            label5.Text = "Distance (RL): " + yRaw + "cm";
+            //label5.Text = "Distance (RL): " + yRaw + "cm";
             label4.Text = "Sampling: " + SamplingRaw;
 
             flrange.Text = "RangeFL: " + RangeFLRaw;

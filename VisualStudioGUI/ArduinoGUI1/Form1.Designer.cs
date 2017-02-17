@@ -28,11 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.label1 = new System.Windows.Forms.Label();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.cmbSerialPorts = new System.Windows.Forms.ComboBox();
@@ -62,55 +62,55 @@
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(878, 829);
+            this.label1.Location = new System.Drawing.Point(777, 829);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(520, 42);
+            this.label1.Size = new System.Drawing.Size(573, 42);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Position: ";
+            this.label1.Text = "Position Linear: ";
             // 
             // chart1
             // 
-            chartArea1.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Cursor;
-            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea1.AxisX.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea1.AxisX.Maximum = 400D;
-            chartArea1.AxisX.Minimum = -400D;
-            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea1.AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea1.AxisX2.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea1.AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea1.AxisY.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea1.AxisY.Maximum = 400D;
-            chartArea1.AxisY.Minimum = -400D;
-            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea1.AxisY2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea1.AxisY2.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea1.Name = "Chart1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            legend1.Font = new System.Drawing.Font("Arial", 8F);
-            legend1.IsTextAutoFit = false;
-            legend1.Name = "Legend1";
-            legend1.TitleFont = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Bold);
-            this.chart1.Legends.Add(legend1);
+            chartArea3.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Cursor;
+            chartArea3.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea3.AxisX.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea3.AxisX.Maximum = 400D;
+            chartArea3.AxisX.Minimum = -400D;
+            chartArea3.AxisX.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea3.AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea3.AxisX2.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea3.AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea3.AxisY.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea3.AxisY.Maximum = 400D;
+            chartArea3.AxisY.Minimum = -400D;
+            chartArea3.AxisY.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea3.AxisY2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea3.AxisY2.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea3.Name = "Chart1";
+            this.chart1.ChartAreas.Add(chartArea3);
+            legend3.Font = new System.Drawing.Font("Arial", 8F);
+            legend3.IsTextAutoFit = false;
+            legend3.Name = "Legend1";
+            legend3.TitleFont = new System.Drawing.Font("Arial", 8F, System.Drawing.FontStyle.Bold);
+            this.chart1.Legends.Add(legend3);
             this.chart1.Location = new System.Drawing.Point(70, 79);
             this.chart1.Name = "chart1";
-            series1.ChartArea = "Chart1";
-            series1.Legend = "Legend1";
-            series1.MarkerSize = 20;
-            series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Square;
-            series1.Name = "Robot";
-            series2.ChartArea = "Chart1";
-            series2.Legend = "Legend1";
-            series2.MarkerSize = 10;
-            series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star10;
-            series2.Name = "Front";
-            series3.ChartArea = "Chart1";
-            series3.Legend = "Legend1";
-            series3.MarkerSize = 10;
-            series3.Name = "Linear";
-            this.chart1.Series.Add(series1);
-            this.chart1.Series.Add(series2);
-            this.chart1.Series.Add(series3);
+            series7.ChartArea = "Chart1";
+            series7.Legend = "Legend1";
+            series7.MarkerSize = 20;
+            series7.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Square;
+            series7.Name = "Robot";
+            series8.ChartArea = "Chart1";
+            series8.Legend = "Legend1";
+            series8.MarkerSize = 10;
+            series8.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star10;
+            series8.Name = "Front";
+            series9.ChartArea = "Chart1";
+            series9.Legend = "Legend1";
+            series9.MarkerSize = 10;
+            series9.Name = "Linear";
+            this.chart1.Series.Add(series7);
+            this.chart1.Series.Add(series8);
+            this.chart1.Series.Add(series9);
             this.chart1.Size = new System.Drawing.Size(1019, 747);
             this.chart1.TabIndex = 1;
             this.chart1.Text = "chart1";
@@ -191,11 +191,11 @@
             // label5
             // 
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(878, 871);
+            this.label5.Location = new System.Drawing.Point(777, 871);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(520, 42);
+            this.label5.Size = new System.Drawing.Size(653, 42);
             this.label5.TabIndex = 11;
-            this.label5.Text = "Distance (RL): ";
+            this.label5.Text = "Position Circles:";
             // 
             // front
             // 
