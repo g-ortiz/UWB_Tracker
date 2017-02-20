@@ -50,6 +50,7 @@ const uint8_t PIN_Right_B = 3;
 #define R_L 3
 
 float coords[4];
+float rawcoords[2];
 uint8_t moveto[2];
 float ranges[4];
 
@@ -574,22 +575,23 @@ void loop() {
                     timeRangeReceived.setTimestamp(data + 1);                   
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[3] = Tracker.filter(distance , R_L, coords);         
+                    ranges[3] = Tracker.filter(distance , R_L, coords);   
+                    rawcoords[0] = coords[2];
+                    rawcoords[1] = coords[3];   
+                    Tracker.kalman(coords+2);                       
                     String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "\n\r";                
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
                     SerialUSB.print(SerialUSBdata);
-                    Serial1.print(SerialUSBdata);
                     byte *bvalX;
                     byte *bvalY;
                     if (coords[0] != 0 && coords[3]>0){
                         bvalX = (byte *)&coords[0];
                         bvalY = (byte *)&coords[1];                      
                     }else{
-                        bvalX = (byte *)&coords[2];
-                        bvalY = (byte *)&coords[3];                      
+                        bvalX = (byte *)&rawcoords[0];
+                        bvalY = (byte *)&rawcoords[1];                      
                     }
-
                     Wire.beginTransmission(4); // transmit to device #4
                     Wire.write((int)bvalX[0]);              // sends one byte  
                     Wire.write((int) bvalX[1]);              // sends one byte  

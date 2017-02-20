@@ -24,6 +24,8 @@ namespace ArduinoGUI1
         string xLinearRaw = "0";
         string yLinearRaw = "0";
         string SamplingRaw = "0";
+        string xKalmanRaw = "0";
+        string yKalmanRaw = "0";
         string Direction = "0";
         string Forward = "0";
         string RangeFLRaw = "0";
@@ -56,6 +58,9 @@ namespace ArduinoGUI1
             chart1.Series["Linear"].ChartType =
                 SeriesChartType.FastPoint;
             chart1.Series["Linear"].Color = Color.Orange;
+            chart1.Series["Kalman"].ChartType =
+                SeriesChartType.FastPoint;
+            chart1.Series["Kalman"].Color = Color.Green;
             chart1.Series["Robot"].ChartType =
                 SeriesChartType.FastPoint;
             chart1.Series["Robot"].Points.AddXY(string.Empty, 0);
@@ -85,8 +90,10 @@ namespace ArduinoGUI1
                     RangeRLRaw = SplitData[8];
                     xFrontRaw = SplitData[9];
                     yFrontRaw = SplitData[10];
-                    xLinearRaw = SplitData[11];
-                    yLinearRaw = SplitData[12];
+                    xLinearRaw = SplitData[13];
+                    yLinearRaw = SplitData[14];
+                    xKalmanRaw = SplitData[11];
+                    yKalmanRaw = SplitData[12];
 
                     this.Invoke(new EventHandler(display));
                     this.Invoke(new EventHandler(log));
@@ -114,6 +121,8 @@ namespace ArduinoGUI1
                 yPosFront = float.Parse(yFrontRaw, CultureInfo.InvariantCulture.NumberFormat),
                 xPosLinear = float.Parse(xLinearRaw, CultureInfo.InvariantCulture.NumberFormat),
                 yPosLinear = float.Parse(yLinearRaw, CultureInfo.InvariantCulture.NumberFormat),
+                xPosKalman = float.Parse(xKalmanRaw, CultureInfo.InvariantCulture.NumberFormat),
+                yPosKalman = float.Parse(yKalmanRaw, CultureInfo.InvariantCulture.NumberFormat),
                 RangeFL = float.Parse(RangeFLRaw, CultureInfo.InvariantCulture.NumberFormat),
                 RangeFR = float.Parse(RangeFRRaw, CultureInfo.InvariantCulture.NumberFormat),
                 RangeRR = float.Parse(RangeRRRaw, CultureInfo.InvariantCulture.NumberFormat),
@@ -126,8 +135,11 @@ namespace ArduinoGUI1
                 chart1.Series["Front"].Points.AddXY(s.xPosFront, s.yPosFront);
                 chart1.Series["Linear"].Points.Clear();
                 chart1.Series["Linear"].Points.AddXY(s.xPosLinear, s.yPosLinear);
+                chart1.Series["Kalman"].Points.Clear();
+                chart1.Series["Kalman"].Points.AddXY(s.xPosKalman, s.yPosKalman);
                 label1.Text = "Position Linear: (" + s.xPosLinear.ToString("0.00") + ", " + s.yPosLinear.ToString("0.00") + ")";
                 label5.Text = "Position Circles: (" + s.xPosFront.ToString("0.00") + ", " + s.yPosFront.ToString("0.00") + ")";
+                label6.Text = "Position Kalman: (" + s.xPosKalman.ToString("0.00") + ", " + s.yPosKalman.ToString("0.00") + ")";
             }
             Plots.Clear();
 
@@ -299,6 +311,8 @@ namespace ArduinoGUI1
             public double yPosFront { get; set; }
             public double xPosLinear { get; set; }
             public double yPosLinear { get; set; }
+            public double xPosKalman { get; set; }
+            public double yPosKalman { get; set; }
             public double RangeFL { get; set; }
             public double RangeFR { get; set; }
             public double RangeRR { get; set; }

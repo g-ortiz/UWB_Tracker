@@ -47,7 +47,15 @@ uint8_t TrackerClass::_PIN_Right_F = 8;
 uint8_t TrackerClass::_PIN_Left_B = 4;
 uint8_t TrackerClass::_PIN_Right_B = 3;
 
-
+//Kalman
+float TrackerClass::ax, TrackerClass::ay;
+float TrackerClass::px, TrackerClass::py;
+float TrackerClass::gx, TrackerClass::gy;
+float TrackerClass::std_dev;
+float TrackerClass::x_hat;
+float TrackerClass::y_hat;
+uint8_t TrackerClass::kalman_count;
+float TrackerClass::x_prev, TrackerClass::y_prev;
 void TrackerClass::initTracker()
 {
 	//For filter
@@ -82,6 +90,13 @@ void TrackerClass::initTracker()
 	d2 = 0.0;
 	d3 = 0.0;
 	d4 = 0.0;
+	//Initialize first states of Kalman Filter
+	ax = 1; //For static location
+	ay = 1;
+	px = 1; //Prediction error, arbitrary initial value
+	py = 1;
+	std_dev = 20; //Standard deviation based on sensor
+	kalman_count = 0;
 }
 
 void TrackerClass::loc(float distance, uint8_t anchor, float coord[])
@@ -326,7 +341,7 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 		}
 		float new_avg = filt_list[vars_ptr + 1]; 
 		loc(new_avg, anchor, coord+2);
-		if (anchor==3){
+		if (anchor == 3){
 			array_ptr = (anchor-3)*FILTER_LENGTH + (anchor-3)*NUM_VARS; //Points to the start of the specific anchor's array
 			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
 			float radiusfl = filt_list[vars_ptr + 1];
@@ -345,6 +360,44 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 			
 		return  new_avg;//Return the specified anchor's average (so we can print)
 	}
+}
+
+void TrackerClass::kalman(float coord[])
+{
+	float y_raw = coord[1];
+	float x_raw = coord[0];
+	if(kalman_count < 1)
+	{
+		y_hat = y_raw;
+		x_hat = x_raw;
+		x_prev = x_raw;
+		y_prev = y_raw;
+		kalman_count = kalman_count + 1;
+	}
+	else
+	{
+		//Predict
+		x_hat = x_hat*ax;
+		y_hat = y_hat*ay;
+		
+		px = ax*px*ax;
+		py = ay*py*ay;
+		
+		//Update
+		gx = px/(px + std_dev);
+		gy = py/(py + std_dev);
+		
+		x_hat = x_hat + gx*(x_prev - x_hat);
+		y_hat = y_hat + gy*(y_prev - y_hat);
+		
+		px = (1-gx)*px;
+		py = (1-gy)*py;
+		
+		x_prev = x_raw;
+		y_prev = y_raw;
+	}
+	coord[0] = x_hat;
+	coord[1] = y_hat;
 }
 
 
