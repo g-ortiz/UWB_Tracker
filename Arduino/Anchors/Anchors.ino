@@ -422,8 +422,8 @@ void loop() {
                     timeRangeReceived.setTimestamp(data + 1);             
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[0] = Tracker.filter(distance ,F_L, coords);                                    
-                    anchorRanging = F_R;         
+                    ranges[0] = Tracker.filter(distance ,F_L, coords);                                  
+                    anchorRanging = F_R;
                     expectedMsgId = POLL_ACK;
                     SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FR));
                     attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FR), DW1000FR.handleInterrupt, RISING);                    
