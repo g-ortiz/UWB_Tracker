@@ -91,6 +91,7 @@ void setup() {
     // Begin //SerialUSB communication
     ////SerialUSB1.begin(9600);
     SerialUSB.begin(115200);
+    Serial1.begin(9600);
     Wire.begin(); // start I2C
     delay(1000);
     // ################# FRONT LEFT####################//
@@ -578,6 +579,7 @@ void loop() {
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
                              + "," + String(coords[2]) + "," + String(coords[3]) + "\n\r";                
                     SerialUSB.print(SerialUSBdata);
+                    Serial1.print(SerialUSBdata);
                     byte *bvalX;
                     byte *bvalY;
                     if (coords[0] != 0 && coords[3]>0){

@@ -38,6 +38,8 @@ void setup() {
 }
 
 void loop() {
+    Serial.println("Hola");
+    delay(1000);
     if (coord[0] != 0){
         if (coord[1]<200 && coord[1]>0){      
             digitalWrite(_PIN_Left_F, LOW);
