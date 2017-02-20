@@ -255,9 +255,15 @@ namespace ArduinoGUI1
             {
                 sp.Close();
                 sp = new SerialPort(portName);
-                try
+                if (portName == "COM7")
+                {
+                    sp.BaudRate = 9600;
+                }else
                 {
                     sp.BaudRate = 115200;
+                }
+                try
+                {
                     sp.Open();
                     ActualPort = portName;
                     sp.DataReceived += sp_DataReceived;

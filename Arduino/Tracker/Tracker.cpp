@@ -326,7 +326,7 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 		}
 		float new_avg = filt_list[vars_ptr + 1]; 
 		loc(new_avg, anchor, coord+2);
-		if (anchor=3){
+		if (anchor==3){
 			array_ptr = (anchor-3)*FILTER_LENGTH + (anchor-3)*NUM_VARS; //Points to the start of the specific anchor's array
 			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
 			float radiusfl = filt_list[vars_ptr + 1];

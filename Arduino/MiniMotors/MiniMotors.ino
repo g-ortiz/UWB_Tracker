@@ -38,8 +38,6 @@ void setup() {
 }
 
 void loop() {
-    Serial.println("Hola");
-    delay(1000);
     if (coord[0] != 0){
         if (coord[1]<200 && coord[1]>0){      
             digitalWrite(_PIN_Left_F, LOW);
@@ -48,16 +46,16 @@ void loop() {
             digitalWrite(_PIN_Right_B, LOW);  
             if (coord[0]>50) {
                digitalWrite(_PIN_Left_F, HIGH);
-               digitalWrite(_PIN_Right_B, HIGH);     
-               delay(60);
+               //digitalWrite(_PIN_Right_B, HIGH);     
+               delay(400);
                digitalWrite(_PIN_Left_F, LOW);
-               digitalWrite(_PIN_Right_B, LOW);    
+              // digitalWrite(_PIN_Right_B, LOW);    
             }else if (coord[0]<-50) {
                digitalWrite(_PIN_Right_F, HIGH);
-               digitalWrite(_PIN_Left_B, HIGH);
-               delay(60);
+               //digitalWrite(_PIN_Left_B, HIGH);
+               delay(400);
                digitalWrite(_PIN_Right_F, LOW);
-               digitalWrite(_PIN_Left_B, LOW);   
+               //digitalWrite(_PIN_Left_B, LOW);   
             }else{
                digitalWrite(_PIN_Right_F, LOW);
                digitalWrite(_PIN_Left_B, LOW);
@@ -70,18 +68,18 @@ void loop() {
             digitalWrite(_PIN_Right_F, LOW);
             if(coord[0]<0){
                 digitalWrite(_PIN_Right_F, HIGH);
-                digitalWrite(_PIN_Left_B, HIGH);
-                delay(80);        
+                //digitalWrite(_PIN_Left_B, HIGH);
+                delay(240);        
                 digitalWrite(_PIN_Right_F, LOW);
-                digitalWrite(_PIN_Left_B, LOW);                   
+                //digitalWrite(_PIN_Left_B, LOW);                   
             }else{
                 digitalWrite(_PIN_Left_F, HIGH);
-                digitalWrite(_PIN_Right_B, HIGH);
-                delay(80);        
+                //digitalWrite(_PIN_Right_B, HIGH);
+                delay(240);        
                 digitalWrite(_PIN_Left_F, LOW);
-                digitalWrite(_PIN_Right_B, LOW);
+                //digitalWrite(_PIN_Right_B, LOW);
             }
-            delay(80);           
+            delay(100);           
         }else if(coord[1] > 200){
             digitalWrite(_PIN_Left_F, LOW);
             digitalWrite(_PIN_Right_F, LOW); 
@@ -89,28 +87,28 @@ void loop() {
             digitalWrite(_PIN_Right_B, LOW);  
             if (coord[0]>150) {
                digitalWrite(_PIN_Left_F, HIGH);
-               digitalWrite(_PIN_Right_B, HIGH);     
-               delay(30);
+               //digitalWrite(_PIN_Right_B, HIGH);     
+               delay(120);
                digitalWrite(_PIN_Left_F, LOW);
-               digitalWrite(_PIN_Right_B, LOW);    
-            }else if (coord[0]<-100) {
+               //digitalWrite(_PIN_Right_B, LOW);    
+            }else if (coord[0]<-150) {
                digitalWrite(_PIN_Right_F, HIGH);
-               digitalWrite(_PIN_Left_B, HIGH);
-               delay(30);
+               //digitalWrite(_PIN_Left_B, HIGH);
+               delay(120);
                digitalWrite(_PIN_Right_F, LOW);
-               digitalWrite(_PIN_Left_B, LOW);   
+               //digitalWrite(_PIN_Left_B, LOW);   
             }else if (coord[0]<-50 && coord[0]>-150) {
                digitalWrite(_PIN_Right_F, HIGH);
-               digitalWrite(_PIN_Left_B, HIGH);
-               delay(20);
+               //digitalWrite(_PIN_Left_B, HIGH);
+               delay(100);
                digitalWrite(_PIN_Right_F, LOW);
-               digitalWrite(_PIN_Left_B, LOW);   
+               //digitalWrite(_PIN_Left_B, LOW);   
             }else if (coord[0]<150 && coord[0]>50) {
                digitalWrite(_PIN_Left_F, HIGH);
-               digitalWrite(_PIN_Right_B, HIGH);     
-               delay(20);
+               //digitalWrite(_PIN_Right_B, HIGH);     
+               delay(100);
                digitalWrite(_PIN_Left_F, LOW);
-               digitalWrite(_PIN_Right_B, LOW);    
+               //digitalWrite(_PIN_Right_B, LOW);    
             }else{
                digitalWrite(_PIN_Right_F, LOW);
                digitalWrite(_PIN_Left_B, LOW);
@@ -119,7 +117,7 @@ void loop() {
             }            
            digitalWrite(_PIN_Left_F, HIGH);
            digitalWrite(_PIN_Right_F, HIGH);
-           delay(250); 
+           delay(500); 
         }                                 
     }
 }
