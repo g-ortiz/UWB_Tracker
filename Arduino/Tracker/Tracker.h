@@ -35,7 +35,7 @@ public:
 	
 	//Kalman
 	static void kalman(float coord[]);
-	
+
 	/* ##############Variables############# */
 	//Filter
 	static uint16_t delta, filtCounter;
@@ -50,7 +50,7 @@ public:
 	
 	//Movement
 	static uint8_t _PIN_Left_F, _PIN_Right_F, _PIN_Left_B, _PIN_Right_B;
-	
+
 	//Kalman
 	static float ax, ay, px, py, gx, gy;
 	static float std_dev;

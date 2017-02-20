@@ -57,7 +57,6 @@ float TrackerClass::y_hat;
 uint8_t TrackerClass::kalman_count;
 float TrackerClass::x_prev, TrackerClass::y_prev;
 
-
 void TrackerClass::initTracker()
 {
 	//For filter
@@ -92,7 +91,7 @@ void TrackerClass::initTracker()
 	d2 = 0.0;
 	d3 = 0.0;
 	d4 = 0.0;
-	
+
 	//Initialize first states of Kalman Filter
 	ax = 1; //For static location
 	ay = 1;
@@ -367,8 +366,9 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 
 void TrackerClass::kalman(float coord[])
 {
-	y_raw = coord[1];
-	x_raw = coord[0];
+	float y_raw = coord[1];
+	float x_raw = coord[0];
+
 	if(kalman_count < 1)
 	{
 		y_hat = y_raw;

@@ -33,6 +33,7 @@
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.label1 = new System.Windows.Forms.Label();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.cmbSerialPorts = new System.Windows.Forms.ComboBox();
@@ -52,6 +53,7 @@
             this.frrange = new System.Windows.Forms.Label();
             this.rrrange = new System.Windows.Forms.Label();
             this.rlrange = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.front)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.back)).BeginInit();
@@ -62,11 +64,11 @@
             // label1
             // 
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(878, 829);
+            this.label1.Location = new System.Drawing.Point(777, 829);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(520, 42);
+            this.label1.Size = new System.Drawing.Size(573, 42);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Position: ";
+            this.label1.Text = "Position Linear: ";
             // 
             // chart1
             // 
@@ -108,9 +110,14 @@
             series3.Legend = "Legend1";
             series3.MarkerSize = 10;
             series3.Name = "Linear";
+            series4.ChartArea = "Chart1";
+            series4.Legend = "Legend1";
+            series4.MarkerSize = 10;
+            series4.Name = "Kalman";
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
             this.chart1.Series.Add(series3);
+            this.chart1.Series.Add(series4);
             this.chart1.Size = new System.Drawing.Size(1019, 747);
             this.chart1.TabIndex = 1;
             this.chart1.Text = "chart1";
@@ -191,11 +198,11 @@
             // label5
             // 
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(878, 871);
+            this.label5.Location = new System.Drawing.Point(777, 871);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(520, 42);
+            this.label5.Size = new System.Drawing.Size(653, 42);
             this.label5.TabIndex = 11;
-            this.label5.Text = "Distance (RL): ";
+            this.label5.Text = "Position Circles:";
             // 
             // front
             // 
@@ -273,12 +280,21 @@
             this.rlrange.TabIndex = 19;
             this.rlrange.Text = "RangeRL: ";
             // 
+            // label6
+            // 
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(777, 913);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(653, 42);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Position Kalman:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.ClientSize = new System.Drawing.Size(1463, 922);
+            this.ClientSize = new System.Drawing.Size(1463, 1024);
             this.Controls.Add(this.rlrange);
             this.Controls.Add(this.rrrange);
             this.Controls.Add(this.frrange);
@@ -287,6 +303,7 @@
             this.Controls.Add(this.left);
             this.Controls.Add(this.back);
             this.Controls.Add(this.front);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
@@ -332,6 +349,7 @@
         private System.Windows.Forms.Label frrange;
         private System.Windows.Forms.Label rrrange;
         private System.Windows.Forms.Label rlrange;
+        private System.Windows.Forms.Label label6;
     }
 }
 
