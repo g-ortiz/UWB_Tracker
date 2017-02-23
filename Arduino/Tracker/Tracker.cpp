@@ -48,14 +48,28 @@ uint8_t TrackerClass::_PIN_Left_B = 4;
 uint8_t TrackerClass::_PIN_Right_B = 3;
 
 //Kalman
-float TrackerClass::ax, TrackerClass::ay;
-float TrackerClass::px, TrackerClass::py;
-float TrackerClass::gx, TrackerClass::gy;
-float TrackerClass::std_dev;
-float TrackerClass::x_hat;
-float TrackerClass::y_hat;
-uint8_t TrackerClass::kalman_count;
-float TrackerClass::x_prev, TrackerClass::y_prev;
+float del_t = 1.0; //Time step (may need to change for UWB
+
+int n = 4; //Matrix length
+float A[4][4] = { { 1,del_t,0,0 },{ 0,1,0,0 },{ 0,0,1,del_t },{ 0,0,0,1 } }; //System Matrix
+float At[4][4] = { {1,0,0,0},{del_t,1,0,0},{0,0,1,0},{0,0,del_t,1} }; //Transpose of system matrix
+float C[2][4] = { {1,1,0,0}, {0,0,1,1} }; //Measurement matrix
+float Ct[4][2] = { {1,0},{1,0},{0,1},{0,1} }; //Transpose of measurement matrix
+float R_var = 5.0; //Expected standard deviation 
+float R[2][2] = { {R_var*1,0}, {0,R_var*1} }; //Expected measurement noise
+float Q_var = 0.00005;
+float Q[4][4] = { { Q_var*1,0,0,0 },{ 0,Q_var*1,0,0 },{ 0,0,Q_var*1,0 },{ 0,0,0,Q_var*1 } }; //Process noise
+float P_var = 200.0;
+float P0[4][4] = { { P_var * 1,0,0,0 },{ 0,P_var * 1,0,0 },{ 0,0,P_var * 1,0 },{ 0,0,0,P_var * 1 } }; //Initial covariance matrix
+float X_pred[4][1]; //Predicted state (x_pos, x_vel, y_pos, y_vel)
+float X_up[4][1]; //Updated state
+float P[4][4]; //Covariance Matrix
+float PCt[4][2];
+float temp[2][2];
+float Gk[4][2]; //Kalman gain
+float GkC[4][4]; //Temp matrix Gk*C
+
+
 void TrackerClass::initTracker()
 {
 	//For filter
@@ -90,13 +104,22 @@ void TrackerClass::initTracker()
 	d2 = 0.0;
 	d3 = 0.0;
 	d4 = 0.0;
+	
+	
 	//Initialize first states of Kalman Filter
-	ax = 1; //For static location
-	ay = 1;
-	px = 1; //Prediction error, arbitrary initial value
-	py = 1;
-	std_dev = 20; //Standard deviation based on sensor
-	kalman_count = 0;
+	float Ap;
+	for (int i = 0; i < n; i++)
+	{
+		X_pred[i][0] = 0; //At first pass initialize predicted states to zero
+	}
+	for (int j = 0; j < n; j++)
+	{
+		for (int k = 0; k < n; k++)
+		{
+			P[j][k] = P0[j][k]; //Initialize P to first covariance matrix
+		}
+	}
+
 }
 
 void TrackerClass::loc(float distance, uint8_t anchor, float coord[])
@@ -364,40 +387,235 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 
 void TrackerClass::kalman(float coord[])
 {
-	float y_raw = coord[1];
-	float x_raw = coord[0];
-	if(kalman_count < 1)
+	float Y[2][1];
+	Y[0][0] = coord[0]; //x coordinate
+	Y[1][0] = coord[1]; //y coordinate
+	float Ap;
+	//P x Ct [4x4]x[4x2] = PCt [4x2]
+	for (int r = 0; r < 4; r++) //Number of rows of final matrix
 	{
-		y_hat = y_raw;
-		x_hat = x_raw;
-		x_prev = x_raw;
-		y_prev = y_raw;
-		kalman_count = kalman_count + 1;
+		for (int c = 0; c < 2; c++) //Number columns for final matrix
+		{
+			Ap = 0.0;
+			for (int m = 0; m < 4; m++) //Number of columns of first mult matrix and rows of second mult matrix
+			{
+				Ap = Ap + P[r][m] * Ct[m][c];
+			}
+			PCt[r][c] = Ap;
+		}
 	}
-	else
+
+	//C x PCt [2x4]x[4x2] = temp [2x2]
+
+	for (int r = 0; r < 2; r++) //Number of rows of final matrix
 	{
-		//Predict
-		x_hat = x_hat*ax;
-		y_hat = y_hat*ay;
-		
-		px = ax*px*ax;
-		py = ay*py*ay;
-		
-		//Update
-		gx = px/(px + std_dev);
-		gy = py/(py + std_dev);
-		
-		x_hat = x_hat + gx*(x_prev - x_hat);
-		y_hat = y_hat + gy*(y_prev - y_hat);
-		
-		px = (1-gx)*px;
-		py = (1-gy)*py;
-		
-		x_prev = x_raw;
-		y_prev = y_raw;
+		for (int c = 0; c < 2; c++) //Number columns for final matrix
+		{
+			Ap = 0.0;
+			for (int m = 0; m < 4; m++) //Number of columns of first mult matrix and rows of second mult matrix
+			{
+				Ap = Ap + C[r][m] * PCt[m][c];
+			}
+			temp[r][c] = Ap;
+		}
 	}
-	coord[0] = x_hat;
-	coord[1] = y_hat;
+
+	//temp + R [2x2] + [2x2] = temp [2x2]
+
+	for (int t = 0; t < 2; t++)
+	{
+		for (int s = 0; s < 2; s++)
+		{
+			temp[t][s] = temp[t][s] + R[t][s];
+		}
+	}
+
+	//inv = temp^-1
+	float inv[2][2];
+	float det = temp[0][0] * temp[1][1];
+	float det2 = temp[0][1] * temp[1][0];
+	det = det - det2;
+
+	inv[0][0] = temp[1][1];
+	inv[0][1] = -1 * temp[0][1];
+	inv[1][0] = -1 * temp[1][0];
+	inv[1][1] = temp[0][0];
+
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2; j++)
+		{
+			inv[i][j] = inv[i][j] / det;
+		}
+	}
+
+	//PCt x inv [4x2]x[2x2] = Gk [4x2]
+	for (int r = 0; r < 4; r++) //Number of rows of final matrix
+	{
+		for (int c = 0; c < 2; c++) //Number columns for final matrix
+		{
+			Ap = 0.0;
+			for (int m = 0; m < 2; m++) //Number of columns of first mult matrix and rows of second mult matrix
+			{
+				Ap = Ap + PCt[r][m] * inv[m][c];
+			}
+			Gk[r][c] = Ap;
+		}
+	}
+	float CX[2][1]; 
+
+	//C x X_pred [2x4]x[4x1] = CX [2x1]
+
+	for (int r = 0; r < 2; r++) //Number of rows of final matrix
+	{
+		for (int c = 0; c < 1; c++) //Number columns for final matrix
+		{
+			Ap = 0.0;
+			for (int m = 0; m < 4; m++) //Number of columns of first mult matrix and rows of second mult matrix
+			{
+				Ap = Ap + C[r][m] * X_pred[m][c];
+			}
+			CX[r][c] = Ap;
+		}
+	}
+
+	float Y_CX[2][1];
+
+	//Y - CX = Y_CX [2x1]
+
+	for (int t = 0; t < 2; t++)
+	{
+		for (int s = 0; s < 1; s++)
+		{
+			Y_CX[t][s] = Y[t][s] - CX[t][s];
+		}
+	}
+
+	//X_pred + Gk x Y_CX [4x1] + [4x2][2x1] = X_up [4x1]
+	for (int r = 0; r < 4; r++) //Number of rows of final matrix
+	{
+		for (int c = 0; c < 1; c++) //Number columns for final matrix
+		{
+			Ap = 0.0;
+			for (int m = 0; m < 2; m++) //Number of columns of first mult matrix and rows of second mult matrix
+			{
+				Ap = Ap + Gk[r][m] * Y_CX[m][c];
+			}
+			X_up[r][c] = Ap;
+		}
+	}
+
+	for (int h = 0; h < 4; h++)
+	{
+		X_up[h][0] = X_up[h][0] + X_pred[h][0];
+	}
+
+	//Update uncertainty prior to next prediction
+	//Gk x C [4x2]x[2x4] = GkC [4x4]
+	for (int r = 0; r < 4; r++) //Number of rows of final matrix
+	{
+		for (int c = 0; c < 4; c++) //Number columns for final matrix
+		{
+			Ap = 0.0;
+			for (int m = 0; m < 2; m++) //Number of columns of first mult matrix and rows of second mult matrix
+			{
+				Ap = Ap + Gk[r][m] * C[m][c];
+			}
+			GkC[r][c] = Ap;
+		}
+	}
+
+	float Ptemp[4][4];
+	//GkC x P [4x4]x[4x4] = Ptemp [4x4]
+	for (int r = 0; r < 4; r++) //Number of rows of final matrix
+	{
+		for (int c = 0; c < 4; c++) //Number columns for final matrix
+		{
+			Ap = 0.0;
+			for (int m = 0; m < 4; m++) //Number of columns of first mult matrix and rows of second mult matrix
+			{
+				Ap = Ap + GkC[r][m] * P[m][c];
+			}
+			Ptemp[r][c] = Ap;
+
+		}
+	}
+
+	//Uncertainty update
+	//P = P - Ptemp
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			P[i][j] = P[i][j] - Ptemp[i][j];
+		}
+	}
+
+	//Make prediction for next state
+	//A x X_up [4x4]x[4x1] = X_pred [4x1]
+	for (int r = 0; r < 4; r++) //Number of rows of final matrix
+	{
+		for (int c = 0; c < 1; c++) //Number columns for final matrix
+		{
+			Ap = 0.0;
+			for (int m = 0; m < 4; m++) //Number of columns of first mult matrix and rows of second mult matrix
+			{
+				Ap = Ap + A[r][m] * X_up[m][c];
+			}
+			X_pred[r][c] = Ap;
+		}
+	}
+
+	//Use process noise to update uncertainty further
+	//P = A*P*A_t + Q;
+
+	//A x P [4x4]x[4x4] = AP [4x4]
+	float AP[4][4];
+	for (int r = 0; r < 4; r++) //Number of rows of final matrix
+	{
+		for (int c = 0; c < 4; c++) //Number columns for final matrix
+		{
+			Ap = 0.0;
+			for (int m = 0; m < 4; m++) //Number of columns of first mult matrix and rows of second mult matrix
+			{
+				Ap = Ap + A[r][m] * P[m][c];
+			}
+			AP[r][c] = Ap;
+		}
+	}
+
+	//APxAt [4x4]x[4x4] = APA [4x4]
+	float APA[4][4];
+	for (int r = 0; r < 4; r++) //Number of rows of final matrix
+	{
+		for (int c = 0; c < 4; c++) //Number columns for final matrix
+		{
+			Ap = 0.0;
+			for (int m = 0; m < 4; m++) //Number of columns of first mult matrix and rows of second mult matrix
+			{
+				Ap = Ap + AP[r][m] * At[m][c];
+			}
+			APA[r][c] = Ap;
+		}
+	}
+
+	//Final uncertainty update
+	//P = APA + Q;
+
+	for (int i = 0; i < 4; i++)
+	{
+		for (int j = 0; j < 4; j++)
+		{
+			P[i][j] = APA[i][j] + Q[i][j];
+		}
+	}
+	
+	//Modify matrix with update
+	coord[0] = X_up[0][0];
+	coord[1] = X_up[2][0];
+	
+	return;
 }
 
 
