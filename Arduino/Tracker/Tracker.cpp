@@ -48,14 +48,14 @@ uint8_t TrackerClass::_PIN_Left_B = 4;
 uint8_t TrackerClass::_PIN_Right_B = 3;
 
 //Kalman
-float del_t = 1.0; //Time step (may need to change for UWB
+float del_t = 2; //Time step (may need to change for UWB
 
 int n = 4; //Matrix length
 float A[4][4] = { { 1,del_t,0,0 },{ 0,1,0,0 },{ 0,0,1,del_t },{ 0,0,0,1 } }; //System Matrix
 float At[4][4] = { {1,0,0,0},{del_t,1,0,0},{0,0,1,0},{0,0,del_t,1} }; //Transpose of system matrix
 float C[2][4] = { {1,1,0,0}, {0,0,1,1} }; //Measurement matrix
 float Ct[4][2] = { {1,0},{1,0},{0,1},{0,1} }; //Transpose of measurement matrix
-float R_var = 5.0; //Expected standard deviation 
+float R_var = 100; //Expected standard deviation 
 float R[2][2] = { {R_var*1,0}, {0,R_var*1} }; //Expected measurement noise
 float Q_var = 0.00005;
 float Q[4][4] = { { Q_var*1,0,0,0 },{ 0,Q_var*1,0,0 },{ 0,0,Q_var*1,0 },{ 0,0,0,Q_var*1 } }; //Process noise
