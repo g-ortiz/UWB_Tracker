@@ -56,7 +56,6 @@ float TrackerClass::x_hat;
 float TrackerClass::y_hat;
 uint8_t TrackerClass::kalman_count;
 float TrackerClass::x_prev, TrackerClass::y_prev;
-
 void TrackerClass::initTracker()
 {
 	//For filter
@@ -91,7 +90,6 @@ void TrackerClass::initTracker()
 	d2 = 0.0;
 	d3 = 0.0;
 	d4 = 0.0;
-
 	//Initialize first states of Kalman Filter
 	ax = 1; //For static location
 	ay = 1;
@@ -302,7 +300,7 @@ uint8_t TrackerClass::numDists()
 
 float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 {
-	delta = 100; //Range in which new reading must reside to be included in average (avg +/- delta)
+	delta = 100; //Range in which new reading must reside (avg +/- delta)
 	array_ptr = anchor*FILTER_LENGTH + anchor*NUM_VARS; //Points to the start of the specific anchor's array
 	vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor
 
@@ -368,7 +366,6 @@ void TrackerClass::kalman(float coord[])
 {
 	float y_raw = coord[1];
 	float x_raw = coord[0];
-
 	if(kalman_count < 1)
 	{
 		y_hat = y_raw;
