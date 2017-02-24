@@ -46,38 +46,38 @@ void loop() {
             digitalWrite(_PIN_Right_B, LOW);  
             if (coord[0]>50) {
                digitalWrite(_PIN_Left_F, HIGH);
-               //digitalWrite(_PIN_Right_B, HIGH);     
-               delay(400);
+               digitalWrite(_PIN_Right_B, HIGH);     
+               delay(120);
                digitalWrite(_PIN_Left_F, LOW);
-              // digitalWrite(_PIN_Right_B, LOW);    
+               digitalWrite(_PIN_Right_B, LOW);    
             }else if (coord[0]<-50) {
                digitalWrite(_PIN_Right_F, HIGH);
-               //digitalWrite(_PIN_Left_B, HIGH);
-               delay(400);
+               digitalWrite(_PIN_Left_B, HIGH);
+               delay(120);
                digitalWrite(_PIN_Right_F, LOW);
-               //digitalWrite(_PIN_Left_B, LOW);   
+               digitalWrite(_PIN_Left_B, LOW);   
             }else{
                digitalWrite(_PIN_Right_F, LOW);
                digitalWrite(_PIN_Left_B, LOW);
                digitalWrite(_PIN_Left_F, LOW);
                digitalWrite(_PIN_Right_B, LOW);               
             }       
-            delay(80);               
+            delay(100);               
         }else if (coord[1]<0){
             digitalWrite(_PIN_Left_F, LOW);
             digitalWrite(_PIN_Right_F, LOW);
             if(coord[0]<0){
                 digitalWrite(_PIN_Right_F, HIGH);
-                //digitalWrite(_PIN_Left_B, HIGH);
-                delay(240);        
+                digitalWrite(_PIN_Left_B, HIGH);
+                delay(120);        
                 digitalWrite(_PIN_Right_F, LOW);
-                //digitalWrite(_PIN_Left_B, LOW);                   
+                digitalWrite(_PIN_Left_B, LOW);                   
             }else{
                 digitalWrite(_PIN_Left_F, HIGH);
-                //digitalWrite(_PIN_Right_B, HIGH);
-                delay(240);        
+                digitalWrite(_PIN_Right_B, HIGH);
+                delay(120);        
                 digitalWrite(_PIN_Left_F, LOW);
-                //digitalWrite(_PIN_Right_B, LOW);
+                digitalWrite(_PIN_Right_B, LOW);
             }
             delay(100);           
         }else if(coord[1] > 200){
@@ -88,25 +88,25 @@ void loop() {
             if (coord[0]>150) {
                digitalWrite(_PIN_Left_F, HIGH);
                //digitalWrite(_PIN_Right_B, HIGH);     
-               delay(120);
+               delay(100);
                digitalWrite(_PIN_Left_F, LOW);
                //digitalWrite(_PIN_Right_B, LOW);    
             }else if (coord[0]<-150) {
                digitalWrite(_PIN_Right_F, HIGH);
                //digitalWrite(_PIN_Left_B, HIGH);
-               delay(120);
+               delay(100);
                digitalWrite(_PIN_Right_F, LOW);
                //digitalWrite(_PIN_Left_B, LOW);   
             }else if (coord[0]<-50 && coord[0]>-150) {
                digitalWrite(_PIN_Right_F, HIGH);
                //digitalWrite(_PIN_Left_B, HIGH);
-               delay(100);
+               delay(80);
                digitalWrite(_PIN_Right_F, LOW);
                //digitalWrite(_PIN_Left_B, LOW);   
             }else if (coord[0]<150 && coord[0]>50) {
                digitalWrite(_PIN_Left_F, HIGH);
                //digitalWrite(_PIN_Right_B, HIGH);     
-               delay(100);
+               delay(80);
                digitalWrite(_PIN_Left_F, LOW);
                //digitalWrite(_PIN_Right_B, LOW);    
             }else{
