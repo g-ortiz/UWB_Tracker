@@ -203,6 +203,8 @@ namespace ArduinoGUI1
                     yPosFront = float.Parse(yFrontRaw, CultureInfo.InvariantCulture.NumberFormat),
                     xPosLinear = float.Parse(xLinearRaw, CultureInfo.InvariantCulture.NumberFormat),
                     yPosLinear = float.Parse(yLinearRaw, CultureInfo.InvariantCulture.NumberFormat),
+                    xPosKalman = float.Parse(xKalmanRaw, CultureInfo.InvariantCulture.NumberFormat),
+                    yPosKalman = float.Parse(yKalmanRaw, CultureInfo.InvariantCulture.NumberFormat),
                     RangeFL = float.Parse(RangeFLRaw, CultureInfo.InvariantCulture.NumberFormat),
                     RangeFR = float.Parse(RangeFRRaw, CultureInfo.InvariantCulture.NumberFormat),
                     RangeRR = float.Parse(RangeRRRaw, CultureInfo.InvariantCulture.NumberFormat),
@@ -351,10 +353,11 @@ namespace ArduinoGUI1
                     tw.WriteLine(s.xPosRaw.ToString("0.00", new CultureInfo("en-US")) + "," + s.yPosRaw.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.Direction.ToString("0.00", new CultureInfo("en-US")) + 
                         "," + s.Forward.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeFL.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.RangeFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.RangeRR.ToString("0.00", new CultureInfo("en-US")) + "," +  s.xPosFront.ToString("0.00", new CultureInfo("en-US")) + 
+                        "," + s.RangeFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeRR.ToString("0.00", new CultureInfo("en-US")) +
+                        "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," +  s.xPosFront.ToString("0.00", new CultureInfo("en-US")) + 
                         "," + s.yPosFront.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.yPosLinear.ToString("0.00", new CultureInfo("en-US"))
+                        "," + s.yPosLinear.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosKalman.ToString("0.00", new CultureInfo("en-US")) +
+                        "," + s.yPosKalman.ToString("0.00", new CultureInfo("en-US"))
                         );
                 tw.Close();
                 IsLogging = false;
