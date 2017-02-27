@@ -20,16 +20,17 @@ float filt_list[4 * FILTER_LENGTH + 4 * NUM_VARS];
 uint8_t array_ptr, vars_ptr;
 
 //Variables for multi-lat
-const float TrackerClass::SEPARATION = 31.0; //Distance between all anchors in both x and y directions (cm)
+const float TrackerClass::SEPARATIONx = 37.5; //Distance between all anchors in both x and y directions (cm)
+const float TrackerClass::SEPARATIONy = 41.5;
 											 /* Coordinates of anchors with respect to reference point RL (0,0) */
 float TrackerClass::FLx = 0.0;
-float TrackerClass::FLy = SEPARATION;
+float TrackerClass::FLy = SEPARATIONy;
 float TrackerClass::RLx = 0.0;
 float TrackerClass::RLy = 0.0;
-float TrackerClass::RRx = SEPARATION;
+float TrackerClass::RRx = SEPARATIONx;
 float TrackerClass::RRy = 0.0;
-float TrackerClass::FRx = SEPARATION;
-float TrackerClass::FRy = SEPARATION;
+float TrackerClass::FRx = SEPARATIONx;
+float TrackerClass::FRy = SEPARATIONy;
 
 //Position of target
 float TrackerClass::xcoord;
@@ -48,16 +49,16 @@ uint8_t TrackerClass::_PIN_Left_B = 4;
 uint8_t TrackerClass::_PIN_Right_B = 3;
 
 //Kalman
-float del_t = 2; //Time step (may need to change for UWB
+float del_t = 1.5; //Time step (may need to change for UWB
 
 int n = 4; //Matrix length
 float A[4][4] = { { 1,del_t,0,0 },{ 0,1,0,0 },{ 0,0,1,del_t },{ 0,0,0,1 } }; //System Matrix
 float At[4][4] = { {1,0,0,0},{del_t,1,0,0},{0,0,1,0},{0,0,del_t,1} }; //Transpose of system matrix
 float C[2][4] = { {1,1,0,0}, {0,0,1,1} }; //Measurement matrix
 float Ct[4][2] = { {1,0},{1,0},{0,1},{0,1} }; //Transpose of measurement matrix
-float R_var = 100; //Expected standard deviation 
+float R_var = 15; //Expected standard deviation 
 float R[2][2] = { {R_var*1,0}, {0,R_var*1} }; //Expected measurement noise
-float Q_var = 0.00005;
+float Q_var = 0.005;
 float Q[4][4] = { { Q_var*1,0,0,0 },{ 0,Q_var*1,0,0 },{ 0,0,Q_var*1,0 },{ 0,0,0,Q_var*1 } }; //Process noise
 float P_var = 200.0;
 float P0[4][4] = { { P_var * 1,0,0,0 },{ 0,P_var * 1,0,0 },{ 0,0,P_var * 1,0 },{ 0,0,0,P_var * 1 } }; //Initial covariance matrix
@@ -377,7 +378,7 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 			array_ptr = (anchor)*FILTER_LENGTH + (anchor)*NUM_VARS; //Points to the start of the specific anchor's array
 			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
 			float radiusrl = filt_list[vars_ptr + 1]	;
-			circles(0,SEPARATION,radiusfl,SEPARATION, SEPARATION, radiusfr,radiusrl,coord, Front);
+			circles(0,SEPARATIONy,radiusfl,SEPARATIONx, SEPARATIONy, radiusfr,radiusrl,coord, Front);
 		
 		}
 			

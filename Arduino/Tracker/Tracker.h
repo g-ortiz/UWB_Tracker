@@ -42,7 +42,7 @@ public:
 	static float avg,sum;
 	
 	//Multilateration
-	static const float SEPARATION;
+	static const float SEPARATIONx, SEPARATIONy;
 	static float FLx, FLy, RLx, RLy, RRx, RRy, FRx, FRy;
 	static float d1, d2, d3, d4;
 	static float xcoord, ycoord;

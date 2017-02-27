@@ -594,11 +594,11 @@ void loop() {
                       byte *bvalX;
                       byte *bvalY;
                       //if (coords[0] != 0 && coords[3]>0){
-                         //bvalX = (byte *)&coords[2];
-                         //bvalY = (byte *)&coords[3];                      
+                         bvalX = (byte *)&coords[2];
+                         bvalY = (byte *)&coords[3];                      
                       //}else{
-                          bvalX = (byte *)&rawcoords[0];
-                          bvalY = (byte *)&rawcoords[1];                      
+                          //bvalX = (byte *)&rawcoords[0];
+                          //bvalY = (byte *)&rawcoords[1];                      
                       //}
                       
                       Wire.beginTransmission(4); // transmit to device #4
