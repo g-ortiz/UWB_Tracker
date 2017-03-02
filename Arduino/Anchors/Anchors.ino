@@ -177,6 +177,9 @@ void setup() {
     // start receive mode, wait for POLL message
     //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FL));
     attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FL), DW1000FL.handleInterrupt, RISING);    
+    attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FR), DW1000FR.handleInterrupt, RISING);    
+    attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RR), DW1000RR.handleInterrupt, RISING);    
+    attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RL), DW1000RL.handleInterrupt, RISING);   
     receiverFL();
     transmitPollFL();
     // reset watchdog
@@ -432,7 +435,7 @@ void loop() {
                     anchorRanging = F_R;
                     expectedMsgId = POLL_ACK;
                     //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FR));
-                    attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FR), DW1000FR.handleInterrupt, RISING);                    
+                    //attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FR), DW1000FR.handleInterrupt, RISING);                    
                     //delay(100); 
                     transmitPollFR();                                             
                     noteActivity();   
@@ -482,7 +485,7 @@ void loop() {
                     anchorRanging = R_R;          
                     expectedMsgId = POLL_ACK;                                 
                     //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_RR));
-                    attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RR), DW1000RR.handleInterrupt, RISING);             
+                    //attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RR), DW1000RR.handleInterrupt, RISING);             
                     transmitPollRR();                   
                     noteActivity();
             } else if (msgId == RANGE_FAILED) {                                  
@@ -531,7 +534,7 @@ void loop() {
                     expectedMsgId = POLL_ACK;   
                     //DW1000FL.clearAllStatus();                               
                     //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_RL));
-                    attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RL), DW1000RL.handleInterrupt, RISING);
+                    //attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RL), DW1000RL.handleInterrupt, RISING);
                     //delay(100);                 
                     transmitPollRL();                   
                     noteActivity();
@@ -622,7 +625,7 @@ void loop() {
                     expectedMsgId = POLL_ACK;   
                     //DW1000FL.clearAllStatus();                               
                     //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FL));
-                    attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FL), DW1000FL.handleInterrupt, RISING);
+                    //attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FL), DW1000FL.handleInterrupt, RISING);
                     //delay(100);                 
                     transmitPollFL();                   
                     noteActivity();
