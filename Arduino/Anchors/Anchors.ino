@@ -386,13 +386,21 @@ void loop() {
         if (curMillis - lastActivity > resetPeriod) {
             //SerialUSB.println("WATCHDOG TIMEOUT");
             if (anchorRanging == F_L){
-                resetInactiveFL();
+                DW1000FL.idle();
+                anchorRanging = F_R;
+                resetInactiveFR();
             }else if(anchorRanging == F_R){
-                resetInactiveFR();            
-            }else if(anchorRanging == R_R){
+                DW1000FR.idle();              
+                anchorRanging = R_R;              
                 resetInactiveRR();            
-            }else if(anchorRanging == R_L){
+            }else if(anchorRanging == R_R){
+                DW1000RR.idle();                
+                anchorRanging = R_L;              
                 resetInactiveRL();            
+            }else if(anchorRanging == R_L){
+                DW1000RL.idle();
+                anchorRanging = F_L;                
+                resetInactiveFL();            
             }
         }
         return;
@@ -431,9 +439,23 @@ void loop() {
                     timeRangeReceived.setTimestamp(data + 1);             
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[0] = Tracker.filter(distance ,F_L, coords);                                  
+                    ranges[0] = Tracker.filter(distance ,F_L, coords);
+                    rawcoords[0] = coords[2];
+                    rawcoords[1] = coords[3];   
+                    Tracker.kalman(coords+2);
+                    kalman_buf = kalman_buf + 1;                       
+                    String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
+                             + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
+                    SerialUSB.print(SerialUSBdata);                                                      
                     anchorRanging = F_R;
                     expectedMsgId = POLL_ACK;
+                    successRangingCount++;                   
+                    if (curMillis - rangingCountPeriod > 1000) {
+                        samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
+                        rangingCountPeriod = curMillis;
+                        successRangingCount = 0;
+                    }                     
                     //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FR));
                     //attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FR), DW1000FR.handleInterrupt, RISING);                    
                     //delay(100); 
@@ -481,7 +503,21 @@ void loop() {
                     timeRangeReceived.setTimestamp(data + 1);                
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[1] = Tracker.filter(distance , F_R, coords);                                
+                    ranges[1] = Tracker.filter(distance , F_R, coords); 
+                    rawcoords[0] = coords[2];
+                    rawcoords[1] = coords[3];   
+                    Tracker.kalman(coords+2);
+                    kalman_buf = kalman_buf + 1;                       
+                    String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
+                             + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
+                    SerialUSB.print(SerialUSBdata); 
+                    successRangingCount++;                   
+                    if (curMillis - rangingCountPeriod > 1000) {
+                        samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
+                        rangingCountPeriod = curMillis;
+                        successRangingCount = 0;
+                    }                                                                       
                     anchorRanging = R_R;          
                     expectedMsgId = POLL_ACK;                                 
                     //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_RR));
@@ -529,9 +565,23 @@ void loop() {
                     timeRangeReceived.setTimestamp(data + 1);                  
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[2] = Tracker.filter(distance ,R_R, coords);                              
+                    ranges[2] = Tracker.filter(distance ,R_R, coords);
+                    rawcoords[0] = coords[2];
+                    rawcoords[1] = coords[3];   
+                    Tracker.kalman(coords+2);
+                    kalman_buf = kalman_buf + 1;                       
+                    String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
+                             + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
+                    SerialUSB.print(SerialUSBdata);                                                  
                     anchorRanging = R_L;          
-                    expectedMsgId = POLL_ACK;   
+                    expectedMsgId = POLL_ACK;
+                    successRangingCount++;                   
+                    if (curMillis - rangingCountPeriod > 1000) {
+                        samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
+                        rangingCountPeriod = curMillis;
+                        successRangingCount = 0;
+                    }                         
                     //DW1000FL.clearAllStatus();                               
                     //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_RL));
                     //attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RL), DW1000RL.handleInterrupt, RISING);
