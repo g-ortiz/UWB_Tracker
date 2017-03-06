@@ -447,7 +447,7 @@ void loop() {
                     String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
                              + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
-                    SerialUSB.print(SerialUSBdata);                                                      
+                    SerialUSB.print(SerialUSBdata);                                                   
                     anchorRanging = F_R;
                     expectedMsgId = POLL_ACK;
                     successRangingCount++;                   
@@ -512,6 +512,30 @@ void loop() {
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
                              + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
                     SerialUSB.print(SerialUSBdata); 
+                                        if(kalman_buf > 3)
+                    {
+                      byte *bvalX;
+                      byte *bvalY;
+                      //if (coords[0] != 0 && coords[3]>0){
+                         bvalX = (byte *)&coords[2];
+                         bvalY = (byte *)&coords[3];                      
+                      //}else{
+                          //bvalX = (byte *)&rawcoords[0];
+                          //bvalY = (byte *)&rawcoords[1];                      
+                      //}
+                      
+                      Wire.beginTransmission(4); // transmit to device #4
+                      Wire.write((int)bvalX[0]);              // sends one byte  
+                      Wire.write((int) bvalX[1]);              // sends one byte  
+                      Wire.write((int)bvalX[2]);              // sends one byte  
+                      Wire.write((int) bvalX[3]);              // sends one byte 
+                      Wire.write((int)bvalY[0]);              // sends one byte  
+                      Wire.write((int) bvalY[1]);              // sends one byte  
+                      Wire.write((int)bvalY[2]);              // sends one byte  
+                      Wire.write((int) bvalY[3]);              // sends one byte                      
+                      Wire.endTransmission();    // stop transmitting                                        
+                      successRangingCount++;
+                    }
                     successRangingCount++;                   
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -573,7 +597,7 @@ void loop() {
                     String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
                              + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
-                    SerialUSB.print(SerialUSBdata);                                                  
+                    SerialUSB.print(SerialUSBdata);                                                 
                     anchorRanging = R_L;          
                     expectedMsgId = POLL_ACK;
                     successRangingCount++;                   

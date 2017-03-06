@@ -39,18 +39,18 @@ void setup() {
 
 void loop() {
     if (coord[0] != 0){
-        if (coord[1]<200 && coord[1]>0){      
+        if (coord[1]<160 && coord[1]>0){      
             digitalWrite(_PIN_Left_F, LOW);
             digitalWrite(_PIN_Right_F, LOW); 
             digitalWrite(_PIN_Left_B, LOW);
             digitalWrite(_PIN_Right_B, LOW);  
-            if (coord[0]>50) {
+            if (coord[0]>60) {
                digitalWrite(_PIN_Left_F, HIGH);
                digitalWrite(_PIN_Right_B, HIGH);     
                delay(120);
                digitalWrite(_PIN_Left_F, LOW);
                digitalWrite(_PIN_Right_B, LOW);    
-            }else if (coord[0]<-50) {
+            }else if (coord[0]<-60) {
                digitalWrite(_PIN_Right_F, HIGH);
                digitalWrite(_PIN_Left_B, HIGH);
                delay(120);
@@ -80,7 +80,7 @@ void loop() {
                 digitalWrite(_PIN_Right_B, LOW);
             }
             delay(100);           
-        }else if(coord[1] > 200){
+        }else if(coord[1] > 160){
             digitalWrite(_PIN_Left_F, LOW);
             digitalWrite(_PIN_Right_F, LOW); 
             digitalWrite(_PIN_Left_B, LOW);
