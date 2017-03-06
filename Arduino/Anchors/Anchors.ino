@@ -16,16 +16,16 @@
 
 
 // Pins in Arduino M0 Pro
-const uint8_t PIN_RST_FL = 7; // reset pin
+const uint8_t PIN_RST_FL = 0xFF; // reset pin
 const uint8_t PIN_IRQ_FL = 5; // irq pin
 const uint8_t PIN_SS_FL = 6; // spi select pin
-const uint8_t PIN_RST_FR = 13; // reset pin
+const uint8_t PIN_RST_FR = 0xFF; // reset pin
 const uint8_t PIN_IRQ_FR = 11; // irq pin
 const uint8_t PIN_SS_FR = 12; // spi select pin
-const uint8_t PIN_RST_RR = A3; // reset pin
+const uint8_t PIN_RST_RR = 0xFF; // reset pin
 const uint8_t PIN_IRQ_RR = A5; // irq pin
 const uint8_t PIN_SS_RR = A4; // spi select pin
-const uint8_t PIN_RST_RL = A0; // reset pin
+const uint8_t PIN_RST_RL = 0xFF; // reset pin
 const uint8_t PIN_IRQ_RL = A2; // irq pin
 const uint8_t PIN_SS_RL = A1; // spi select pin
 
@@ -246,7 +246,7 @@ void handleReceived() {
 void transmitPollFL() {
     DW1000FL.newTransmit();
     DW1000FL.setDefaults();
-    //SerialUSB.println("Sent POLL_FL");
+//    SerialUSB.println("Sent POLL_FL");
     data[0] = POLL;
     DW1000FL.setData(data, LEN_DATA);
     DW1000FL.startTransmit();  
@@ -255,7 +255,7 @@ void transmitPollFL() {
 void transmitPollFR() {
     DW1000FR.newTransmit();
     DW1000FR.setDefaults();
-    //SerialUSB.println("Sent POLL_FR");
+//    SerialUSB.println("Sent POLL_FR");
     data[0] = POLL; 
     DW1000FR.setData(data, LEN_DATA);
     DW1000FR.startTransmit();
@@ -264,7 +264,7 @@ void transmitPollFR() {
 void transmitPollRR() {
     DW1000RR.newTransmit();
     DW1000RR.setDefaults();
-    //SerialUSB.println("Sent POLL_RR");
+//    SerialUSB.println("Sent POLL_RR");
     data[0] = POLL; 
     DW1000RR.setData(data, LEN_DATA);
     DW1000RR.startTransmit();
@@ -273,7 +273,7 @@ void transmitPollRR() {
 void transmitPollRL() {
     DW1000RL.newTransmit();
     DW1000RL.setDefaults();
-    //SerialUSB.println("Sent POLL_RL");
+//    SerialUSB.println("Sent POLL_RL");
     data[0] = POLL; 
     DW1000RL.setData(data, LEN_DATA);
     DW1000RL.startTransmit();
