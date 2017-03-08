@@ -18,9 +18,9 @@ uint8_t counter = 0;
 bool newdata = false;
 
 //Movement PINS
-uint8_t _PIN_Left_F = 9;
-uint8_t _PIN_Right_F = 7;
-uint8_t _PIN_Left_B = 8;
+uint8_t _PIN_Left_F = 5;
+uint8_t _PIN_Right_F = 3;
+uint8_t _PIN_Left_B = 9;
 uint8_t _PIN_Right_B = 6;
 
 
