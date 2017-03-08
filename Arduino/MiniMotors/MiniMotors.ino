@@ -1,11 +1,7 @@
-// Wire Slave Receiver
-// by Nicholas Zambetti <http://www.zambetti.com>
-
-// Demonstrates use of the Wire library
-// Receives data as an I2C/TWI slave device
-// Refer to the "Wire Master Writer" example for use with this
-
-// Created 29 March 2006
+/*
+ * This code is used for controlling the motors
+ * It receives the data position from the Arduino M0 via I2C
+ */
 
 // This example code is in the public domain.
 
