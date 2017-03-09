@@ -126,6 +126,7 @@ void transmitRangeAck() {
     data[0] = RANGE_ACK;
     // delay the same amount as ranging tag  
     timeRangeReceived.getTimestamp(data + 1);
+    timePollAckSent.getTimestamp(data + 6);
     DW1000.setData(data, LEN_DATA);
     DW1000.startTransmit();   
 }

@@ -379,6 +379,15 @@ void computeRangeAsymmetric() {
     timeComputedRange.setTimestamp(tof);
 }
 
+
+void computeRangeSymmetric() {
+    // symmetric two-way ranging (less computation intense, more error prone on clock drift)
+    DW1000Time tof = ((timePollAckReceived - timePollSent) - (timePollAckSent - timePollReceived) +
+                      (timeRangeReceived - timePollAckSent) - (timeRangeSent - timePollAckReceived)) * 0.25f;
+    // set tof timestamp
+    timeComputedRange.setTimestamp(tof);
+}
+
 void loop() {
     // reset if wathcdog timed out
     int32_t curMillis = millis(); // get current time
@@ -428,15 +437,15 @@ void loop() {
             }
             if (msgId == POLL_ACK) {                 
                 DW1000FL.getReceiveTimestamp(timePollAckReceived);              
-                timePollReceived.setTimestamp(data + 1);
-                timePollAckSent.setTimestamp(data + 6);                  
+                timePollReceived.setTimestamp(data + 1);                
                 expectedMsgId = RANGE_ACK;
                 transmitRangeFL();
                 DW1000FL.receivePermanently(false);
                 DW1000FR.receivePermanently(true);
                 noteActivity();
             } else if (msgId == RANGE_ACK) {          
-                    timeRangeReceived.setTimestamp(data + 1);             
+                    timeRangeReceived.setTimestamp(data + 1);  
+                    timePollAckSent.setTimestamp(data + 6);            
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
                     ranges[0] = Tracker.filter(distance ,F_L, coords);
@@ -515,15 +524,15 @@ void loop() {
             }
             if (msgId == POLL_ACK) { 
                 DW1000FR.getReceiveTimestamp(timePollAckReceived);            
-                timePollReceived.setTimestamp(data + 1);
-                timePollAckSent.setTimestamp(data + 6);                 
+                timePollReceived.setTimestamp(data + 1);                
                 expectedMsgId = RANGE_ACK;
                 transmitRangeFR();
                 DW1000FR.receivePermanently(false); 
                 DW1000RR.receivePermanently(true);                                    
                 noteActivity();
             } else if (msgId == RANGE_ACK) {           
-                    timeRangeReceived.setTimestamp(data + 1);                
+                    timeRangeReceived.setTimestamp(data + 1);
+                    timePollAckSent.setTimestamp(data + 6);                 
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
                     ranges[1] = Tracker.filter(distance , F_R, coords); 
@@ -600,15 +609,15 @@ void loop() {
             }
             if (msgId == POLL_ACK) { 
                 DW1000RR.getReceiveTimestamp(timePollAckReceived);             
-                timePollReceived.setTimestamp(data + 1);
-                timePollAckSent.setTimestamp(data + 6);                      
+                timePollReceived.setTimestamp(data + 1);                     
                 expectedMsgId = RANGE_ACK;
                 transmitRangeRR();
                 DW1000RR.receivePermanently(false); 
                 DW1000RL.receivePermanently(true);                                    
                 noteActivity();
             } else if (msgId == RANGE_ACK) {          
-                    timeRangeReceived.setTimestamp(data + 1);                  
+                    timeRangeReceived.setTimestamp(data + 1); 
+                    timePollAckSent.setTimestamp(data + 6);                  
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
                     ranges[2] = Tracker.filter(distance ,R_R, coords);
@@ -688,15 +697,15 @@ void loop() {
             }
             if (msgId == POLL_ACK) { 
                 DW1000RL.getReceiveTimestamp(timePollAckReceived);            
-                timePollReceived.setTimestamp(data + 1);
-                timePollAckSent.setTimestamp(data + 6);                      
+                timePollReceived.setTimestamp(data + 1);                    
                 expectedMsgId = RANGE_ACK;
                 transmitRangeRL();
                 DW1000RL.receivePermanently(false); 
                 DW1000FL.receivePermanently(true);                                    
                 noteActivity();
             } else if (msgId == RANGE_ACK) {  
-                    timeRangeReceived.setTimestamp(data + 1);                   
+                    timeRangeReceived.setTimestamp(data + 1);
+                    timePollAckSent.setTimestamp(data + 6);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
                     ranges[3] = Tracker.filter(distance , R_L, coords);   
