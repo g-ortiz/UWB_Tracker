@@ -1190,7 +1190,7 @@ void DW1000FRClass::setDefaults() {
 		setReceiverAutoReenable(true);
 		// default mode when powering up the chip
 		// still explicitly selected for later tuning
-		enableMode(MODE_LONGDATA_RANGE_LOWPOWER);
+		enableMode(MODE_SHORTDATA_FAST_LOWPOWER);
 	}
 }
 

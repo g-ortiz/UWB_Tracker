@@ -16,16 +16,16 @@
 
 
 // Pins in Arduino M0 Pro
-const uint8_t PIN_RST_FL = 0xFF; // reset pin
+const uint8_t PIN_RST_FL = 7; // reset pin
 const uint8_t PIN_IRQ_FL = 5; // irq pin
 const uint8_t PIN_SS_FL = 6; // spi select pin
-const uint8_t PIN_RST_FR = 0xFF; // reset pin
+const uint8_t PIN_RST_FR = 13; // reset pin
 const uint8_t PIN_IRQ_FR = 11; // irq pin
 const uint8_t PIN_SS_FR = 12; // spi select pin
-const uint8_t PIN_RST_RR = 0xFF; // reset pin
+const uint8_t PIN_RST_RR = A3; // reset pin
 const uint8_t PIN_IRQ_RR = A5; // irq pin
 const uint8_t PIN_SS_RR = A4; // spi select pin
-const uint8_t PIN_RST_RL = 0xFF; // reset pin
+const uint8_t PIN_RST_RL = A0; // reset pin
 const uint8_t PIN_IRQ_RL = A2; // irq pin
 const uint8_t PIN_SS_RL = A1; // spi select pin
 
@@ -104,7 +104,7 @@ void setup() {
     DW1000FL.setDefaults();
     DW1000FL.setDeviceAddress(1);
     DW1000FL.setNetworkId(12);
-    DW1000FL.enableMode(DW1000FL.MODE_LONGDATA_RANGE_LOWPOWER);
+    DW1000FL.enableMode(DW1000FL.MODE_SHORTDATA_FAST_LOWPOWER);
     DW1000FL.commitConfiguration();
     DW1000FL.enableDebounceClock();
     DW1000FL.enableLedBlinking();
@@ -119,7 +119,7 @@ void setup() {
     DW1000FR.setDefaults();
     DW1000FR.setDeviceAddress(5);
     DW1000FR.setNetworkId(12);
-    DW1000FR.enableMode(DW1000FR.MODE_LONGDATA_RANGE_LOWPOWER);
+    DW1000FR.enableMode(DW1000FR.MODE_SHORTDATA_FAST_LOWPOWER);
     DW1000FR.commitConfiguration();
     DW1000FR.enableDebounceClock();
     DW1000FR.enableLedBlinking();
@@ -135,7 +135,7 @@ void setup() {
     DW1000RR.setDefaults();
     DW1000RR.setDeviceAddress(6);
     DW1000RR.setNetworkId(12);
-    DW1000RR.enableMode(DW1000RR.MODE_LONGDATA_RANGE_LOWPOWER);
+    DW1000RR.enableMode(DW1000RR.MODE_SHORTDATA_FAST_LOWPOWER);
     DW1000RR.commitConfiguration();
     DW1000RR.enableDebounceClock();
     DW1000RR.enableLedBlinking();
@@ -150,7 +150,7 @@ void setup() {
     DW1000RL.setDefaults();
     DW1000RL.setDeviceAddress(7);
     DW1000RL.setNetworkId(12);
-    DW1000RL.enableMode(DW1000RL.MODE_LONGDATA_RANGE_LOWPOWER);
+    DW1000RL.enableMode(DW1000RL.MODE_SHORTDATA_FAST_LOWPOWER);
     DW1000RL.commitConfiguration();
     DW1000RL.enableDebounceClock();
     DW1000RL.enableLedBlinking();
@@ -386,21 +386,21 @@ void loop() {
         if (curMillis - lastActivity > resetPeriod) {
             //SerialUSB.println("WATCHDOG TIMEOUT");
             if (anchorRanging == F_L){
-                DW1000FL.idle();
-                anchorRanging = F_R;
-                resetInactiveFR();
+                //DW1000FL.idle();
+                //anchorRanging = F_R;
+                resetInactiveFL();
             }else if(anchorRanging == F_R){
-                DW1000FR.idle();              
-                anchorRanging = R_R;              
-                resetInactiveRR();            
+                //DW1000FR.idle();              
+                //anchorRanging = R_R;              
+                resetInactiveFR();            
             }else if(anchorRanging == R_R){
-                DW1000RR.idle();                
-                anchorRanging = R_L;              
-                resetInactiveRL();            
+                //DW1000RR.idle();                
+                //anchorRanging = R_L;              
+                resetInactiveRR();            
             }else if(anchorRanging == R_L){
-                DW1000RL.idle();
-                anchorRanging = F_L;                
-                resetInactiveFL();            
+                //DW1000RL.idle();
+                //anchorRanging = F_L;                
+                resetInactiveRL();            
             }
         }
         return;

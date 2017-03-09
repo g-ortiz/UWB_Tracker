@@ -70,7 +70,7 @@ void setup() {
     DW1000.setDefaults();
     DW1000.setDeviceAddress(2);
     DW1000.setNetworkId(12);
-    DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER);
+    DW1000.enableMode(DW1000.MODE_SHORTDATA_FAST_LOWPOWER);
     DW1000.commitConfiguration();
     DW1000.enableDebounceClock();
     DW1000.enableLedBlinking();   
