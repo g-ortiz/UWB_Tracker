@@ -1,12 +1,18 @@
-/*
- * This code is used for controlling the motors
- * It receives the data position from the Arduino M0 via I2C
- */
+// Wire Slave Receiver
+// by Nicholas Zambetti <http://www.zambetti.com>
+
+// Demonstrates use of the Wire library
+// Receives data as an I2C/TWI slave device
+// Refer to the "Wire Master Writer" example for use with this
+
+// Created 29 March 2006
 
 // This example code is in the public domain.
 
 
 #include <Wire.h>
+#include <Math.h>
+
 
 float coord[2];
 
@@ -19,6 +25,10 @@ uint8_t _PIN_Right_F = 3;
 uint8_t _PIN_Left_B = 9;
 uint8_t _PIN_Right_B = 6;
 
+uint32_t lastActivity;
+uint32_t resetPeriod = 60;
+
+float angle = 0;
 
 void setup() {
   Wire.begin(4);                // join i2c bus with address #8
@@ -26,95 +36,87 @@ void setup() {
   Serial.begin(9600);           // start serial for output
   coord[0] = 0;
   coord[1] = 0;
-      //Movement setup
-    pinMode(_PIN_Left_F, OUTPUT); // Leflt Forward
-    pinMode(_PIN_Right_F, OUTPUT); // Right Forward
-    pinMode(_PIN_Left_B, OUTPUT); // Left backwards
-    pinMode(_PIN_Right_B, OUTPUT); //  right barckwards   
+  
+    //Movement setup
+  pinMode(_PIN_Left_F, OUTPUT); // Leflt Forward
+  pinMode(_PIN_Right_F, OUTPUT); // Right Forward
+  pinMode(_PIN_Left_B, OUTPUT); // Left backwards
+  pinMode(_PIN_Right_B, OUTPUT); //  right barckwards   
 }
 
 void loop() {
-    if (coord[0] != 0){
-        if (coord[1]<200 && coord[1]>0){      
-            digitalWrite(_PIN_Left_F, LOW);
-            digitalWrite(_PIN_Right_F, LOW); 
-            digitalWrite(_PIN_Left_B, LOW);
-            digitalWrite(_PIN_Right_B, LOW);  
-            if (coord[0]>60) {
-               digitalWrite(_PIN_Left_F, HIGH);
-               digitalWrite(_PIN_Right_B, HIGH);     
-               delay(80);
-               digitalWrite(_PIN_Left_F, LOW);
-               digitalWrite(_PIN_Right_B, LOW);    
-            }else if (coord[0]<-60) {
-               digitalWrite(_PIN_Right_F, HIGH);
-               digitalWrite(_PIN_Left_B, HIGH);
-               delay(80);
-               digitalWrite(_PIN_Right_F, LOW);
-               digitalWrite(_PIN_Left_B, LOW);   
+    int32_t curMillis = millis();
+    if (curMillis - lastActivity > resetPeriod) { 
+          analogWrite(_PIN_Right_F, 0);
+          analogWrite(_PIN_Left_B, 0);
+          analogWrite(_PIN_Left_F, 0);
+          analogWrite(_PIN_Right_B, 0);
+          Serial.println("Timeout!");
+    }
+    if (coord[0] != 0 && newdata){
+        newdata = false;
+        angle = atan2(coord[1] - 0, coord[0] - 0 );
+        angle = angle * 180 / PI;
+        //Serial.println(angle);
+        if (coord[1]<=170){
+            if(angle>=0 && angle<=70){
+                    float NewValue = (((angle - 0) * (180 - 255)) / (70 - 0)) + 255;
+                    analogWrite(_PIN_Left_F, NewValue);
+                    analogWrite(_PIN_Right_B, NewValue);
+                    //Serial.println(NewValue);
+            }else if(angle<0 && angle>=-90){
+                    float NewValue = 255;
+                    analogWrite(_PIN_Left_F, NewValue);
+                    analogWrite(_PIN_Right_B, NewValue);
+                    //Serial.println(NewValue);
+            }else if (angle>=110 && angle<=180){
+                    float NewValue = (((angle - 110) * (255 - 180)) / (180 - 110)) + 180;
+                    analogWrite(_PIN_Right_F, NewValue);
+                    analogWrite(_PIN_Left_B, NewValue);
+                    //Serial.println(NewValue);           
+            }else if(angle>=-180 && angle<-90){
+                    float NewValue = 255;
+                    analogWrite(_PIN_Right_F, NewValue);
+                    analogWrite(_PIN_Left_B, NewValue);
+                    //Serial.println(NewValue);
             }else{
-               digitalWrite(_PIN_Right_F, LOW);
-               digitalWrite(_PIN_Left_B, LOW);
-               digitalWrite(_PIN_Left_F, LOW);
-               digitalWrite(_PIN_Right_B, LOW);               
-            }       
-            delay(100);               
-        }else if (coord[1]<0){
-            digitalWrite(_PIN_Left_F, LOW);
-            digitalWrite(_PIN_Right_F, LOW);
-            if(coord[0]<0){
-                digitalWrite(_PIN_Right_F, HIGH);
-                digitalWrite(_PIN_Left_B, HIGH);
-                delay(100);        
-                digitalWrite(_PIN_Right_F, LOW);
-                digitalWrite(_PIN_Left_B, LOW);                   
-            }else{
-                digitalWrite(_PIN_Left_F, HIGH);
-                digitalWrite(_PIN_Right_B, HIGH);
-                delay(100);        
-                digitalWrite(_PIN_Left_F, LOW);
-                digitalWrite(_PIN_Right_B, LOW);
+                    analogWrite(_PIN_Right_F, 0);
+                    analogWrite(_PIN_Left_B, 0);
+                    analogWrite(_PIN_Left_F, 0);
+                    analogWrite(_PIN_Right_B, 0);
             }
-            delay(100);           
-        }else if(coord[1] > 200){
-            digitalWrite(_PIN_Left_F, LOW);
-            digitalWrite(_PIN_Right_F, LOW); 
-            digitalWrite(_PIN_Left_B, LOW);
-            digitalWrite(_PIN_Right_B, LOW);  
-            if (coord[0]>150) {
-               digitalWrite(_PIN_Left_F, HIGH);
-               //digitalWrite(_PIN_Right_B, HIGH);     
-               delay(80);
-               digitalWrite(_PIN_Left_F, LOW);
-               //digitalWrite(_PIN_Right_B, LOW);    
-            }else if (coord[0]<-150) {
-               digitalWrite(_PIN_Right_F, HIGH);
-               //digitalWrite(_PIN_Left_B, HIGH);
-               delay(80);
-               digitalWrite(_PIN_Right_F, LOW);
-               //digitalWrite(_PIN_Left_B, LOW);   
-            }else if (coord[0]<-50 && coord[0]>-150) {
-               digitalWrite(_PIN_Right_F, HIGH);
-               //digitalWrite(_PIN_Left_B, HIGH);
-               delay(60);
-               digitalWrite(_PIN_Right_F, LOW);
-               //digitalWrite(_PIN_Left_B, LOW);   
-            }else if (coord[0]<150 && coord[0]>50) {
-               digitalWrite(_PIN_Left_F, HIGH);
-               //digitalWrite(_PIN_Right_B, HIGH);     
-               delay(60);
-               digitalWrite(_PIN_Left_F, LOW);
-               //digitalWrite(_PIN_Right_B, LOW);    
-            }else{
-               digitalWrite(_PIN_Right_F, LOW);
-               digitalWrite(_PIN_Left_B, LOW);
-               digitalWrite(_PIN_Left_F, LOW);
-               digitalWrite(_PIN_Right_B, LOW);               
-            }            
-           digitalWrite(_PIN_Left_F, HIGH);
-           digitalWrite(_PIN_Right_F, HIGH);
-           delay(400); 
-        }                                 
+            lastActivity = millis();
+        }else if(coord[1]>170){
+            analogWrite(_PIN_Right_B, 0);            
+            analogWrite(_PIN_Left_B, 0);
+            if(angle>=0 && angle<70){
+                    float NewValue = 255;
+                    analogWrite(_PIN_Left_F, NewValue);
+                    //Serial.println(NewValue);  
+                    NewValue = 220;
+                    analogWrite(_PIN_Right_F, NewValue);          
+                    //Serial.println(NewValue);  
+            }else if (angle>110 && angle<=180){
+                    float NewValue = 255;
+                    analogWrite(_PIN_Right_F, NewValue); 
+                    //Serial.println(NewValue);  
+                    NewValue = 220;
+                    analogWrite(_PIN_Left_F, NewValue);                            
+                    //Serial.println(NewValue);  
+            }else if (angle>=70 && angle<=110){
+                    float NewValue = 220;
+                    analogWrite(_PIN_Right_F, NewValue); 
+                    analogWrite(_PIN_Left_F, NewValue);                            
+                    //Serial.println(NewValue);  
+            }
+            lastActivity = millis();
+        }
+    }else{  
+                //delay(60);
+                //analogWrite(_PIN_Right_F, 0);
+                //analogWrite(_PIN_Left_B, 0);
+                //analogWrite(_PIN_Left_F, 0);
+                //analogWrite(_PIN_Right_B, 0);
     }
 }
 
@@ -140,3 +142,4 @@ void receiveEvent(int howMany) {
   Serial.println(SerialUSBdata);  
 
 }
+

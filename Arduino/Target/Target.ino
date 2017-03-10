@@ -49,9 +49,9 @@ DW1000Time timeRangeReceived;
 byte data[LEN_DATA];
 // watchdog and reset period
 uint32_t lastActivity;
-uint32_t resetPeriod = 250;
+uint32_t resetPeriod = 200;
 // reply times (same on both sides for symm. ranging)
-uint16_t replyDelayTimeUS = 3000;
+uint16_t replyDelayTimeUS = 400;
 // protocol error state
 boolean protocolFailed = false;
 uint8_t hardresetcount = 0;

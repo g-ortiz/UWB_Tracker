@@ -79,7 +79,7 @@ byte data[LEN_DATA];
 uint32_t lastActivity;
 uint32_t resetPeriod = 200;
 // reply times (same on both sides for symm. ranging)
-uint16_t replyDelayTimeUS = 3000;
+uint16_t replyDelayTimeUS = 400;
 // ranging counter (per second)
 uint16_t successRangingCount = 0;
 uint32_t rangingCountPeriod = 0;
