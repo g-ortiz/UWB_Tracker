@@ -11,9 +11,9 @@
 
 // Pins in Arduino Pro Mini 3.3V
 const uint8_t PIN_RST = 9; // reset pin
-const uint8_t PIN_IRQ = 11; // irq pin
+const uint8_t PIN_IRQ = 2; // irq pin
 const uint8_t PIN_SS = 7; // spi select pin
-const uint8_t LEDPIN = 5; // reset pin
+const uint8_t LEDPIN = 10; // reset pin
 
 // Anchor Names
 #define F_L 0
@@ -51,7 +51,7 @@ byte data[LEN_DATA];
 uint32_t lastActivity;
 uint32_t resetPeriod = 200;
 // reply times (same on both sides for symm. ranging)
-uint16_t replyDelayTimeUS = 400;
+uint32_t replyDelayTimeUS = 1000;
 // protocol error state
 boolean protocolFailed = false;
 uint8_t hardresetcount = 0;
@@ -156,7 +156,7 @@ void reset(){
     DW1000.setDefaults();
     DW1000.setDeviceAddress(2);
     DW1000.setNetworkId(12);
-    DW1000.enableMode(DW1000.MODE_LONGDATA_RANGE_LOWPOWER);
+    DW1000.enableMode(DW1000.MODE_SHORTDATA_FAST_LOWPOWER);
     DW1000.commitConfiguration();
     DW1000.enableDebounceClock();
     DW1000.enableLedBlinking();   
@@ -172,13 +172,13 @@ void loop() {
     if (!sentAck && !receivedAck) {
         // reset if wathcdog timed out
         if (millis() - lastActivity > resetPeriod) {
-                Serial.println("WATCHDOG TIMEOUT");
+                //Serial.println("WATCHDOG TIMEOUT");
                 hardresetcount++;
                 resetInactive();
         }
         if (hardresetcount==10){
             hardresetcount=0;
-            Serial.println("HARD RESET!!!!!");
+            //Serial.println("HARD RESET!!!!!");
             reset();
         }
         return;
@@ -204,7 +204,7 @@ void loop() {
             // unexpected message, start over again (except if already POLL)
             protocolFailed = true;
             expectedMsgId = POLL;
-            Serial.print("Received ERROR Expected:"); Serial.println(expectedMsgId);        
+            //Serial.print("Received ERROR Expected:"); Serial.println(expectedMsgId);        
         }
         if (msgId == POLL) {
             DW1000.getReceiveTimestamp(timePollReceived);
@@ -218,7 +218,7 @@ void loop() {
         }else if (msgId == RANGE) {
             DW1000.getReceiveTimestamp(timeRangeReceived);
             // get timestamp, change expected message, calculate range and print
-            //Serial.print("Received RANGE\n\r");
+           // Serial.print("Received RANGE\n\r");
             expectedMsgId = POLL;           
             transmitRangeAck();
             digitalWrite(LEDPIN, !digitalRead(LEDPIN));   

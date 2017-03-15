@@ -16,12 +16,12 @@
 
 
 // Pins in Arduino M0 Pro
-const uint8_t PIN_RST_FL = 7; // reset pin
-const uint8_t PIN_IRQ_FL = 5; // irq pin
-const uint8_t PIN_SS_FL = 6; // spi select pin
-const uint8_t PIN_RST_FR = 13; // reset pin
-const uint8_t PIN_IRQ_FR = 11; // irq pin
-const uint8_t PIN_SS_FR = 12; // spi select pin
+const uint8_t PIN_RST_FL = 13; // reset pin
+const uint8_t PIN_IRQ_FL = 11; // irq pin
+const uint8_t PIN_SS_FL = 12; // spi select pin
+const uint8_t PIN_RST_FR = 7; // reset pin
+const uint8_t PIN_IRQ_FR = 5; // irq pin
+const uint8_t PIN_SS_FR = 6; // spi select pin
 const uint8_t PIN_RST_RR = A3; // reset pin
 const uint8_t PIN_IRQ_RR = A5; // irq pin
 const uint8_t PIN_SS_RR = A4; // spi select pin
@@ -29,10 +29,6 @@ const uint8_t PIN_RST_RL = A0; // reset pin
 const uint8_t PIN_IRQ_RL = A2; // irq pin
 const uint8_t PIN_SS_RL = A1; // spi select pin
 
-const uint8_t PIN_Left_F = 9;
-const uint8_t PIN_Right_F = 8;
-const uint8_t PIN_Left_B = 4;
-const uint8_t PIN_Right_B = 3;
 
 
 // Expected messages FL
@@ -79,7 +75,7 @@ byte data[LEN_DATA];
 uint32_t lastActivity;
 uint32_t resetPeriod = 200;
 // reply times (same on both sides for symm. ranging)
-uint16_t replyDelayTimeUS = 400;
+uint16_t replyDelayTimeUS = 1000;
 // ranging counter (per second)
 uint16_t successRangingCount = 0;
 uint32_t rangingCountPeriod = 0;
@@ -158,12 +154,6 @@ void setup() {
     DW1000RL.attachSentHandler(handleSent);
     DW1000RL.attachReceivedHandler(handleReceived);            
 
-
-    //Movement setup
-    pinMode(PIN_Left_F, OUTPUT); // Leflt Forward
-    pinMode(PIN_Right_F, OUTPUT); // Right Forward
-    pinMode(PIN_Left_B, OUTPUT); // Left backwards
-    pinMode(PIN_Right_B, OUTPUT); //  right barckwards   
   
     SerialUSB.println("start");
 
