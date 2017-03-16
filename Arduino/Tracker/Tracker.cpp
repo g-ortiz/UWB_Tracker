@@ -20,17 +20,17 @@ float filt_list[4 * FILTER_LENGTH + 4 * NUM_VARS];
 uint8_t array_ptr, vars_ptr;
 
 //Variables for multi-lat
-const float TrackerClass::SEPARATIONx = 37.5; //Distance between all anchors in both x and y directions (cm)
-const float TrackerClass::SEPARATIONy = 41.5;
+const float TrackerClass::SEPARATIONx = 38.5; //Distance between all anchors in both x and y directions (cm)
+const float TrackerClass::SEPARATIONy = 41;
 											 /* Coordinates of anchors with respect to reference point RL (0,0) */
-float TrackerClass::FLx = 0.0;
-float TrackerClass::FLy = SEPARATIONy;
-float TrackerClass::RLx = 0.0;
-float TrackerClass::RLy = 0.0;
-float TrackerClass::RRx = SEPARATIONx;
-float TrackerClass::RRy = 0.0;
-float TrackerClass::FRx = SEPARATIONx;
-float TrackerClass::FRy = SEPARATIONy;
+float TrackerClass::FLx = -1*(SEPARATIONx/2);
+float TrackerClass::FLy = SEPARATIONy/2;
+float TrackerClass::RLx = -1*(SEPARATIONx/2);
+float TrackerClass::RLy = -1*SEPARATIONy/2;
+float TrackerClass::RRx = SEPARATIONx/2;
+float TrackerClass::RRy = -1*SEPARATIONy/2;
+float TrackerClass::FRx = SEPARATIONx/2;
+float TrackerClass::FRy = SEPARATIONy/2;
 
 //Position of target
 float TrackerClass::xcoord;
