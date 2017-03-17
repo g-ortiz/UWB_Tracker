@@ -89,8 +89,8 @@ void setup() {
     // Setup Code
     // Begin //SerialUSB communication
     ////SerialUSB1.begin(9600);
-    SerialUSB.begin(115200);
-    Serial1.begin(9600);
+    SerialUSB.begin(250000);
+    //Serial1.begin(115200);
     Wire.begin(); // start I2C
     delay(1000);
     // ################# FRONT LEFT####################//
@@ -446,7 +446,7 @@ void loop() {
                     String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
                              + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
-                    SerialUSB.print(SerialUSBdata);                                                   
+                    //SerialUSB.print(SerialUSBdata);                                                   
                     anchorRanging = F_R;
                     expectedMsgId = POLL_ACK;
                                         if(kalman_buf > 3)
@@ -533,7 +533,7 @@ void loop() {
                     String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
                              + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
-                    SerialUSB.print(SerialUSBdata); 
+                    //SerialUSB.print(SerialUSBdata); 
                                         if(kalman_buf > 3)
                     {
                       byte *bvalX;
@@ -618,7 +618,7 @@ void loop() {
                     String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
                              + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
-                    SerialUSB.print(SerialUSBdata);                                                 
+                    //SerialUSB.print(SerialUSBdata);                                                 
                     anchorRanging = R_L;          
                     expectedMsgId = POLL_ACK;
                                         if(kalman_buf > 3)
@@ -707,7 +707,7 @@ void loop() {
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
                              + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
                     SerialUSB.print(SerialUSBdata);
-
+                    //Serial1.print(SerialUSBdata);
                     //Send movement to mini if kaman buffer amount reached
 
                     if(kalman_buf > 3)

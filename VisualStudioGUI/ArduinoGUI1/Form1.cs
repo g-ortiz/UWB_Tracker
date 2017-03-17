@@ -271,7 +271,7 @@ namespace ArduinoGUI1
                 sp = new SerialPort(portName);
                 if (portName == "COM7")
                 {
-                    sp.BaudRate = 9600;
+                    sp.BaudRate = 115200;
                 }else
                 {
                     sp.BaudRate = 115200;
