@@ -438,7 +438,7 @@ void loop() {
                     timePollAckSent.setTimestamp(data + 6);            
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[0] = Tracker.filter(distance ,F_L, coords);
+                    ranges[0] = Tracker.smoothing(distance ,F_L, coords);
                     rawcoords[0] = coords[2];
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
@@ -525,7 +525,7 @@ void loop() {
                     timePollAckSent.setTimestamp(data + 6);                 
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[1] = Tracker.filter(distance , F_R, coords); 
+                    ranges[1] = Tracker.smoothing(distance , F_R, coords); 
                     rawcoords[0] = coords[2];
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
@@ -610,7 +610,7 @@ void loop() {
                     timePollAckSent.setTimestamp(data + 6);                  
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[2] = Tracker.filter(distance ,R_R, coords);
+                    ranges[2] = Tracker.smoothing(distance ,R_R, coords);
                     rawcoords[0] = coords[2];
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
@@ -698,7 +698,7 @@ void loop() {
                     timePollAckSent.setTimestamp(data + 6);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
-                    ranges[3] = Tracker.filter(distance , R_L, coords);   
+                    ranges[3] = Tracker.smoothing(distance , R_L, coords);   
                     rawcoords[0] = coords[2];
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
