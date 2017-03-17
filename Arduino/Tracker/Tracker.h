@@ -24,6 +24,7 @@ public:
 	static void initTracker();
 	//Filter
 	static float filter(float newDist, uint8_t anchor, float coord[]);
+	static float smoothing(float newDist, uint8_t anchor, float coord[]);
 	
 	//Mutlilateration
 	static void loc(float distance, uint8_t anchor, float coord[]);

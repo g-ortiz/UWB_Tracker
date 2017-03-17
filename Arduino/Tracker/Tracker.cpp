@@ -19,6 +19,11 @@ float TrackerClass::avg, TrackerClass::sum;
 float filt_list[4 * FILTER_LENGTH + 4 * NUM_VARS];
 uint8_t array_ptr, vars_ptr;
 
+//Exponential Smoothing
+float s_avg0, s_avg1, s_avg2, s_avg3;
+static const float ALPHA = 0.15;
+uint16_t count0, count1, count2, count3;
+
 //Variables for multi-lat
 const float TrackerClass::SEPARATIONx = 38.5; //Distance between all anchors in both x and y directions (cm)
 const float TrackerClass::SEPARATIONy = 41;
@@ -379,11 +384,77 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
 			float radiusrl = filt_list[vars_ptr + 1]	;
 			circles(0,SEPARATIONy,radiusfl,SEPARATIONx, SEPARATIONy, radiusfr,radiusrl,coord, Front);
-		
 		}
 			
 		return  new_avg;//Return the specified anchor's average (so we can print)
 	}
+}
+float TrackerClass::smoothing(float newDist, uint8_t anchor, float coord[])
+{
+	float new_avg;
+	delta = 100; //Range in which new reading must reside (avg +/- delta)
+	if(newDist > 0)
+	{	if(anchor == 0)
+		{
+			if(count0 == 0)
+			{
+				s_avg0 = newDist; //Initial average is first distance
+				count0++;
+			}
+			else
+			{
+				if (newDist >= s_avg0 - delta  && newDist <= s_avg0 + delta) //If the new distance is within range of the previous average
+					s_avg0 = ALPHA*newDist + (1-ALPHA)*s_avg0; //Update average
+			}
+			new_avg = s_avg0;
+		}
+		else if(anchor == 1)
+		{
+			if(count1 == 0)
+			{
+				s_avg1 = newDist; //Initial average is first distance
+				count1++;
+			}
+			else
+			{
+				if (newDist >= s_avg1 - delta  && newDist <= s_avg1 + delta) //If the new distance is within range of the previous average
+					s_avg1 = ALPHA*newDist + (1-ALPHA)*s_avg1; //Update average
+			}
+			new_avg = s_avg1;
+		}
+		else if (anchor == 2)
+		{
+			if(count2 == 0)
+			{
+				s_avg2 = newDist; //Initial average is first distance
+				count2++;
+			}
+			else
+			{
+				if (newDist >= s_avg2 - delta  && newDist <= s_avg2 + delta) //If the new distance is within range of the previous average
+					s_avg2 = ALPHA*newDist + (1-ALPHA)*s_avg2; //Update average
+			}
+			new_avg = s_avg2;
+		}
+		else
+		{
+			if(count3 == 0)
+			{
+				s_avg3 = newDist; //Initial average is first distance
+				count3++;
+			}
+			else
+			{
+				if (newDist >= s_avg3 - delta  && newDist <= s_avg3 + delta) //If the new distance is within range of the previous average
+					s_avg3 = ALPHA*newDist + (1-ALPHA)*s_avg3; //Update average
+			}
+			new_avg = s_avg3;
+		}
+		//loc(new_avg, anchor, coord+2); //Call location function
+		return new_avg;
+	}
+	else
+		return 0;
 }
 
 void TrackerClass::kalman(float coord[])
