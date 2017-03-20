@@ -17,21 +17,20 @@ namespace ArduinoGUI1
         SerialPort sp;
         string RawData = "0";
         string[] SplitData = new string[7];
-        string xRaw = "0";
-        string yRaw = "0";
-        string xFrontRaw = "0";
-        string yFrontRaw = "0";
         string xLinearRaw = "0";
         string yLinearRaw = "0";
         string SamplingRaw = "0";
         string xKalmanRaw = "0";
         string yKalmanRaw = "0";
-        string Direction = "0";
-        string Forward = "0";
         string RangeFLRaw = "0";
         string RangeFRRaw = "0";
         string RangeRRRaw = "0";
         string RangeRLRaw = "0";
+
+        double radi = 0;
+        double degree = 0;
+        double radi2 = 0;
+        double degree2 = 0;
 
         string ActualPort = "";
         bool IsConnected = false;
@@ -52,19 +51,15 @@ namespace ArduinoGUI1
         {
             var ports = SerialPort.GetPortNames();
             cmbSerialPorts.DataSource = ports;
-            chart1.Series["Front"].ChartType =
-                SeriesChartType.FastPoint;
-            chart1.Series["Front"].Color = Color.Red;
             chart1.Series["Linear"].ChartType =
-                SeriesChartType.FastPoint;
-            chart1.Series["Linear"].Color = Color.Orange;
+                SeriesChartType.Polar;
+            chart1.Series["Linear"].Color = Color.Blue;
             chart1.Series["Kalman"].ChartType =
-                SeriesChartType.FastPoint;
+                SeriesChartType.Polar;
             chart1.Series["Kalman"].Color = Color.Green;
-            chart1.Series["Robot"].ChartType =
-                SeriesChartType.FastPoint;
-            chart1.Series["Robot"].Points.AddXY(string.Empty, 0);
-            chart1.Series["Robot"].Color = Color.Blue;
+            //chart1.Series["Robot"].ChartType =
+              //  SeriesChartType.FastPoint;
+            chart1.Series["Robot"].Points.AddXY(0, 0);
         }
 
 
@@ -79,21 +74,15 @@ namespace ArduinoGUI1
 
                     RawData = sp.ReadLine();
                     SplitData = RawData.Split(',');
-                    xRaw = SplitData[0];
-                    yRaw = SplitData[1];
-                    SamplingRaw = SplitData[2];
-                    Direction = SplitData[3];
-                    Forward = SplitData[4];
-                    RangeFLRaw = SplitData[5];
-                    RangeFRRaw = SplitData[6];
-                    RangeRRRaw = SplitData[7];
-                    RangeRLRaw = SplitData[8];
-                    xFrontRaw = SplitData[9];
-                    yFrontRaw = SplitData[10];
-                    xLinearRaw = SplitData[13];
-                    yLinearRaw = SplitData[14];
-                    xKalmanRaw = SplitData[11];
-                    yKalmanRaw = SplitData[12];
+                    SamplingRaw = SplitData[0];                 
+                    RangeFLRaw = SplitData[1];
+                    RangeFRRaw = SplitData[2];
+                    RangeRRRaw = SplitData[3];
+                    RangeRLRaw = SplitData[4];
+                    xKalmanRaw = SplitData[5];
+                    yKalmanRaw = SplitData[6];
+                    xLinearRaw = SplitData[7];
+                    yLinearRaw = SplitData[8];
 
                     this.Invoke(new EventHandler(display));
                     this.Invoke(new EventHandler(log));
@@ -112,13 +101,7 @@ namespace ArduinoGUI1
 
             Plots.Add(new plot
             {
-                xPosRaw = float.Parse(xRaw, CultureInfo.InvariantCulture.NumberFormat),
-                yPosRaw = float.Parse(yRaw, CultureInfo.InvariantCulture.NumberFormat),
                 SamplingFreq = float.Parse(SamplingRaw, CultureInfo.InvariantCulture.NumberFormat),
-                Direction = float.Parse(Direction, CultureInfo.InvariantCulture.NumberFormat),
-                Forward = float.Parse(Forward, CultureInfo.InvariantCulture.NumberFormat),
-                xPosFront = float.Parse(xFrontRaw, CultureInfo.InvariantCulture.NumberFormat),
-                yPosFront = float.Parse(yFrontRaw, CultureInfo.InvariantCulture.NumberFormat),
                 xPosLinear = float.Parse(xLinearRaw, CultureInfo.InvariantCulture.NumberFormat),
                 yPosLinear = float.Parse(yLinearRaw, CultureInfo.InvariantCulture.NumberFormat),
                 xPosKalman = float.Parse(xKalmanRaw, CultureInfo.InvariantCulture.NumberFormat),
@@ -129,62 +112,30 @@ namespace ArduinoGUI1
                 RangeRL = float.Parse(RangeRLRaw, CultureInfo.InvariantCulture.NumberFormat),
             });
 
+     
+
             foreach (var s in Plots)
             {
-                chart1.Series["Front"].Points.Clear();
-                chart1.Series["Front"].Points.AddXY(s.xPosFront, s.yPosFront);
+                radi = Math.Sqrt(Math.Pow(s.xPosKalman,2) + Math.Pow(s.yPosKalman,2));
+                radi2 = Math.Sqrt(Math.Pow(s.xPosLinear, 2) + Math.Pow(s.yPosLinear, 2));
+                degree = Math.Atan2(s.yPosKalman, s.xPosKalman);
+                degree = -1*(degree * 360 / (2 * Math.PI)-90);
+                degree2 = Math.Atan2(s.yPosLinear, s.xPosLinear);
+                degree2 = -1*(degree2 * 360 / (2 * Math.PI)-90);
                 chart1.Series["Linear"].Points.Clear();
-                chart1.Series["Linear"].Points.AddXY(s.xPosLinear, s.yPosLinear);
+                //chart1.Series["Linear"].Points.AddXY(degree2, radi2);
                 chart1.Series["Kalman"].Points.Clear();
-                chart1.Series["Kalman"].Points.AddXY(s.xPosKalman, s.yPosKalman);
-                label1.Text = "Position Linear: (" + s.xPosLinear.ToString("0.00") + ", " + s.yPosLinear.ToString("0.00") + ")";
-                label5.Text = "Position Circles: (" + s.xPosFront.ToString("0.00") + ", " + s.yPosFront.ToString("0.00") + ")";
-                label6.Text = "Position Kalman: (" + s.xPosKalman.ToString("0.00") + ", " + s.yPosKalman.ToString("0.00") + ")";
+                chart1.Series["Kalman"].Points.AddXY(degree, radi);
+                label7.Text = "(" + s.xPosKalman.ToString("0.00") + ", " + s.yPosKalman.ToString("0.00") + ")";
+                label13.Text = "(" + radi.ToString("0.00") + ", " + degree.ToString("0.00") + "°)";
+                label12.Text = s.SamplingFreq.ToString("0.00");
             }
             Plots.Clear();
 
-
-
-            //label5.Text = "Distance (RL): " + yRaw + "cm";
-            label4.Text = "Sampling: " + SamplingRaw;
-
-            flrange.Text = "RangeFL: " + RangeFLRaw;
-            frrange.Text = "RangeFR: " + RangeFRRaw;
-            rrrange.Text = "RangeRR: " + RangeRRRaw;
-            rlrange.Text = "RangeRL: " + RangeRLRaw;
-
-            if (Forward == "1")
-            {
-                front.BackColor = Color.Green;
-                back.BackColor = Color.White;
-            }
-            else if (Forward == "2")
-            {
-                front.BackColor = Color.White;
-                back.BackColor = Color.Green;
-            }else
-            {
-                front.BackColor = Color.White;
-                back.BackColor = Color.White;
-            }
-            if (Direction == "1")
-            {
-                right.BackColor = Color.Green;
-                left.BackColor = Color.White;
-            }
-            else if (Direction == "2")
-            {
-                right.BackColor = Color.White;
-                left.BackColor = Color.Green;
-            }else
-            {
-                right.BackColor = Color.White;
-                left.BackColor = Color.White;
-            }
-            front.BackColor = Color.White;
-            back.BackColor = Color.White;
-            right.BackColor = Color.White;
-            left.BackColor = Color.White;
+            label8.Text = RangeFLRaw;
+            label9.Text = RangeFRRaw;
+            label10.Text = RangeRRRaw;
+            label11.Text = RangeRLRaw;
 
         }
 
@@ -194,13 +145,7 @@ namespace ArduinoGUI1
             {
                 Logger.Add(new plot
                 {
-                    xPosRaw = float.Parse(xRaw, CultureInfo.InvariantCulture.NumberFormat),
-                    yPosRaw = float.Parse(yRaw, CultureInfo.InvariantCulture.NumberFormat),
                     SamplingFreq = float.Parse(SamplingRaw, CultureInfo.InvariantCulture.NumberFormat),
-                    Direction = float.Parse(Direction, CultureInfo.InvariantCulture.NumberFormat),
-                    Forward = float.Parse(Forward, CultureInfo.InvariantCulture.NumberFormat),
-                    xPosFront = float.Parse(xFrontRaw, CultureInfo.InvariantCulture.NumberFormat),
-                    yPosFront = float.Parse(yFrontRaw, CultureInfo.InvariantCulture.NumberFormat),
                     xPosLinear = float.Parse(xLinearRaw, CultureInfo.InvariantCulture.NumberFormat),
                     yPosLinear = float.Parse(yLinearRaw, CultureInfo.InvariantCulture.NumberFormat),
                     xPosKalman = float.Parse(xKalmanRaw, CultureInfo.InvariantCulture.NumberFormat),
@@ -211,20 +156,21 @@ namespace ArduinoGUI1
                     RangeRL = float.Parse(RangeRLRaw, CultureInfo.InvariantCulture.NumberFormat),
                 });
             }
-         /*   if (Logger.Count == 500)
-            {
-                Filename = txFileName.Text;
-                btnLogging.Text = "Start Logging";
-                TextWriter tw = new StreamWriter("../../../../../TestingData/" + Filename + ".txt");
-                foreach (var s in Logger)
-                    tw.WriteLine(s.xPosRaw.ToString("0.00", new CultureInfo("en-US")) + "," + s.yPosRaw.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.xPosFilter.ToString("0.00", new CultureInfo("en-US")) + "," + s.yPosFilter.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.TxPower.ToString("0.00", new CultureInfo("en-US")) + "," + s.TxRxQ.ToString("0.00", new CultureInfo("en-US")));
-                tw.Close();
-                IsLogging = false;
-                Logger.Clear();
-            }*/
+            /*   if (Logger.Count == 500)
+               {
+                   Filename = txFileName.Text;
+                   btnLogging.Text = "Start Logging";
+                   TextWriter tw = new StreamWriter("../../../../../TestingData/" + Filename + ".txt");
+                   foreach (var s in Logger)
+                       tw.WriteLine(s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeFL.ToString("0.00", new CultureInfo("en-US")) +
+                           "," + s.RangeFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeRR.ToString("0.00", new CultureInfo("en-US")) +
+                           "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
+                           "," + s.yPosLinear.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosKalman.ToString("0.00", new CultureInfo("en-US")) +
+                           "," + s.yPosKalman.ToString("0.00", new CultureInfo("en-US")));
+                   tw.Close();
+                   IsLogging = false;
+                   Logger.Clear();
+               }*/
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
@@ -304,13 +250,7 @@ namespace ArduinoGUI1
 
         private class plot
         {
-            public double xPosRaw { get; set; }
-            public double yPosRaw { get; set; }
             public double SamplingFreq { get; set; }
-            public double Direction { get; set; }
-            public double Forward { get; set; }
-            public double xPosFront { get; set; }
-            public double yPosFront { get; set; }
             public double xPosLinear { get; set; }
             public double yPosLinear { get; set; }
             public double xPosKalman { get; set; }
@@ -350,12 +290,9 @@ namespace ArduinoGUI1
                 Filename = txFileName.Text;
                 TextWriter tw = new StreamWriter("../../../../../TestingData/" + Filename + ".txt");
                 foreach (var s in Logger)
-                    tw.WriteLine(s.xPosRaw.ToString("0.00", new CultureInfo("en-US")) + "," + s.yPosRaw.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.Direction.ToString("0.00", new CultureInfo("en-US")) + 
-                        "," + s.Forward.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeFL.ToString("0.00", new CultureInfo("en-US")) +
+                    tw.WriteLine(s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeFL.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.RangeFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeRR.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," +  s.xPosFront.ToString("0.00", new CultureInfo("en-US")) + 
-                        "," + s.yPosFront.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
+                        "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.yPosLinear.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosKalman.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.yPosKalman.ToString("0.00", new CultureInfo("en-US"))
                         );

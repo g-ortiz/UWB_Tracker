@@ -157,7 +157,7 @@ void setup() {
   
     SerialUSB.println("start");
 
-	  //Initialize filter and multilateration   
+    //Initialize filter and multilateration   
     Tracker.initTracker();    
     coords[0] = 0;
     coords[1] = 0;
@@ -443,8 +443,7 @@ void loop() {
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
                     kalman_buf = kalman_buf + 1;                       
-                    String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
-                             + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
+                    String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) 
                              + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata);                                                   
                     anchorRanging = F_R;
@@ -575,7 +574,7 @@ void loop() {
                 noteActivity();
             }
         }
-	  }else if (anchorRanging == R_R){
+    }else if (anchorRanging == R_R){
         if (sentAck) {
             sentAck = false;
             byte msgId = data[0];          
@@ -615,9 +614,8 @@ void loop() {
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
                     kalman_buf = kalman_buf + 1;                       
-                    String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
-                             + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
+                    String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) 
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";             
                     //SerialUSB.print(SerialUSBdata);                                                 
                     anchorRanging = R_L;          
                     expectedMsgId = POLL_ACK;
@@ -663,7 +661,7 @@ void loop() {
                 noteActivity();
             }
         }
-	  }else if (anchorRanging == R_L){
+    }else if (anchorRanging == R_L){
         if (sentAck) {
             sentAck = false;
             byte msgId = data[0];      
@@ -703,9 +701,8 @@ void loop() {
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
                     kalman_buf = kalman_buf + 1;                       
-                    String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
-                             + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
+                    String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) 
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";               
                     SerialUSB.print(SerialUSBdata);
                     //Serial1.print(SerialUSBdata);
                     //Send movement to mini if kaman buffer amount reached
@@ -754,7 +751,7 @@ void loop() {
                 noteActivity();
             }
         }
-   }   	
+   }    
  }
 
 

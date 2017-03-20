@@ -66,6 +66,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -79,6 +80,22 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\orangeborder10.png" />
+    <None Include="Resources\orangeborder9.png" />
+    <None Include="Resources\orangeborder7.png" />
+    <None Include="Resources\orangeborder5.png" />
+    <None Include="Resources\orangeborder4.png" />
+    <None Include="Resources\orangeborder3.png" />
+    <None Include="Resources\orangeborder2.png" />
+    <None Include="target4.png" />
+    <None Include="Picture4.png" />
+    <Content Include="Properties\target4.png" />
+    <None Include="Resources\cyber5.png" />
+    <None Include="Resources\orangeborder.png" />
+    <None Include="Resources\border2.png" />
+    <None Include="Resources\border.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
