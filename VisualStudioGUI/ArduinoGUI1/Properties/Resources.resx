@@ -118,32 +118,65 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="orangeborder5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\orangeborder5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="orangeborder73" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orangeborder73.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="border2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\border2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="cyber5" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\cyber5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="border" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\border.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="orangeborder10" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orangeborder10.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="orangeborder" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\orangeborder.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="target4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\target4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="orangeborder103" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orangeborder103.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Picture4" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Picture4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="orangeborder92" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orangeborder92.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="orangeborder9" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\orangeborder9.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="cyber5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cyber5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="orangeborder72" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orangeborder72.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="toprow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toprow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="orangeborder102" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orangeborder102.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="target4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\target4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="orangeborder95" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orangeborder95.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="border" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\border.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="orangeborder94" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orangeborder94.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="border3" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\border3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="orangeborder5" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orangeborder5.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="orangeborder7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\orangeborder7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="orangeborder3" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\orangeborder3.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="border2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\border2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Picture4" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Picture4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="orangeborder4" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\orangeborder4.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -151,10 +184,7 @@
   <data name="orangeborder2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\orangeborder2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="orangeborder7" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\orangeborder7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="orangeborder10" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\orangeborder10.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="toprow1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toprow1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

@@ -83,6 +83,16 @@ namespace ArduinoGUI1.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap border3 {
+            get {
+                object obj = ResourceManager.GetObject("border3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cyber5 {
             get {
                 object obj = ResourceManager.GetObject("cyber5", resourceCulture);
@@ -106,6 +116,26 @@ namespace ArduinoGUI1.Properties {
         internal static System.Drawing.Bitmap orangeborder10 {
             get {
                 object obj = ResourceManager.GetObject("orangeborder10", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap orangeborder102 {
+            get {
+                object obj = ResourceManager.GetObject("orangeborder102", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap orangeborder103 {
+            get {
+                object obj = ResourceManager.GetObject("orangeborder103", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,9 +193,59 @@ namespace ArduinoGUI1.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap orangeborder72 {
+            get {
+                object obj = ResourceManager.GetObject("orangeborder72", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap orangeborder73 {
+            get {
+                object obj = ResourceManager.GetObject("orangeborder73", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap orangeborder9 {
             get {
                 object obj = ResourceManager.GetObject("orangeborder9", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap orangeborder92 {
+            get {
+                object obj = ResourceManager.GetObject("orangeborder92", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap orangeborder94 {
+            get {
+                object obj = ResourceManager.GetObject("orangeborder94", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap orangeborder95 {
+            get {
+                object obj = ResourceManager.GetObject("orangeborder95", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -186,6 +266,26 @@ namespace ArduinoGUI1.Properties {
         internal static System.Drawing.Bitmap target4 {
             get {
                 object obj = ResourceManager.GetObject("target4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap toprow {
+            get {
+                object obj = ResourceManager.GetObject("toprow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap toprow1 {
+            get {
+                object obj = ResourceManager.GetObject("toprow1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

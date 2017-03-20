@@ -82,6 +82,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\toprow1.png" />
+    <None Include="Resources\toprow.png" />
+    <None Include="Resources\border3.png" />
+    <None Include="Resources\orangeborder95.png" />
+    <None Include="Resources\orangeborder94.png" />
+    <None Include="Resources\orangeborder103.png" />
+    <None Include="Resources\orangeborder92.png" />
+    <None Include="Resources\orangeborder73.png" />
+    <None Include="Resources\orangeborder102.png" />
+    <None Include="Resources\orangeborder72.png" />
     <None Include="Resources\orangeborder10.png" />
     <None Include="Resources\orangeborder9.png" />
     <None Include="Resources\orangeborder7.png" />
