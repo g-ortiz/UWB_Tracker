@@ -8,7 +8,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-#define FILTER_LENGTH 2
+#define FILTER_LENGTH 30
 #define NUM_VARS 3
 
 

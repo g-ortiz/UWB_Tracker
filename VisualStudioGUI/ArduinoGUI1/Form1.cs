@@ -123,7 +123,7 @@ namespace ArduinoGUI1
                 degree2 = Math.Atan2(s.yPosLinear, s.xPosLinear);
                 degree2 = -1*(degree2 * 360 / (2 * Math.PI)-90);
                 chart1.Series["Linear"].Points.Clear();
-                //chart1.Series["Linear"].Points.AddXY(degree2, radi2);
+                chart1.Series["Linear"].Points.AddXY(degree2, radi2);
                 chart1.Series["Kalman"].Points.Clear();
                 chart1.Series["Kalman"].Points.AddXY(degree, radi);
                 label7.Text = "(" + s.xPosKalman.ToString("0.00") + ", " + s.yPosKalman.ToString("0.00") + ")";

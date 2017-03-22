@@ -21,7 +21,7 @@ uint8_t array_ptr, vars_ptr;
 
 //Exponential Smoothing
 float s_avg0, s_avg1, s_avg2, s_avg3;
-static const float ALPHA = 0.15;
+static const float ALPHA = 0.99;
 uint16_t count0, count1, count2, count3;
 
 //Variables for multi-lat
@@ -369,22 +369,8 @@ float TrackerClass::filter(float newDist, uint8_t anchor, float coord[])
 			filt_list[vars_ptr + 1] = filt_list[vars_ptr + 1]; //Average remains unchanged
 		}
 		float new_avg = filt_list[vars_ptr + 1]; 
-		loc(new_avg, anchor, coord+2);
-		if (anchor == 3){
-			array_ptr = (anchor-3)*FILTER_LENGTH + (anchor-3)*NUM_VARS; //Points to the start of the specific anchor's array
-			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
-			float radiusfl = filt_list[vars_ptr + 1];
-			array_ptr = (anchor-2)*FILTER_LENGTH + (anchor-2)*NUM_VARS; //Points to the start of the specific anchor's array
-			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
-			float radiusfr = filt_list[vars_ptr + 1];
-			array_ptr = (anchor-1)*FILTER_LENGTH + (anchor-1)*NUM_VARS; //Points to the start of the specific anchor's array
-			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
-			float radiusrr = filt_list[vars_ptr + 1]	;			
-			array_ptr = (anchor)*FILTER_LENGTH + (anchor)*NUM_VARS; //Points to the start of the specific anchor's array
-			vars_ptr = array_ptr + FILTER_LENGTH; //Start of variables (sum, avg, counter) for each anchor		
-			float radiusrl = filt_list[vars_ptr + 1]	;
-			circles(0,SEPARATIONy,radiusfl,SEPARATIONx, SEPARATIONy, radiusfr,radiusrl,coord, Front);
-		}
+		loc(new_avg, anchor, coord);
+
 			
 		return  new_avg;//Return the specified anchor's average (so we can print)
 	}
@@ -450,7 +436,7 @@ float TrackerClass::smoothing(float newDist, uint8_t anchor, float coord[])
 			}
 			new_avg = s_avg3;
 		}
-		//loc(new_avg, anchor, coord+2); //Call location function
+		loc(new_avg, anchor, coord+2); //Call location function
 		return new_avg;
 	}
 	else

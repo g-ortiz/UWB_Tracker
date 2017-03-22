@@ -12,7 +12,7 @@
 // Pins in Arduino Pro Mini 3.3V
 const uint8_t PIN_RST = 9; // reset pin
 const uint8_t PIN_IRQ = 2; // irq pin
-const uint8_t PIN_SS = 7; // spi select pin
+const uint8_t PIN_SS = 3; // spi select pin
 const uint8_t LEDPIN = 10; // reset pin
 
 // Anchor Names

@@ -438,13 +438,14 @@ void loop() {
                     timePollAckSent.setTimestamp(data + 6);            
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
+                    Tracker.filter(distance ,F_L, coords);
                     ranges[0] = Tracker.smoothing(distance ,F_L, coords);
                     rawcoords[0] = coords[2];
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
                     kalman_buf = kalman_buf + 1;                       
                     String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) 
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[0]) + "," + String(coords[1]) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata);                                                   
                     anchorRanging = F_R;
                     expectedMsgId = POLL_ACK;
@@ -524,6 +525,7 @@ void loop() {
                     timePollAckSent.setTimestamp(data + 6);                 
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
+                    Tracker.filter(distance ,F_R, coords);
                     ranges[1] = Tracker.smoothing(distance , F_R, coords); 
                     rawcoords[0] = coords[2];
                     rawcoords[1] = coords[3];   
@@ -531,7 +533,7 @@ void loop() {
                     kalman_buf = kalman_buf + 1;                       
                     String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
                              + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";                
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[0]) + "," + String(coords[1]) + "\n\r";                
                     //SerialUSB.print(SerialUSBdata); 
                                         if(kalman_buf > 3)
                     {
@@ -609,13 +611,14 @@ void loop() {
                     timePollAckSent.setTimestamp(data + 6);                  
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
+                    Tracker.filter(distance ,R_R, coords);                    
                     ranges[2] = Tracker.smoothing(distance ,R_R, coords);
                     rawcoords[0] = coords[2];
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
                     kalman_buf = kalman_buf + 1;                       
                     String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) 
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";             
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[0]) + "," + String(coords[1]) + "\n\r";             
                     //SerialUSB.print(SerialUSBdata);                                                 
                     anchorRanging = R_L;          
                     expectedMsgId = POLL_ACK;
@@ -696,13 +699,14 @@ void loop() {
                     timePollAckSent.setTimestamp(data + 6);                     
                     computeRangeAsymmetric();  
                     float distance = timeComputedRange.getAsMeters()*100;
+                    Tracker.filter(distance ,R_L, coords);                       
                     ranges[3] = Tracker.smoothing(distance , R_L, coords);   
                     rawcoords[0] = coords[2];
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
                     kalman_buf = kalman_buf + 1;                       
                     String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) 
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";               
+                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[0]) + "," + String(coords[1]) + "\n\r";               
                     SerialUSB.print(SerialUSBdata);
                     //Serial1.print(SerialUSBdata);
                     //Send movement to mini if kaman buffer amount reached
