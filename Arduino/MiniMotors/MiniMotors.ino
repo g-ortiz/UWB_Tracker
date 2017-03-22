@@ -1,14 +1,9 @@
-// Wire Slave Receiver
-// by Nicholas Zambetti <http://www.zambetti.com>
-
-// Demonstrates use of the Wire library
-// Receives data as an I2C/TWI slave device
-// Refer to the "Wire Master Writer" example for use with this
-
-// Created 29 March 2006
-
-// This example code is in the public domain.
-
+/*
+--UWB Tracker
+--Motor Controller
+--Gabriel Ortiz
+--Fredrik Treven
+*/
 
 #include <Wire.h>
 #include <Math.h>
@@ -35,14 +30,14 @@ float angle = 0;
 void setup() {
   Wire.begin(4);                // join i2c bus with address #8
   Wire.onReceive(receiveEvent); // register event
-  Serial.begin(115200);           // start serial for output
+  Serial.begin(115200);         // start serial 
   coord[0] = 0;
   coord[1] = 0;
   
     //Movement setup
-  pinMode(_PIN_Left_F, OUTPUT); // Leflt Forward
+  pinMode(_PIN_Left_F, OUTPUT);  // Left Forward
   pinMode(_PIN_Right_F, OUTPUT); // Right Forward
-  pinMode(_PIN_Left_B, OUTPUT); // Left backwards
+  pinMode(_PIN_Left_B, OUTPUT);  // Left backwards
   pinMode(_PIN_Right_B, OUTPUT); //  right barckwards   
 }
 
@@ -150,17 +145,11 @@ void loop() {
             }
             lastActivity = millis();
         }
-    }else{  
-                //delay(60);
-                //analogWrite(_PIN_Right_F, 0);
-                //analogWrite(_PIN_Left_B, 0);
-                //analogWrite(_PIN_Left_F, 0);
-                //analogWrite(_PIN_Right_B, 0);
     }
 }
 
+
 // function that executes whenever data is received from master
-// this function is registered as an event, see setup()
 void receiveEvent(int howMany) {
   newdata = true;
   byte dataX[4];
@@ -175,10 +164,9 @@ void receiveEvent(int howMany) {
   dataY[3]= Wire.read();// receive byte as an integer
 
   coord[0] = *(float *)&dataX;
-
   coord[1] = *(float *)&dataY;
-  String SerialUSBdata = "(" + String(coord[0]) + "," + String(coord[1]) + ")";
-  Serial.println(SerialUSBdata);  
-
+  
+  //String SerialUSBdata = "(" + String(coord[0]) + "," + String(coord[1]) + ")";
+  //Serial.println(SerialUSBdata);  
 }
 

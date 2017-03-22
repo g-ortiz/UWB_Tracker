@@ -3,7 +3,7 @@
  * Target
  * Gabriel Ortiz 
  * Fredrik Treven
- * Adapted from: Decawave DW1000 library for arduino RangingAchor example.
+ * Adapted from: Decawave DW1000 library for arduino RangingAnchor example.
  */
 
 #include <SPI.h>
@@ -31,31 +31,28 @@ uint8_t anchorRanging = F_L;
 #define RANGE_ACK 3
 #define RANGE_FAILED 255
 
-
-
-
-// message flow state
+// Initial expected message
 volatile byte expectedMsgId = POLL;
 // message sent/received state
 volatile boolean sentAck = false;
 volatile boolean receivedAck = false;
+
 // timestamps
 DW1000Time timePollAckReceived;
 DW1000Time timePollReceived;
 DW1000Time timePollAckSent;
 DW1000Time timeRangeReceived;
+
 // data buffer
 #define LEN_DATA 16
 byte data[LEN_DATA];
+
 // watchdog and reset period
 uint32_t lastActivity;
 uint32_t resetPeriod = 200;
-// reply times (same on both sides for symm. ranging)
-uint8_t replyDelayTimeUS = 500;
+
 // protocol error state
 boolean protocolFailed = false;
-uint8_t hardresetcount = 0;
-
 
 void setup() {
     // Setup Code
@@ -68,7 +65,7 @@ void setup() {
     // general configuration
     DW1000.newConfiguration();
     DW1000.setDefaults();
-    DW1000.setDeviceAddress(2);
+    DW1000.setDeviceAddress(5);
     DW1000.setNetworkId(12);
     DW1000.enableMode(DW1000.MODE_SHORTDATA_FAST_LOWPOWER);
     DW1000.commitConfiguration();
@@ -76,6 +73,7 @@ void setup() {
     DW1000.enableLedBlinking();   
     DW1000.attachSentHandler(handleSent);
     DW1000.attachReceivedHandler(handleReceived);
+    
     // Target starts waiting for POLL
     receiver();
     // reset watchdog
@@ -88,12 +86,11 @@ void noteActivity() {
 }
 
 void resetInactive() {
-    // when watchdog times out, reset device
+    // when watchdog times out, restart communication
     expectedMsgId = POLL;
     receiver();
     noteActivity();
 }
-
 
 void handleSent() {
     // change state when ACK sent
@@ -110,9 +107,6 @@ void transmitPollAck() {
     DW1000.setDefaults();
     //Serial.println("Send POLL_ACK");
     data[0] = POLL_ACK;
-    // delay the same amount as ranging tag
-    //DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    //timePollAckSent = DW1000.setDelay(deltaTime);
     timePollReceived.getTimestamp(data + 1);
     timePollAckSent.getTimestamp(data + 6);
     DW1000.setData(data, LEN_DATA);
@@ -148,50 +142,22 @@ void receiver() {
     DW1000.startReceive();
 }
 
-void reset(){
-    DW1000.begin(PIN_IRQ, PIN_RST);
-    DW1000.select(PIN_SS);
-    // general configuration
-    DW1000.newConfiguration();
-    DW1000.setDefaults();
-    DW1000.setDeviceAddress(2);
-    DW1000.setNetworkId(12);
-    DW1000.enableMode(DW1000.MODE_SHORTDATA_FAST_LOWPOWER);
-    DW1000.commitConfiguration();
-    DW1000.enableDebounceClock();
-    DW1000.enableLedBlinking();   
-    DW1000.attachSentHandler(handleSent);
-    DW1000.attachReceivedHandler(handleReceived);
-    // Target starts waiting for POLL
-    receiver();
-    // reset watchdog
-    noteActivity();
-}
-
 void loop() {
     if (!sentAck && !receivedAck) {
         // reset if wathcdog timed out
         if (millis() - lastActivity > resetPeriod) {
                 //Serial.println("WATCHDOG TIMEOUT");
-                hardresetcount++;
                 resetInactive();
-        }
-        if (hardresetcount==10){
-            hardresetcount=0;
-            //Serial.println("HARD RESET");
-            reset();
         }
         return;
     }
-    // SentAck (after receiving first POLL)
     if (sentAck) {
         sentAck = false;
         byte msgId = data[0];
         //Serial.print("Sent:   "); Serial.println(msgId);        
         if (msgId == POLL_ACK) {
             DW1000.getTransmitTimestamp(timePollAckSent);
-            // reset watchdog
-            noteActivity();
+            noteActivity(); // reset watchdog
         }
     }
     if (receivedAck) {  
@@ -201,28 +167,24 @@ void loop() {
         byte msgId = data[0];
         //Serial.print("Received:   "); Serial.println(msgId); 
         if (msgId != expectedMsgId) {
-            // unexpected message, start over again (except if already POLL)
+            // unexpected message, start over again
             protocolFailed = true;
             expectedMsgId = POLL;
             //Serial.print("Received ERROR Expected:"); Serial.println(expectedMsgId);        
         }
         if (msgId == POLL) {
             DW1000.getReceiveTimestamp(timePollReceived);
-            // get timestamp, change expected message and send POLL_ACK
             //Serial.print("Received POLL\n\r");
             protocolFailed = false;
             expectedMsgId = RANGE;
             transmitPollAck();
-            // reset watchdog
-            noteActivity();
+            noteActivity(); // reset watchdog
         }else if (msgId == RANGE) {
             DW1000.getReceiveTimestamp(timeRangeReceived);
-            // get timestamp, change expected message, calculate range and print
            // Serial.print("Received RANGE\n\r");
             expectedMsgId = POLL;           
             transmitRangeAck();
-            digitalWrite(LEDPIN, !digitalRead(LEDPIN));   
-            hardresetcount = 0;          
+            digitalWrite(LEDPIN, !digitalRead(LEDPIN));          
             noteActivity(); // reset watchdog
         }
     }                             

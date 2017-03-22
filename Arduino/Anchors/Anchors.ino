@@ -74,9 +74,6 @@ byte data[LEN_DATA];
 uint32_t lastActivity;
 uint32_t resetPeriod = 200;
 
-// reply times 
-uint16_t replyDelayTimeUS = 300;
-
 // ranging counter (per second)
 uint16_t successRangingCount = 0;
 uint32_t rangingCountPeriod = 0;
@@ -85,12 +82,14 @@ float samplingRate = 0;
 uint16_t kalman_buf = 0; //Allow kalman to setup prior to starting movement
 
 void setup() {
-    // Setup Code
+
     // Begin serialcommunication
     SerialUSB.begin(115200);
     Serial1.begin(115200);
     Wire.begin(); // start I2C
     delay(1000);
+
+    // Setup Anchors
     // ################# FRONT LEFT####################//
     DW1000FL.begin(PIN_IRQ_FL, PIN_RST_FL);    
     DW1000FL.select(PIN_SS_FL); //    
@@ -111,7 +110,7 @@ void setup() {
     DW1000FR.select(PIN_SS_FR); //    
     DW1000FR.newConfiguration();
     DW1000FR.setDefaults();
-    DW1000FR.setDeviceAddress(5);
+    DW1000FR.setDeviceAddress(2);
     DW1000FR.setNetworkId(12);
     DW1000FR.enableMode(DW1000FR.MODE_SHORTDATA_FAST_LOWPOWER);
     DW1000FR.commitConfiguration();
@@ -121,13 +120,12 @@ void setup() {
     DW1000FR.attachSentHandler(handleSent);
     DW1000FR.attachReceivedHandler(handleReceived);    
 
-
     // ################# REAR RIGHT####################//
     DW1000RR.begin(PIN_IRQ_RR, PIN_RST_RR);    
     DW1000RR.select(PIN_SS_RR); //    
     DW1000RR.newConfiguration();
     DW1000RR.setDefaults();
-    DW1000RR.setDeviceAddress(6);
+    DW1000RR.setDeviceAddress(3);
     DW1000RR.setNetworkId(12);
     DW1000RR.enableMode(DW1000RR.MODE_SHORTDATA_FAST_LOWPOWER);
     DW1000RR.commitConfiguration();
@@ -142,7 +140,7 @@ void setup() {
     DW1000RL.select(PIN_SS_RL); //    
     DW1000RL.newConfiguration();
     DW1000RL.setDefaults();
-    DW1000RL.setDeviceAddress(7);
+    DW1000RL.setDeviceAddress(4);
     DW1000RL.setNetworkId(12);
     DW1000RL.enableMode(DW1000RL.MODE_SHORTDATA_FAST_LOWPOWER);
     DW1000RL.commitConfiguration();
@@ -155,18 +153,21 @@ void setup() {
     //Initialize filter and multilateration   
     Tracker.initTracker();    
     coords[0] = 0;
-    coords[1] = 0;
-    DW1000FR.receivePermanently(false);
-    DW1000RR.receivePermanently(false);   
-    DW1000RL.receivePermanently(false);        
-    // start receive mode, wait for POLL message
-    //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FL));
+    coords[1] = 0;      
+
+    //attach Interrupts
     attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FL), DW1000FL.handleInterrupt, RISING);    
     attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FR), DW1000FR.handleInterrupt, RISING);    
     attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RR), DW1000RR.handleInterrupt, RISING);    
     attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RL), DW1000RL.handleInterrupt, RISING);   
+    
+    // start receive mode, wait for POLL message
     receiverFL();
     transmitPollFL();
+    DW1000FR.receivePermanently(false);
+    DW1000RR.receivePermanently(false);   
+    DW1000RL.receivePermanently(false);    
+        
     // reset watchdog
     noteActivity();
     // for first time ranging frequency computation
@@ -185,7 +186,6 @@ void resetInactiveFL() {
     noteActivity();
     delay(5);    
     receiverFL();
-    ////SerialUSB.println("Timeout");
 }
 
 void resetInactiveFR() {
@@ -195,7 +195,6 @@ void resetInactiveFR() {
     noteActivity();
     delay(5);
     receiverFR();
-    ////SerialUSB.println("Timeout");
 }
 
 void resetInactiveRR() {
@@ -205,7 +204,7 @@ void resetInactiveRR() {
     noteActivity();
     delay(5);
     receiverRR();
-    ////SerialUSB.println("Timeout");
+
 }
 
 void resetInactiveRL() {
@@ -215,7 +214,6 @@ void resetInactiveRL() {
     noteActivity();
     delay(5);
     receiverRL();
-    ////SerialUSB.println("Timeout");
 }
 
 void handleSent() {
@@ -269,11 +267,7 @@ void transmitRangeFL() {
     DW1000FL.setDefaults();
     //SerialUSB.println("Send Range_FL");
     data[0] = RANGE;
-    // delay sending the message and remember expected future sent timestamp
-    //DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    //timeRangeSent = DW1000FL.setDelay(deltaTime);
     timeRangeSent.getTimestamp(data + 1);
-    //DW1000FL.setDelay(deltaTime);
     DW1000FL.setData(data, LEN_DATA);
     DW1000FL.startTransmit();
 }
@@ -283,11 +277,7 @@ void transmitRangeFR() {
     DW1000FR.setDefaults();
     //SerialUSB.println("Send Range_FR");
     data[0] = RANGE;   
-    // delay sending the message and remember expected future sent timestamp
-    //DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    //timeRangeSent = DW1000FR.setDelay(deltaTime);
     timeRangeSent.getTimestamp(data + 1);
-   // DW1000FR.setDelay(deltaTime);
     DW1000FR.setData(data, LEN_DATA);
     DW1000FR.startTransmit();
 }
@@ -297,11 +287,7 @@ void transmitRangeRR() {
     DW1000RR.setDefaults();
     //SerialUSB.println("Send Range_RR");
     data[0] = RANGE;   
-    // delay sending the message and remember expected future sent timestamp
-    //DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    //timeRangeSent = DW1000RR.setDelay(deltaTime);
     timeRangeSent.getTimestamp(data + 1);
-    //DW1000RR.setDelay(deltaTime);
     DW1000RR.setData(data, LEN_DATA);
     DW1000RR.startTransmit();
 }
@@ -311,11 +297,7 @@ void transmitRangeRL() {
     DW1000RL.setDefaults();
     //SerialUSB.println("Send Range_RL");
     data[0] = RANGE;   
-    // delay sending the message and remember expected future sent timestamp
-    //DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    //timeRangeSent = DW1000RL.setDelay(deltaTime);
     timeRangeSent.getTimestamp(data + 1);
-   // DW1000RL.setDelay(deltaTime);
     DW1000RL.setData(data, LEN_DATA);
     DW1000RL.startTransmit();
 }
@@ -364,15 +346,6 @@ void computeRangeAsymmetric() {
     timeComputedRange.setTimestamp(tof);
 }
 
-
-void computeRangeSymmetric() {
-    // symmetric two-way ranging (less computation intense, more error prone on clock drift)
-    DW1000Time tof = ((timePollAckReceived - timePollSent) - (timePollAckSent - timePollReceived) +
-                      (timeRangeReceived - timePollAckSent) - (timeRangeSent - timePollAckReceived)) * 0.25f;
-    // set tof timestamp
-    timeComputedRange.setTimestamp(tof);
-}
-
 void loop() {
     // reset if wathcdog timed out
     int32_t curMillis = millis(); // get current time
@@ -380,25 +353,18 @@ void loop() {
         if (curMillis - lastActivity > resetPeriod) {
             //SerialUSB.println("WATCHDOG TIMEOUT");
             if (anchorRanging == F_L){
-                //DW1000FL.idle();
-                //anchorRanging = F_R;
                 resetInactiveFL();
-            }else if(anchorRanging == F_R){
-                //DW1000FR.idle();              
-                //anchorRanging = R_R;              
+            }else if(anchorRanging == F_R){    
                 resetInactiveFR();            
-            }else if(anchorRanging == R_R){
-                //DW1000RR.idle();                
-                //anchorRanging = R_L;              
+            }else if(anchorRanging == R_R){         
                 resetInactiveRR();            
-            }else if(anchorRanging == R_L){
-                //DW1000RL.idle();
-                //anchorRanging = F_L;                
+            }else if(anchorRanging == R_L){         
                 resetInactiveRL();            
             }
         }
         return;
     }
+    
     if (anchorRanging == F_L){    
         if (sentAck) {               
             sentAck = false;
@@ -587,8 +553,7 @@ void loop() {
                         byte *bvalX;
                         byte *bvalY;
                         bvalX = (byte *)&coords[2];
-                        bvalY = (byte *)&coords[3];                      
-                        
+                        bvalY = (byte *)&coords[3];                                              
                         Wire.beginTransmission(4); // transmit to device #4
                         Wire.write((int)bvalX[0]);              // sends one byte  
                         Wire.write((int) bvalX[1]);              // sends one byte  
@@ -661,7 +626,7 @@ void loop() {
                         byte *bvalX;
                         byte *bvalY;
                         bvalX = (byte *)&coords[2];
-                        bvalY = (byte *)&coords[3];                                           
+                        bvalY = (byte *)&coords[3];                                      
                         Wire.beginTransmission(4); // transmit to device #4
                         Wire.write((int)bvalX[0]);              // sends one byte  
                         Wire.write((int) bvalX[1]);              // sends one byte  
