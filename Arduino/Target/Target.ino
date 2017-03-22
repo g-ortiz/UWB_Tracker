@@ -51,7 +51,7 @@ byte data[LEN_DATA];
 uint32_t lastActivity;
 uint32_t resetPeriod = 200;
 // reply times (same on both sides for symm. ranging)
-uint32_t replyDelayTimeUS = 1000;
+uint8_t replyDelayTimeUS = 500;
 // protocol error state
 boolean protocolFailed = false;
 uint8_t hardresetcount = 0;
@@ -111,8 +111,8 @@ void transmitPollAck() {
     //Serial.println("Send POLL_ACK");
     data[0] = POLL_ACK;
     // delay the same amount as ranging tag
-    DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    timePollAckSent = DW1000.setDelay(deltaTime);
+    //DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
+    //timePollAckSent = DW1000.setDelay(deltaTime);
     timePollReceived.getTimestamp(data + 1);
     timePollAckSent.getTimestamp(data + 6);
     DW1000.setData(data, LEN_DATA);
@@ -178,7 +178,7 @@ void loop() {
         }
         if (hardresetcount==10){
             hardresetcount=0;
-            //Serial.println("HARD RESET!!!!!");
+            //Serial.println("HARD RESET");
             reset();
         }
         return;

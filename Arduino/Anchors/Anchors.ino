@@ -30,7 +30,6 @@ const uint8_t PIN_IRQ_RL = A2; // irq pin
 const uint8_t PIN_SS_RL = A1; // spi select pin
 
 
-
 // Expected messages FL
 #define POLL 0
 #define POLL_ACK 1
@@ -47,18 +46,16 @@ const uint8_t PIN_SS_RL = A1; // spi select pin
 
 float coords[4];
 float rawcoords[2];
-uint8_t moveto[2];
 float ranges[4];
 
-// Receiving anchor
+// Initial states
 uint8_t anchorRanging = F_L;
-// message flow state
 volatile byte expectedMsgId = POLL_ACK;
+
 // message sent/received state
 volatile boolean sentAck = false;
 volatile boolean receivedAck = false;
-// protocol error state
-boolean protocolFailed = false;
+
 // timestamps
 DW1000Time timePollSent;
 DW1000Time timePollReceived;
@@ -68,29 +65,30 @@ DW1000Time timeRangeSent;
 DW1000Time timeRangeReceived;
 // last computed range/time
 DW1000Time timeComputedRange;
+
 // data buffer
 #define LEN_DATA 16
 byte data[LEN_DATA];
+
 // watchdog and reset period
 uint32_t lastActivity;
 uint32_t resetPeriod = 200;
-// reply times (same on both sides for symm. ranging)
-uint16_t replyDelayTimeUS = 1000;
+
+// reply times 
+uint16_t replyDelayTimeUS = 300;
+
 // ranging counter (per second)
 uint16_t successRangingCount = 0;
 uint32_t rangingCountPeriod = 0;
 float samplingRate = 0;
 
-uint32_t movementPeriod = 0;
-
 uint16_t kalman_buf = 0; //Allow kalman to setup prior to starting movement
 
 void setup() {
     // Setup Code
-    // Begin //SerialUSB communication
-    ////SerialUSB1.begin(9600);
-    SerialUSB.begin(250000);
-    //Serial1.begin(115200);
+    // Begin serialcommunication
+    SerialUSB.begin(115200);
+    Serial1.begin(115200);
     Wire.begin(); // start I2C
     delay(1000);
     // ################# FRONT LEFT####################//
@@ -153,9 +151,6 @@ void setup() {
     // set function callbacks for sent and received messages
     DW1000RL.attachSentHandler(handleSent);
     DW1000RL.attachReceivedHandler(handleReceived);            
-
-  
-    SerialUSB.println("start");
 
     //Initialize filter and multilateration   
     Tracker.initTracker();    
@@ -275,10 +270,10 @@ void transmitRangeFL() {
     //SerialUSB.println("Send Range_FL");
     data[0] = RANGE;
     // delay sending the message and remember expected future sent timestamp
-    DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    timeRangeSent = DW1000FL.setDelay(deltaTime);
+    //DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
+    //timeRangeSent = DW1000FL.setDelay(deltaTime);
     timeRangeSent.getTimestamp(data + 1);
-    DW1000FL.setDelay(deltaTime);
+    //DW1000FL.setDelay(deltaTime);
     DW1000FL.setData(data, LEN_DATA);
     DW1000FL.startTransmit();
 }
@@ -289,10 +284,10 @@ void transmitRangeFR() {
     //SerialUSB.println("Send Range_FR");
     data[0] = RANGE;   
     // delay sending the message and remember expected future sent timestamp
-    DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    timeRangeSent = DW1000FR.setDelay(deltaTime);
+    //DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
+    //timeRangeSent = DW1000FR.setDelay(deltaTime);
     timeRangeSent.getTimestamp(data + 1);
-    DW1000FR.setDelay(deltaTime);
+   // DW1000FR.setDelay(deltaTime);
     DW1000FR.setData(data, LEN_DATA);
     DW1000FR.startTransmit();
 }
@@ -303,10 +298,10 @@ void transmitRangeRR() {
     //SerialUSB.println("Send Range_RR");
     data[0] = RANGE;   
     // delay sending the message and remember expected future sent timestamp
-    DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    timeRangeSent = DW1000RR.setDelay(deltaTime);
+    //DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
+    //timeRangeSent = DW1000RR.setDelay(deltaTime);
     timeRangeSent.getTimestamp(data + 1);
-    DW1000RR.setDelay(deltaTime);
+    //DW1000RR.setDelay(deltaTime);
     DW1000RR.setData(data, LEN_DATA);
     DW1000RR.startTransmit();
 }
@@ -317,10 +312,10 @@ void transmitRangeRL() {
     //SerialUSB.println("Send Range_RL");
     data[0] = RANGE;   
     // delay sending the message and remember expected future sent timestamp
-    DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
-    timeRangeSent = DW1000RL.setDelay(deltaTime);
+    //DW1000Time deltaTime = DW1000Time(replyDelayTimeUS, DW1000Time::MICROSECONDS);
+    //timeRangeSent = DW1000RL.setDelay(deltaTime);
     timeRangeSent.getTimestamp(data + 1);
-    DW1000RL.setDelay(deltaTime);
+   // DW1000RL.setDelay(deltaTime);
     DW1000RL.setData(data, LEN_DATA);
     DW1000RL.startTransmit();
 }
@@ -443,51 +438,35 @@ void loop() {
                     rawcoords[0] = coords[2];
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
-                    kalman_buf = kalman_buf + 1;                       
-                    String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) 
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[0]) + "," + String(coords[1]) + "\n\r";                
-                    //SerialUSB.print(SerialUSBdata);                                                   
+                    kalman_buf = kalman_buf + 1;                                                                    
                     anchorRanging = F_R;
                     expectedMsgId = POLL_ACK;
-                                        if(kalman_buf > 3)
+                    if(kalman_buf > 3)
                     {
-                      byte *bvalX;
-                      byte *bvalY;
-                      //if (coords[0] != 0 && coords[3]>0){
-                         bvalX = (byte *)&coords[2];
-                         bvalY = (byte *)&coords[3];                      
-                      //}else{
-                          //bvalX = (byte *)&rawcoords[0];
-                          //bvalY = (byte *)&rawcoords[1];                      
-                      //}
-                      
-                      Wire.beginTransmission(4); // transmit to device #4
-                      Wire.write((int)bvalX[0]);              // sends one byte  
-                      Wire.write((int) bvalX[1]);              // sends one byte  
-                      Wire.write((int)bvalX[2]);              // sends one byte  
-                      Wire.write((int) bvalX[3]);              // sends one byte 
-                      Wire.write((int)bvalY[0]);              // sends one byte  
-                      Wire.write((int) bvalY[1]);              // sends one byte  
-                      Wire.write((int)bvalY[2]);              // sends one byte  
-                      Wire.write((int) bvalY[3]);              // sends one byte                      
-                      Wire.endTransmission();    // stop transmitting                                        
-                      successRangingCount++;
+                        byte *bvalX;
+                        byte *bvalY;
+                        bvalX = (byte *)&coords[2];
+                        bvalY = (byte *)&coords[3];                      
+                        
+                        Wire.beginTransmission(4); // transmit to device #4
+                        Wire.write((int)bvalX[0]);              // sends one byte  
+                        Wire.write((int) bvalX[1]);              // sends one byte  
+                        Wire.write((int)bvalX[2]);              // sends one byte  
+                        Wire.write((int) bvalX[3]);              // sends one byte 
+                        Wire.write((int)bvalY[0]);              // sends one byte  
+                        Wire.write((int) bvalY[1]);              // sends one byte  
+                        Wire.write((int)bvalY[2]);              // sends one byte  
+                        Wire.write((int) bvalY[3]);              // sends one byte                      
+                        Wire.endTransmission();    // stop transmitting                                        
+                        successRangingCount++;
                     }                 
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
                         rangingCountPeriod = curMillis;
                         successRangingCount = 0;
                     }                     
-                    //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FR));
-                    //attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FR), DW1000FR.handleInterrupt, RISING);                    
-                    //delay(100); 
                     transmitPollFR();                                             
                     noteActivity();   
-            } else if (msgId == RANGE_FAILED) {
-                //SerialUSB.println("Received Range_FAILED_FL");                       
-                expectedMsgId = POLL_ACK;
-                transmitPollFL();
-                noteActivity();
             }
         }
     }else if (anchorRanging == F_R){
@@ -531,33 +510,23 @@ void loop() {
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
                     kalman_buf = kalman_buf + 1;                       
-                    String SerialUSBdata = "0," + String(distance) + "," + String(samplingRate) + "," + String(moveto[0]) + "," + String(moveto[1])
-                             + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(coords[0]) + "," + String(coords[1])
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[0]) + "," + String(coords[1]) + "\n\r";                
-                    //SerialUSB.print(SerialUSBdata); 
-                                        if(kalman_buf > 3)
+                    if(kalman_buf > 3)
                     {
-                      byte *bvalX;
-                      byte *bvalY;
-                      //if (coords[0] != 0 && coords[3]>0){
-                         bvalX = (byte *)&coords[2];
-                         bvalY = (byte *)&coords[3];                      
-                      //}else{
-                          //bvalX = (byte *)&rawcoords[0];
-                          //bvalY = (byte *)&rawcoords[1];                      
-                      //}
-                      
-                      Wire.beginTransmission(4); // transmit to device #4
-                      Wire.write((int)bvalX[0]);              // sends one byte  
-                      Wire.write((int) bvalX[1]);              // sends one byte  
-                      Wire.write((int)bvalX[2]);              // sends one byte  
-                      Wire.write((int) bvalX[3]);              // sends one byte 
-                      Wire.write((int)bvalY[0]);              // sends one byte  
-                      Wire.write((int) bvalY[1]);              // sends one byte  
-                      Wire.write((int)bvalY[2]);              // sends one byte  
-                      Wire.write((int) bvalY[3]);              // sends one byte                      
-                      Wire.endTransmission();    // stop transmitting                                        
-                      successRangingCount++;
+                        byte *bvalX;
+                        byte *bvalY;                        
+                        bvalX = (byte *)&coords[2];
+                        bvalY = (byte *)&coords[3];                                              
+                        Wire.beginTransmission(4); // transmit to device #4
+                        Wire.write((int)bvalX[0]);              // sends one byte  
+                        Wire.write((int) bvalX[1]);              // sends one byte  
+                        Wire.write((int)bvalX[2]);              // sends one byte  
+                        Wire.write((int) bvalX[3]);              // sends one byte 
+                        Wire.write((int)bvalY[0]);              // sends one byte  
+                        Wire.write((int) bvalY[1]);              // sends one byte  
+                        Wire.write((int)bvalY[2]);              // sends one byte  
+                        Wire.write((int) bvalY[3]);              // sends one byte                      
+                        Wire.endTransmission();    // stop transmitting                                        
+                        successRangingCount++;
                     }
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -565,15 +534,9 @@ void loop() {
                         successRangingCount = 0;
                     }                                                                       
                     anchorRanging = R_R;          
-                    expectedMsgId = POLL_ACK;                                 
-                    //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_RR));
-                    //attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RR), DW1000RR.handleInterrupt, RISING);             
+                    expectedMsgId = POLL_ACK;                                         
                     transmitPollRR();                   
                     noteActivity();
-            } else if (msgId == RANGE_FAILED) {                                  
-                expectedMsgId = POLL_ACK;
-                transmitPollFR();
-                noteActivity();
             }
         }
     }else if (anchorRanging == R_R){
@@ -616,52 +579,35 @@ void loop() {
                     rawcoords[0] = coords[2];
                     rawcoords[1] = coords[3];   
                     Tracker.kalman(coords+2);
-                    kalman_buf = kalman_buf + 1;                       
-                    String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) 
-                             + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[0]) + "," + String(coords[1]) + "\n\r";             
-                    //SerialUSB.print(SerialUSBdata);                                                 
+                    kalman_buf = kalman_buf + 1;                                                                     
                     anchorRanging = R_L;          
                     expectedMsgId = POLL_ACK;
-                                        if(kalman_buf > 3)
+                    if(kalman_buf > 3)
                     {
-                      byte *bvalX;
-                      byte *bvalY;
-                      //if (coords[0] != 0 && coords[3]>0){
-                         bvalX = (byte *)&coords[2];
-                         bvalY = (byte *)&coords[3];                      
-                      //}else{
-                          //bvalX = (byte *)&rawcoords[0];
-                          //bvalY = (byte *)&rawcoords[1];                      
-                      //}
-                      
-                      Wire.beginTransmission(4); // transmit to device #4
-                      Wire.write((int)bvalX[0]);              // sends one byte  
-                      Wire.write((int) bvalX[1]);              // sends one byte  
-                      Wire.write((int)bvalX[2]);              // sends one byte  
-                      Wire.write((int) bvalX[3]);              // sends one byte 
-                      Wire.write((int)bvalY[0]);              // sends one byte  
-                      Wire.write((int) bvalY[1]);              // sends one byte  
-                      Wire.write((int)bvalY[2]);              // sends one byte  
-                      Wire.write((int) bvalY[3]);              // sends one byte                      
-                      Wire.endTransmission();    // stop transmitting                                        
-                      successRangingCount++;
+                        byte *bvalX;
+                        byte *bvalY;
+                        bvalX = (byte *)&coords[2];
+                        bvalY = (byte *)&coords[3];                      
+                        
+                        Wire.beginTransmission(4); // transmit to device #4
+                        Wire.write((int)bvalX[0]);              // sends one byte  
+                        Wire.write((int) bvalX[1]);              // sends one byte  
+                        Wire.write((int)bvalX[2]);              // sends one byte  
+                        Wire.write((int) bvalX[3]);              // sends one byte 
+                        Wire.write((int)bvalY[0]);              // sends one byte  
+                        Wire.write((int) bvalY[1]);              // sends one byte  
+                        Wire.write((int)bvalY[2]);              // sends one byte  
+                        Wire.write((int) bvalY[3]);              // sends one byte                      
+                        Wire.endTransmission();    // stop transmitting                                        
+                        successRangingCount++;
                     }                 
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
                         rangingCountPeriod = curMillis;
                         successRangingCount = 0;
-                    }                         
-                    //DW1000FL.clearAllStatus();                               
-                    //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_RL));
-                    //attachInterrupt(digitalPinToInterrupt(PIN_IRQ_RL), DW1000RL.handleInterrupt, RISING);
-                    //delay(100);                 
+                    }                                         
                     transmitPollRL();                   
                     noteActivity();
-            } else if (msgId == RANGE_FAILED) {   
-                //SerialUSB.println("Received Range_FAILED_RR");                                     
-                expectedMsgId = POLL_ACK;
-                transmitPollRR();
-                noteActivity();
             }
         }
     }else if (anchorRanging == R_L){
@@ -708,32 +654,25 @@ void loop() {
                     String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) 
                              + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[0]) + "," + String(coords[1]) + "\n\r";               
                     SerialUSB.print(SerialUSBdata);
-                    //Serial1.print(SerialUSBdata);
+                    Serial1.print(SerialUSBdata);
                     //Send movement to mini if kaman buffer amount reached
-
                     if(kalman_buf > 3)
                     {
-                      byte *bvalX;
-                      byte *bvalY;
-                      //if (coords[0] != 0 && coords[3]>0){
-                         bvalX = (byte *)&coords[2];
-                         bvalY = (byte *)&coords[3];                      
-                      //}else{
-                          //bvalX = (byte *)&rawcoords[0];
-                          //bvalY = (byte *)&rawcoords[1];                      
-                      //}
-                      
-                      Wire.beginTransmission(4); // transmit to device #4
-                      Wire.write((int)bvalX[0]);              // sends one byte  
-                      Wire.write((int) bvalX[1]);              // sends one byte  
-                      Wire.write((int)bvalX[2]);              // sends one byte  
-                      Wire.write((int) bvalX[3]);              // sends one byte 
-                      Wire.write((int)bvalY[0]);              // sends one byte  
-                      Wire.write((int) bvalY[1]);              // sends one byte  
-                      Wire.write((int)bvalY[2]);              // sends one byte  
-                      Wire.write((int) bvalY[3]);              // sends one byte                      
-                      Wire.endTransmission();    // stop transmitting                                        
-                      successRangingCount++;
+                        byte *bvalX;
+                        byte *bvalY;
+                        bvalX = (byte *)&coords[2];
+                        bvalY = (byte *)&coords[3];                                           
+                        Wire.beginTransmission(4); // transmit to device #4
+                        Wire.write((int)bvalX[0]);              // sends one byte  
+                        Wire.write((int) bvalX[1]);              // sends one byte  
+                        Wire.write((int)bvalX[2]);              // sends one byte  
+                        Wire.write((int) bvalX[3]);              // sends one byte 
+                        Wire.write((int)bvalY[0]);              // sends one byte  
+                        Wire.write((int) bvalY[1]);              // sends one byte  
+                        Wire.write((int)bvalY[2]);              // sends one byte  
+                        Wire.write((int) bvalY[3]);              // sends one byte                      
+                        Wire.endTransmission();    // stop transmitting                                        
+                        successRangingCount++;
                     }
                     if (curMillis - rangingCountPeriod > 1000) {
                         samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
@@ -741,18 +680,9 @@ void loop() {
                         successRangingCount = 0;
                     }                              
                     anchorRanging = F_L;          
-                    expectedMsgId = POLL_ACK;   
-                    //DW1000FL.clearAllStatus();                               
-                    //SPI.usingInterrupt(digitalPinToInterrupt(PIN_IRQ_FL));
-                    //attachInterrupt(digitalPinToInterrupt(PIN_IRQ_FL), DW1000FL.handleInterrupt, RISING);
-                    //delay(100);                 
+                    expectedMsgId = POLL_ACK;                  
                     transmitPollFL();                   
                     noteActivity();
-            } else if (msgId == RANGE_FAILED) {   
-                //SerialUSB.println("Received Range_FAILED_RL");                                     
-                expectedMsgId = POLL_ACK;
-                transmitPollRL();
-                noteActivity();
             }
         }
    }    
