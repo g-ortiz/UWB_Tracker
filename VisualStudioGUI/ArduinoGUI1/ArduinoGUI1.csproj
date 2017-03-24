@@ -82,6 +82,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Picture4.png" />
+    <Content Include="Resources\target4.png" />
     <None Include="Resources\toprow1.png" />
     <None Include="Resources\toprow.png" />
     <None Include="Resources\border3.png" />

@@ -31,6 +31,9 @@ namespace ArduinoGUI1
         double degree = 0;
         double radi2 = 0;
         double degree2 = 0;
+        double xavg0 = 0;
+        double ALPHA = 0.05;
+        double yavg0 = 0;
 
         string ActualPort = "";
         bool IsConnected = false;
@@ -116,17 +119,22 @@ namespace ArduinoGUI1
 
             foreach (var s in Plots)
             {
-                radi = Math.Sqrt(Math.Pow(s.xPosKalman,2) + Math.Pow(s.yPosKalman,2));
+
+                xavg0 = ALPHA * s.xPosKalman + (1 - ALPHA) * xavg0;
+                yavg0 = ALPHA * s.yPosKalman + (1 - ALPHA) * yavg0;
+                //radi = Math.Sqrt(Math.Pow(s.xPosKalman,2) + Math.Pow(s.yPosKalman,2));
+                radi = Math.Sqrt(Math.Pow(xavg0, 2) + Math.Pow(yavg0, 2));
                 radi2 = Math.Sqrt(Math.Pow(s.xPosLinear, 2) + Math.Pow(s.yPosLinear, 2));
-                degree = Math.Atan2(s.yPosKalman, s.xPosKalman);
+                //degree = Math.Atan2(s.yPosKalman, s.xPosKalman);
+                degree = Math.Atan2(yavg0, xavg0);
                 degree = -1*(degree * 360 / (2 * Math.PI)-90);
                 degree2 = Math.Atan2(s.yPosLinear, s.xPosLinear);
                 degree2 = -1*(degree2 * 360 / (2 * Math.PI)-90);
                 chart1.Series["Linear"].Points.Clear();
-                chart1.Series["Linear"].Points.AddXY(degree2, radi2);
+                //chart1.Series["Linear"].Points.AddXY(degree2, radi2);
                 chart1.Series["Kalman"].Points.Clear();
                 chart1.Series["Kalman"].Points.AddXY(degree, radi);
-                label7.Text = "(" + s.xPosKalman.ToString("0.00") + ", " + s.yPosKalman.ToString("0.00") + ")";
+                label7.Text = "(" + xavg0.ToString("0.00") + ", " + yavg0.ToString("0.00") + ")";
                 label13.Text = "(" + radi.ToString("0.00") + ", " + degree.ToString("0.00") + "°)";
                 label12.Text = s.SamplingFreq.ToString("0.00");
             }

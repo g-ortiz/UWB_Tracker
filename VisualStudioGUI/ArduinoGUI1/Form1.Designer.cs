@@ -28,10 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.label1 = new System.Windows.Forms.Label();
             this.cmbSerialPorts = new System.Windows.Forms.ComboBox();
@@ -60,6 +61,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -215,58 +217,60 @@
             this.chart1.BorderlineColor = System.Drawing.Color.MidnightBlue;
             this.chart1.BorderlineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
             this.chart1.BorderlineWidth = 6;
-            chartArea2.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Cursor;
-            chartArea2.AxisX.Interval = 30D;
-            chartArea2.AxisX.IsStartedFromZero = false;
-            chartArea2.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea2.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
-            chartArea2.AxisX.LabelStyle.Interval = 15D;
-            chartArea2.AxisX.LabelStyle.IntervalOffset = 0D;
-            chartArea2.AxisX.LabelStyle.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
-            chartArea2.AxisX.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea2.AxisX.Maximum = 360D;
-            chartArea2.AxisX.Minimum = 0D;
-            chartArea2.AxisX.MinorTickMark.Interval = 10D;
-            chartArea2.AxisX.MinorTickMark.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(183)))));
-            chartArea2.AxisX.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea2.AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea2.AxisX2.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea2.AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea2.AxisY.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea2.AxisY.Maximum = 500D;
-            chartArea2.AxisY.Minimum = 0D;
-            chartArea2.AxisY.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea2.AxisY2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
-            chartArea2.AxisY2.TitleFont = new System.Drawing.Font("Arial", 8F);
-            chartArea2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(250)))), ((int)(((byte)(246)))));
-            chartArea2.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
-            chartArea2.Name = "Chart1";
-            this.chart1.ChartAreas.Add(chartArea2);
+            chartArea1.AlignmentStyle = System.Windows.Forms.DataVisualization.Charting.AreaAlignmentStyles.Cursor;
+            chartArea1.AxisX.Interval = 30D;
+            chartArea1.AxisX.IsStartedFromZero = false;
+            chartArea1.AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisX.LabelStyle.ForeColor = System.Drawing.Color.White;
+            chartArea1.AxisX.LabelStyle.Interval = 15D;
+            chartArea1.AxisX.LabelStyle.IntervalOffset = 0D;
+            chartArea1.AxisX.LabelStyle.IntervalOffsetType = System.Windows.Forms.DataVisualization.Charting.DateTimeIntervalType.Number;
+            chartArea1.AxisX.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea1.AxisX.Maximum = 360D;
+            chartArea1.AxisX.Minimum = 0D;
+            chartArea1.AxisX.MinorTickMark.Interval = 10D;
+            chartArea1.AxisX.MinorTickMark.LineColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(240)))), ((int)(((byte)(183)))));
+            chartArea1.AxisX.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisX2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisX2.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisY.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
+            chartArea1.AxisY.Maximum = 500D;
+            chartArea1.AxisY.Minimum = 0D;
+            chartArea1.AxisY.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisY2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
+            chartArea1.AxisY2.TitleFont = new System.Drawing.Font("Arial", 8F);
+            chartArea1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(254)))), ((int)(((byte)(250)))), ((int)(((byte)(246)))));
+            chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Solid;
+            chartArea1.Name = "Chart1";
+            this.chart1.ChartAreas.Add(chartArea1);
             this.chart1.Location = new System.Drawing.Point(29, 19);
             this.chart1.Name = "chart1";
             this.chart1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            series4.ChartArea = "Chart1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
-            series4.IsVisibleInLegend = false;
-            series4.MarkerImage = "C:\\Users\\gabet1\\Dropbox\\Thesis\\Repository\\VisualStudioGUI\\ArduinoGUI1\\Picture4.pn" +
+            series1.ChartArea = "Chart1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
+            series1.IsVisibleInLegend = false;
+            series1.MarkerImage = "C:\\Users\\gabet1\\Dropbox\\Thesis\\Repository\\VisualStudioGUI\\ArduinoGUI1\\Picture4.pn" +
     "g";
-            series4.MarkerSize = 50;
-            series4.Name = "Robot";
-            series5.ChartArea = "Chart1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
-            series5.MarkerSize = 15;
-            series5.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star10;
-            series5.Name = "Linear";
-            series6.ChartArea = "Chart1";
-            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
-            series6.MarkerImage = "C:\\Users\\gabet1\\Dropbox\\Thesis\\Repository\\VisualStudioGUI\\ArduinoGUI1\\target4.png" +
+            series1.MarkerSize = 50;
+            series1.Name = "Robot";
+            series2.ChartArea = "Chart1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
+            series2.MarkerSize = 15;
+            series2.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star10;
+            series2.Name = "Linear";
+            series3.ChartArea = "Chart1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
+            series3.MarkerImage = "C:\\Users\\gabet1\\Dropbox\\Thesis\\Repository\\VisualStudioGUI\\ArduinoGUI1\\target4.png" +
     "";
-            series6.MarkerImageTransparentColor = System.Drawing.Color.White;
-            series6.MarkerSize = 10;
-            series6.Name = "Kalman";
-            this.chart1.Series.Add(series4);
-            this.chart1.Series.Add(series5);
-            this.chart1.Series.Add(series6);
+
+
+            series3.MarkerImageTransparentColor = System.Drawing.Color.White;
+            series3.MarkerSize = 10;
+            series3.Name = "Kalman";
+            this.chart1.Series.Add(series1);
+            this.chart1.Series.Add(series2);
+            this.chart1.Series.Add(series3);
             this.chart1.Size = new System.Drawing.Size(647, 628);
             this.chart1.TabIndex = 1;
             this.chart1.Text = "chart1";
@@ -412,6 +416,12 @@
             this.pictureBox3.TabIndex = 27;
             this.pictureBox3.TabStop = false;
             // 
+            // imageList1
+            // 
+            this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.imageList1.ImageSize = new System.Drawing.Size(16, 16);
+            this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -488,6 +498,7 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.ImageList imageList1;
     }
 }
 
