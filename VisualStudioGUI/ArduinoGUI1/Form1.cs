@@ -26,6 +26,10 @@ namespace ArduinoGUI1
         string RangeFRRaw = "0";
         string RangeRRRaw = "0";
         string RangeRLRaw = "0";
+        string PowerFLRaw = "0";
+        string PowerFRRaw = "0";
+        string PowerRRRaw = "0";
+        string PowerRLRaw = "0";
 
         double radi = 0;
         double degree = 0;
@@ -82,10 +86,14 @@ namespace ArduinoGUI1
                     RangeFRRaw = SplitData[2];
                     RangeRRRaw = SplitData[3];
                     RangeRLRaw = SplitData[4];
-                    xKalmanRaw = SplitData[5];
-                    yKalmanRaw = SplitData[6];
-                    xLinearRaw = SplitData[7];
-                    yLinearRaw = SplitData[8];
+                    PowerFLRaw = SplitData[5];
+                    PowerFRRaw = SplitData[6];
+                    PowerRRRaw = SplitData[7];
+                    PowerRLRaw = SplitData[8];
+                    xKalmanRaw = SplitData[9];
+                    yKalmanRaw = SplitData[10];
+                    xLinearRaw = SplitData[11];
+                    yLinearRaw = SplitData[12];
 
                     this.Invoke(new EventHandler(display));
                     this.Invoke(new EventHandler(log));
@@ -101,6 +109,22 @@ namespace ArduinoGUI1
 
         private void display(object sender, EventArgs e)
         {
+            if (PowerFLRaw.Equals("-inf"))
+            {
+                PowerFLRaw = "0";
+            }
+            if (PowerFRRaw.Equals("-inf"))
+            {
+                PowerFRRaw = "0";
+            }
+            if (PowerRRRaw.Equals("-inf"))
+            {
+                PowerRRRaw = "0";
+            }
+            if (PowerRLRaw.Equals("-inf"))
+            {
+                PowerRLRaw = "0";
+            }
 
             Plots.Add(new plot
             {
@@ -113,6 +137,10 @@ namespace ArduinoGUI1
                 RangeFR = float.Parse(RangeFRRaw, CultureInfo.InvariantCulture.NumberFormat),
                 RangeRR = float.Parse(RangeRRRaw, CultureInfo.InvariantCulture.NumberFormat),
                 RangeRL = float.Parse(RangeRLRaw, CultureInfo.InvariantCulture.NumberFormat),
+                PowerFL = float.Parse(PowerFLRaw, CultureInfo.InvariantCulture.NumberFormat),
+                PowerFR = float.Parse(PowerFRRaw, CultureInfo.InvariantCulture.NumberFormat),
+                PowerRR = float.Parse(PowerRRRaw, CultureInfo.InvariantCulture.NumberFormat),
+                PowerRL = float.Parse(PowerRLRaw, CultureInfo.InvariantCulture.NumberFormat)
             });
 
      
@@ -137,6 +165,16 @@ namespace ArduinoGUI1
                 label7.Text = "(" + xavg0.ToString("0.00") + ", " + yavg0.ToString("0.00") + ")";
                 label13.Text = "(" + radi.ToString("0.00") + ", " + degree.ToString("0.00") + "°)";
                 label12.Text = s.SamplingFreq.ToString("0.00");
+
+                s.RangeFL = (s.RangeFL - 24.8) / 1.146;
+                s.RangeFR = (s.RangeFR - 24.8) / 1.146;
+                s.RangeRR = (s.RangeRR - 24.8) / 1.146;
+                s.RangeRL = (s.RangeRL - 24.8) / 1.146;
+                label22.Text = s.RangeFL.ToString("0.00");
+                label21.Text = s.RangeFR.ToString("0.00");
+                label20.Text = s.RangeRR.ToString("0.00");
+                label19.Text = s.RangeRL.ToString("0.00");
+
             }
             Plots.Clear();
 
@@ -144,9 +182,14 @@ namespace ArduinoGUI1
             label9.Text = RangeFRRaw;
             label10.Text = RangeRRRaw;
             label11.Text = RangeRLRaw;
+            label15.Text = PowerRLRaw;
+            label16.Text = PowerRRRaw;
+            label17.Text = PowerFRRaw;
+            label18.Text = PowerFLRaw;
 
         }
 
+    
         private void log(object sender, EventArgs e)
         {
             if (IsLogging)
@@ -162,6 +205,10 @@ namespace ArduinoGUI1
                     RangeFR = float.Parse(RangeFRRaw, CultureInfo.InvariantCulture.NumberFormat),
                     RangeRR = float.Parse(RangeRRRaw, CultureInfo.InvariantCulture.NumberFormat),
                     RangeRL = float.Parse(RangeRLRaw, CultureInfo.InvariantCulture.NumberFormat),
+                    PowerFL = float.Parse(PowerFLRaw, CultureInfo.InvariantCulture.NumberFormat),
+                    PowerFR = float.Parse(PowerFRRaw, CultureInfo.InvariantCulture.NumberFormat),
+                    PowerRR = float.Parse(PowerRRRaw, CultureInfo.InvariantCulture.NumberFormat),
+                    PowerRL = float.Parse(PowerRLRaw, CultureInfo.InvariantCulture.NumberFormat)
                 });
             }
                if (Logger.Count == 500)
@@ -172,7 +219,9 @@ namespace ArduinoGUI1
                    foreach (var s in Logger)
                     tw.WriteLine(s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeFL.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.RangeFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeRR.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
+                        "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerFL.ToString("0.00", new CultureInfo("en-US")) +
+                        "," + s.PowerFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerRR.ToString("0.00", new CultureInfo("en-US")) +
+                        "," + s.PowerRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.yPosLinear.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosKalman.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.yPosKalman.ToString("0.00", new CultureInfo("en-US"))
                         );
@@ -268,6 +317,10 @@ namespace ArduinoGUI1
             public double RangeFR { get; set; }
             public double RangeRR { get; set; }
             public double RangeRL { get; set; }
+            public double PowerFL { get; set; }
+            public double PowerFR { get; set; }
+            public double PowerRR { get; set; }
+            public double PowerRL { get; set; }
         }
 
         private void Form1_Closing(object sender, CancelEventArgs e)

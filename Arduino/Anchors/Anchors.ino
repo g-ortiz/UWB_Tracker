@@ -47,6 +47,7 @@ const uint8_t PIN_SS_RL = A1; // spi select pin
 float coords[4];
 float rawcoords[2];
 float ranges[4];
+float powers[4];
 
 // Initial states
 uint8_t anchorRanging = F_L;
@@ -396,6 +397,7 @@ void loop() {
         computeRangeAsymmetric();
         float distance = timeComputedRange.getAsMeters() * 100;
         Tracker.filter(distance , F_L, coords);
+        powers[0] = DW1000FL.getReceivePower();
         ranges[0] = Tracker.smoothing(distance , F_L, coords);
         rawcoords[0] = coords[2];
         rawcoords[1] = coords[3];
@@ -465,6 +467,7 @@ void loop() {
         timePollAckSent.setTimestamp(data + 6);
         computeRangeAsymmetric();
         float distance = timeComputedRange.getAsMeters() * 100;
+        powers[1] = DW1000FR.getReceivePower();
         Tracker.filter(distance , F_R, coords);
         ranges[1] = Tracker.smoothing(distance , F_R, coords);
         rawcoords[0] = coords[2];
@@ -535,6 +538,7 @@ void loop() {
         timePollAckSent.setTimestamp(data + 6);
         computeRangeAsymmetric();
         float distance = timeComputedRange.getAsMeters() * 100;
+        powers[2] = DW1000RR.getReceivePower();
         Tracker.filter(distance , R_R, coords);
         ranges[2] = Tracker.smoothing(distance , R_R, coords);
         rawcoords[0] = coords[2];
@@ -605,13 +609,14 @@ void loop() {
         timePollAckSent.setTimestamp(data + 6);
         computeRangeAsymmetric();
         float distance = timeComputedRange.getAsMeters() * 100;
+        powers[3] = DW1000RL.getReceivePower();
         Tracker.filter(distance , R_L, coords);
         ranges[3] = Tracker.smoothing(distance , R_L, coords);
         rawcoords[0] = coords[2];
         rawcoords[1] = coords[3];
         Tracker.kalman(coords + 2);
         kalman_buf = kalman_buf + 1;
-        String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3])
+        String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(powers[0]) + "," + String(powers[1]) + "," + String(powers[2]) + "," + String(powers[3]) 
                                + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(coords[0]) + "," + String(coords[1]) + "\n\r";
         SerialUSB.print(SerialUSBdata);
         Serial1.print(SerialUSBdata);
