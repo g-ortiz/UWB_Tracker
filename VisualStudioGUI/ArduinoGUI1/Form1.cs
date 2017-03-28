@@ -166,15 +166,6 @@ namespace ArduinoGUI1
                 label13.Text = "(" + radi.ToString("0.00") + ", " + degree.ToString("0.00") + "°)";
                 label12.Text = s.SamplingFreq.ToString("0.00");
 
-                s.RangeFL = (s.RangeFL - 24.8) / 1.146;
-                s.RangeFR = (s.RangeFR - 24.8) / 1.146;
-                s.RangeRR = (s.RangeRR - 24.8) / 1.146;
-                s.RangeRL = (s.RangeRL - 24.8) / 1.146;
-                label22.Text = s.RangeFL.ToString("0.00");
-                label21.Text = s.RangeFR.ToString("0.00");
-                label20.Text = s.RangeRR.ToString("0.00");
-                label19.Text = s.RangeRL.ToString("0.00");
-
             }
             Plots.Clear();
 

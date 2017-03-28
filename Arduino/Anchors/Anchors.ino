@@ -396,6 +396,7 @@ void loop() {
         timePollAckSent.setTimestamp(data + 6);
         computeRangeAsymmetric();
         float distance = timeComputedRange.getAsMeters() * 100;
+        distance = (distance - 24.8) / 1.146;
         Tracker.filter(distance , F_L, coords);
         powers[0] = DW1000FL.getReceivePower();
         ranges[0] = Tracker.smoothing(distance , F_L, coords);
@@ -467,6 +468,7 @@ void loop() {
         timePollAckSent.setTimestamp(data + 6);
         computeRangeAsymmetric();
         float distance = timeComputedRange.getAsMeters() * 100;
+        distance = (distance - 24.8) / 1.146;
         powers[1] = DW1000FR.getReceivePower();
         Tracker.filter(distance , F_R, coords);
         ranges[1] = Tracker.smoothing(distance , F_R, coords);
@@ -538,6 +540,7 @@ void loop() {
         timePollAckSent.setTimestamp(data + 6);
         computeRangeAsymmetric();
         float distance = timeComputedRange.getAsMeters() * 100;
+        distance = (distance - 24.8) / 1.146;
         powers[2] = DW1000RR.getReceivePower();
         Tracker.filter(distance , R_R, coords);
         ranges[2] = Tracker.smoothing(distance , R_R, coords);
@@ -609,6 +612,7 @@ void loop() {
         timePollAckSent.setTimestamp(data + 6);
         computeRangeAsymmetric();
         float distance = timeComputedRange.getAsMeters() * 100;
+        distance = (distance - 24.8) / 1.146;
         powers[3] = DW1000RL.getReceivePower();
         Tracker.filter(distance , R_L, coords);
         ranges[3] = Tracker.smoothing(distance , R_L, coords);
