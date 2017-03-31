@@ -165,7 +165,6 @@ namespace ArduinoGUI1
                 label7.Text = "(" + xavg0.ToString("0.00") + ", " + yavg0.ToString("0.00") + ")";
                 label13.Text = "(" + radi.ToString("0.00") + ", " + degree.ToString("0.00") + "°)";
                 label12.Text = s.SamplingFreq.ToString("0.00");
-
             }
             Plots.Clear();
 
