@@ -43,3 +43,6 @@ C:\Users\Gabriel\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug
 C:\Users\Gabriel\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.Form1.resources
 C:\Users\Gabriel\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.Properties.Resources.resources
 C:\Users\Gabriel\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.csproj.GenerateResource.Cache
+C:\Users\frtre1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\bin\Debug\ArduinoGUI1.exe.config
+C:\Users\frtre1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.exe
+C:\Users\frtre1\Dropbox\Thesis\Repository\VisualStudioGUI\ArduinoGUI1\obj\Debug\ArduinoGUI1.pdb

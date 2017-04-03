@@ -620,8 +620,8 @@ void loop() {
         rawcoords[1] = coords[3];
         Tracker.kalman(coords + 2);
         kalman_buf = kalman_buf + 1;
-        String SerialUSBdata = String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(powers[0]) + "," + String(powers[1]) + "," + String(powers[2]) + "," + String(powers[3]) 
-                               + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "\n\r";
+        String SerialUSBdata = "m" + String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(powers[0]) + "," + String(powers[1]) + "," + String(powers[2]) + "," + String(powers[3]) 
+                               + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "b\n\r";
         SerialUSB.print(SerialUSBdata);
         Serial1.print(SerialUSBdata);
         //Send movement to mini if kaman buffer amount reached

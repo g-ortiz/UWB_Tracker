@@ -36,7 +36,7 @@ namespace ArduinoGUI1
         double radi2 = 0;
         double degree2 = 0;
         double xavg0 = 0;
-        double ALPHA = 0.05;
+        double ALPHA = 0.2;
         double yavg0 = 0;
 
         string ActualPort = "";
@@ -80,6 +80,8 @@ namespace ArduinoGUI1
                 {
 
                     RawData = sp.ReadLine();
+                    RawData = RawData.Replace("m", string.Empty);
+                    RawData = RawData.Replace("b", string.Empty);
                     SplitData = RawData.Split(',');
                     SamplingRaw = SplitData[0];                 
                     RangeFLRaw = SplitData[1];
