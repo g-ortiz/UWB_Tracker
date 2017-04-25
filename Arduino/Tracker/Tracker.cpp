@@ -25,8 +25,8 @@ static const float ALPHA = 0.99;
 uint16_t count0, count1, count2, count3;
 
 //Variables for multi-lat
-const float TrackerClass::SEPARATIONx = 38.5; //Distance between all anchors in both x and y directions (cm)
-const float TrackerClass::SEPARATIONy = 41;
+const float TrackerClass::SEPARATIONx = 37; //Distance between all anchors in both x and y directions (cm)
+const float TrackerClass::SEPARATIONy = 40;
 											 /* Coordinates of anchors with respect to reference point RL (0,0) */
 float TrackerClass::FLx = -1*(SEPARATIONx/2);
 float TrackerClass::FLy = SEPARATIONy/2;
@@ -64,7 +64,7 @@ float Ct[4][2] = { {1,0},{1,0},{0,1},{0,1} }; //Transpose of measurement matrix
 float R_var = 15; //Expected standard deviation 
 float R[2][2] = { {R_var*1,0}, {0,R_var*1} }; //Expected measurement noise
 float Q_var = 0.005;
-float Q[4][4] = { { Q_var*1,0,0,0 },{ 0,Q_var*1,0,0 },{ 0,0,Q_var*1,0 },{ 0,0,0,Q_var*1 } }; //Process noise
+float Q[4][4] = { { Q_var*1,Q_var*1,0,0 },{ Q_var*1,Q_var*1,0,0 },{ 0,0,Q_var*1,Q_var*1 },{ 0,0,Q_var*1,Q_var*1 } }; //Process noise
 float P_var = 200.0;
 float P0[4][4] = { { P_var * 1,0,0,0 },{ 0,P_var * 1,0,0 },{ 0,0,P_var * 1,0 },{ 0,0,0,P_var * 1 } }; //Initial covariance matrix
 float X_pred[4][1]; //Predicted state (x_pos, x_vel, y_pos, y_vel)
@@ -147,7 +147,7 @@ void TrackerClass::loc(float distance, uint8_t anchor, float coord[])
 	}
 
 	uint8_t number = numDists(); //Get number of distances received thus far
-
+	float x_c, y_c;
 	if (number < 4)
 	{
 		xcoord = 0.0;
@@ -258,12 +258,12 @@ void TrackerClass::loc(float distance, uint8_t anchor, float coord[])
 		}
 
 		/*Initial position estimate*/
-		float x_c = P[0][0];
-		float y_c = P[1][0];
+		x_c = P[0][0];
+		y_c = P[1][0];
 		
 		/*Find minimum distance to project values onto*/
 		
-		float min = 100000; //Set min high initially
+		/*float min = 100000; //Set min high initially
 		float ds[4] = {d1, d2, d3, d4}; //Create array of distances
 		float d_min; //Minimum distance
 		
@@ -274,9 +274,24 @@ void TrackerClass::loc(float distance, uint8_t anchor, float coord[])
 				d_min = ds[j]; //Set as minimum distance
 				min = d_min; //Update min
 			}
+		}*/
+		
+		/*Find radius to project point onto*/
+		
+		float diff1 = abs(d1 - d2);
+		float diff2 = abs(d1-d3);
+		float d;
+		
+		if(diff1 > diff2)
+		{
+			d = (d1 + d2)/2;
+		}
+		else
+		{
+			d = (d1 + d3)/2;
 		}
 		
-		float dist = sqrt(pow(x_c,2) + pow(y_c,2)); //Distance from origin to point (can maybe use d4 for this?)
+		float dist = sqrt(pow(x_c,2) + pow(y_c,2)); //Distance from origin to point
 		
 		int8_t sign;
 		
@@ -288,8 +303,8 @@ void TrackerClass::loc(float distance, uint8_t anchor, float coord[])
 		
 		//Determine projected values
 		
-		float x_new = sign*x_c*d_min/dist;
-		float y_new = abs(y_c)*d_min/dist;
+		float x_new = sign*x_c*d/dist;
+		float y_new = abs(y_c)*d/dist;
 		
 		
 		if(y_c >= 0)
@@ -305,8 +320,10 @@ void TrackerClass::loc(float distance, uint8_t anchor, float coord[])
 
 	}
 	
+	//Projected Values
 	coord[0] = xcoord;
 	coord[1] = ycoord;
+	
 	return;
 }
 

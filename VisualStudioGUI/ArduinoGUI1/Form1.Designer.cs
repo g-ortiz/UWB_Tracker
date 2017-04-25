@@ -254,9 +254,9 @@
             series1.ChartArea = "Chart1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
             series1.IsVisibleInLegend = false;
-            series1.MarkerImage = "C:\\Users\\gabet1\\Dropbox\\Thesis\\Repository\\VisualStudioGUI\\ArduinoGUI1\\Picture4.pn" +
-    "g";
-            series1.MarkerSize = 50;
+            series1.MarkerColor = System.Drawing.Color.Gold;
+            series1.MarkerSize = 30;
+            series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Square;
             series1.Name = "Robot";
             series2.ChartArea = "Chart1";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
@@ -265,10 +265,10 @@
             series2.Name = "Linear";
             series3.ChartArea = "Chart1";
             series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
-            series3.MarkerImage = "C:\\Users\\gabet1\\Dropbox\\Thesis\\Repository\\VisualStudioGUI\\ArduinoGUI1\\target4.png" +
-    "";
+            series3.MarkerColor = System.Drawing.Color.Red;
             series3.MarkerImageTransparentColor = System.Drawing.Color.White;
             series3.MarkerSize = 10;
+            series3.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star6;
             series3.Name = "Kalman";
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
