@@ -60,7 +60,7 @@ void loop() {
         }else if (angle<-50 && angle>-130){
           modeFront = false; 
         }
-        if (coord[1]<=100 && modeFront){
+        if (coord[1]<=60 && modeFront){
             if(angle>=0 && angle<=70){
                     float NewValue = (((angle - 0) * (180 - 255)) / (70 - 0)) + 255;
                     analogWrite(_PIN_Left_F, NewValue);
@@ -78,31 +78,31 @@ void loop() {
                     analogWrite(_PIN_Right_B, 0);
             }
             lastActivity = millis();
-        }else if(coord[1]>100 && modeFront){
+        }else if(coord[1]>60 && modeFront){
             analogWrite(_PIN_Right_B, 0);            
             analogWrite(_PIN_Left_B, 0);
             if(angle>=0 && angle<70){
-                    float NewValue = 255;
+                    float NewValue = 160;
                     analogWrite(_PIN_Left_F, NewValue);
                     //Serial.println(NewValue);  
-                    NewValue = 220;
+                    NewValue = 115;
                     analogWrite(_PIN_Right_F, NewValue);          
                     //Serial.println(NewValue);  
             }else if (angle>110 && angle<=180){
-                    float NewValue = 255;
+                    float NewValue = 160;
                     analogWrite(_PIN_Right_F, NewValue); 
                     //Serial.println(NewValue);  
-                    NewValue = 220;
+                    NewValue = 115;
                     analogWrite(_PIN_Left_F, NewValue);                            
                     //Serial.println(NewValue);  
             }else if (angle>=70 && angle<=110){
-                    float NewValue = 220;
+                    float NewValue = 115;
                     analogWrite(_PIN_Right_F, NewValue); 
                     analogWrite(_PIN_Left_F, NewValue);                            
                     //Serial.println(NewValue);  
             }
             lastActivity = millis();
-        }else if (coord[1]>=-100 && !modeFront){
+        }else if (coord[1]>=-60 && !modeFront){
             if(angle<=0 && angle>=-70){
                     float NewValue = (((angle - (0)) * (180 - 255)) / ((-70) - 0)) + 255;
                     analogWrite(_PIN_Left_B, NewValue);
@@ -120,7 +120,7 @@ void loop() {
                     analogWrite(_PIN_Right_B, 0);
             }
             lastActivity = millis();
-        }else if(coord[1]<-100 && !modeFront){
+        }else if(coord[1]<-60 && !modeFront){
             analogWrite(_PIN_Right_F, 0);            
             analogWrite(_PIN_Left_F, 0);
             if(angle<0 && angle>-70){

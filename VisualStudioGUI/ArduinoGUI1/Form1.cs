@@ -203,24 +203,24 @@ namespace ArduinoGUI1
                     PowerRL = float.Parse(PowerRLRaw, CultureInfo.InvariantCulture.NumberFormat)
                 });
             }
-               if (Logger.Count == 500)
-               {
-                   Filename = txFileName.Text;
-                   btnLogging.Text = "Start Logging";
-                   TextWriter tw = new StreamWriter("../../../../../TestingData/" + Filename + ".txt");
-                   foreach (var s in Logger)
-                    tw.WriteLine(s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeFL.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.RangeFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeRR.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerFL.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.PowerFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerRR.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.PowerRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.yPosLinear.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosKalman.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.yPosKalman.ToString("0.00", new CultureInfo("en-US"))
-                        );
-                   tw.Close();
-                   IsLogging = false;
-                   Logger.Clear();
-               }
+               //if (Logger.Count == 500)
+               //{
+               //    Filename = txFileName.Text;
+               //    btnLogging.Text = "Start Logging";
+               //    TextWriter tw = new StreamWriter("../../../../../TestingData/" + Filename + ".txt");
+               //    foreach (var s in Logger)
+               //     tw.WriteLine(s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeFL.ToString("0.00", new CultureInfo("en-US")) +
+               //         "," + s.RangeFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeRR.ToString("0.00", new CultureInfo("en-US")) +
+               //         "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerFL.ToString("0.00", new CultureInfo("en-US")) +
+               //         "," + s.PowerFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerRR.ToString("0.00", new CultureInfo("en-US")) +
+               //         "," + s.PowerRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
+               //         "," + s.yPosLinear.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosKalman.ToString("0.00", new CultureInfo("en-US")) +
+               //         "," + s.yPosKalman.ToString("0.00", new CultureInfo("en-US"))
+               //         );
+               //    tw.Close();
+               //    IsLogging = false;
+               //    Logger.Clear();
+               //}
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
@@ -346,12 +346,15 @@ namespace ArduinoGUI1
                 foreach (var s in Logger)
                     tw.WriteLine(s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeFL.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.RangeFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeRR.ToString("0.00", new CultureInfo("en-US")) +
-                        "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
+                        "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerFL.ToString("0.00", new CultureInfo("en-US")) +
+                        "," + s.PowerFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerRR.ToString("0.00", new CultureInfo("en-US")) +
+                        "," + s.PowerRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.yPosLinear.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosKalman.ToString("0.00", new CultureInfo("en-US")) +
                         "," + s.yPosKalman.ToString("0.00", new CultureInfo("en-US"))
                         );
                 tw.Close();
                 IsLogging = false;
+                Logger.Clear();
             }
         }
 
