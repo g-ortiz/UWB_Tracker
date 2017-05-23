@@ -36,7 +36,7 @@ namespace ArduinoGUI1
         double radi2 = 0;
         double degree2 = 0;
         double xavg0 = 0;
-        double ALPHA = 0.2;
+        double ALPHA = 0.05;
         double yavg0 = 0;
 
         string ActualPort = "";
@@ -66,7 +66,7 @@ namespace ArduinoGUI1
             chart1.Series["Kalman"].Color = Color.Green;
             //chart1.Series["Robot"].ChartType =
               //  SeriesChartType.FastPoint;
-            chart1.Series["Robot"].Points.AddXY(0, 0);
+            chart1.Series["Robot"].Points.AddXY(10000, 10000);
         }
 
 
@@ -174,10 +174,6 @@ namespace ArduinoGUI1
             label9.Text = RangeFRRaw;
             label10.Text = RangeRRRaw;
             label11.Text = RangeRLRaw;
-            label15.Text = PowerRLRaw;
-            label16.Text = PowerRRRaw;
-            label17.Text = PowerFRRaw;
-            label18.Text = PowerFLRaw;
 
         }
 
@@ -203,24 +199,26 @@ namespace ArduinoGUI1
                     PowerRL = float.Parse(PowerRLRaw, CultureInfo.InvariantCulture.NumberFormat)
                 });
             }
-               //if (Logger.Count == 500)
-               //{
-               //    Filename = txFileName.Text;
-               //    btnLogging.Text = "Start Logging";
-               //    TextWriter tw = new StreamWriter("../../../../../TestingData/" + Filename + ".txt");
-               //    foreach (var s in Logger)
-               //     tw.WriteLine(s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeFL.ToString("0.00", new CultureInfo("en-US")) +
-               //         "," + s.RangeFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeRR.ToString("0.00", new CultureInfo("en-US")) +
-               //         "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerFL.ToString("0.00", new CultureInfo("en-US")) +
-               //         "," + s.PowerFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerRR.ToString("0.00", new CultureInfo("en-US")) +
-               //         "," + s.PowerRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
-               //         "," + s.yPosLinear.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosKalman.ToString("0.00", new CultureInfo("en-US")) +
-               //         "," + s.yPosKalman.ToString("0.00", new CultureInfo("en-US"))
-               //         );
-               //    tw.Close();
-               //    IsLogging = false;
-               //    Logger.Clear();
-               //}
+            
+            label15.Text = Logger.Count.ToString();
+            //if (Logger.Count == 500)
+            //{
+            //    Filename = txFileName.Text;
+            //    btnLogging.Text = "Start Logging";
+            //    TextWriter tw = new StreamWriter("../../../../../TestingData/" + Filename + ".txt");
+            //    foreach (var s in Logger)
+            //        tw.WriteLine(s.SamplingFreq.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeFL.ToString("0.00", new CultureInfo("en-US")) +
+            //            "," + s.RangeFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.RangeRR.ToString("0.00", new CultureInfo("en-US")) +
+            //            "," + s.RangeRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerFL.ToString("0.00", new CultureInfo("en-US")) +
+            //            "," + s.PowerFR.ToString("0.00", new CultureInfo("en-US")) + "," + s.PowerRR.ToString("0.00", new CultureInfo("en-US")) +
+            //            "," + s.PowerRL.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosLinear.ToString("0.00", new CultureInfo("en-US")) +
+            //            "," + s.yPosLinear.ToString("0.00", new CultureInfo("en-US")) + "," + s.xPosKalman.ToString("0.00", new CultureInfo("en-US")) +
+            //            "," + s.yPosKalman.ToString("0.00", new CultureInfo("en-US"))
+            //            );
+            //    tw.Close();
+            //    IsLogging = false;
+            //    Logger.Clear();
+            //}
         }
 
         private void btnConnect_Click(object sender, EventArgs e)

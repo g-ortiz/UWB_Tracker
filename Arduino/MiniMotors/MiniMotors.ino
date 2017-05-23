@@ -62,12 +62,12 @@ void loop() {
         }
         if (coord[1]<=60 && modeFront){
             if(angle>=0 && angle<=70){
-                    float NewValue = (((angle - 0) * (180 - 255)) / (70 - 0)) + 255;
+                    float NewValue = (((angle - 0) * (200 - 255)) / (70 - 0)) + 2005;
                     analogWrite(_PIN_Left_F, NewValue);
                     analogWrite(_PIN_Right_B, NewValue);
                     //Serial.println(NewValue);
             }else if (angle>=110 && angle<=180){
-                    float NewValue = (((angle - 110) * (255 - 180)) / (180 - 110)) + 180;
+                    float NewValue = (((angle - 110) * (200 - 180)) / (180 - 110)) + 180;
                     analogWrite(_PIN_Right_F, NewValue);
                     analogWrite(_PIN_Left_B, NewValue);
                     //Serial.println(NewValue);           
@@ -82,21 +82,21 @@ void loop() {
             analogWrite(_PIN_Right_B, 0);            
             analogWrite(_PIN_Left_B, 0);
             if(angle>=0 && angle<70){
-                    float NewValue = 160;
+                    float NewValue = 200;
                     analogWrite(_PIN_Left_F, NewValue);
                     //Serial.println(NewValue);  
-                    NewValue = 115;
+                    NewValue = 160;
                     analogWrite(_PIN_Right_F, NewValue);          
                     //Serial.println(NewValue);  
             }else if (angle>110 && angle<=180){
-                    float NewValue = 160;
+                    float NewValue = 200;
                     analogWrite(_PIN_Right_F, NewValue); 
                     //Serial.println(NewValue);  
-                    NewValue = 115;
+                    NewValue = 160;
                     analogWrite(_PIN_Left_F, NewValue);                            
                     //Serial.println(NewValue);  
             }else if (angle>=70 && angle<=110){
-                    float NewValue = 115;
+                    float NewValue = 180;
                     analogWrite(_PIN_Right_F, NewValue); 
                     analogWrite(_PIN_Left_F, NewValue);                            
                     //Serial.println(NewValue);  

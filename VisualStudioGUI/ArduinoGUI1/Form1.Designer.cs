@@ -63,9 +63,6 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.label15 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -267,8 +264,8 @@
             series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Polar;
             series3.MarkerColor = System.Drawing.Color.Red;
             series3.MarkerImageTransparentColor = System.Drawing.Color.White;
-            series3.MarkerSize = 10;
-            series3.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star6;
+            series3.MarkerSize = 15;
+            series3.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star10;
             series3.Name = "Kalman";
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
@@ -429,55 +426,19 @@
             this.label15.BackColor = System.Drawing.Color.White;
             this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label15.ForeColor = System.Drawing.Color.Black;
-            this.label15.Location = new System.Drawing.Point(1084, 386);
+            this.label15.Location = new System.Drawing.Point(898, 218);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(150, 30);
             this.label15.TabIndex = 28;
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label16
-            // 
-            this.label16.BackColor = System.Drawing.Color.White;
-            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.ForeColor = System.Drawing.Color.Black;
-            this.label16.Location = new System.Drawing.Point(1084, 350);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(150, 30);
-            this.label16.TabIndex = 29;
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label17
-            // 
-            this.label17.BackColor = System.Drawing.Color.White;
-            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.ForeColor = System.Drawing.Color.Black;
-            this.label17.Location = new System.Drawing.Point(1084, 314);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(150, 30);
-            this.label17.TabIndex = 30;
-            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // label18
-            // 
-            this.label18.BackColor = System.Drawing.Color.White;
-            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label18.ForeColor = System.Drawing.Color.Black;
-            this.label18.Location = new System.Drawing.Point(1084, 278);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(150, 30);
-            this.label18.TabIndex = 31;
-            this.label18.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(2)))), ((int)(((byte)(90)))), ((int)(((byte)(161)))));
-            this.ClientSize = new System.Drawing.Size(1428, 658);
+            this.ClientSize = new System.Drawing.Size(1110, 661);
             this.Controls.Add(this.label15);
-            this.Controls.Add(this.label16);
-            this.Controls.Add(this.label17);
-            this.Controls.Add(this.label18);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label7);
@@ -550,9 +511,6 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.ImageList imageList1;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label18;
     }
 }
 

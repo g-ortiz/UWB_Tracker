@@ -25,8 +25,8 @@ static const float ALPHA = 0.99;
 uint16_t count0, count1, count2, count3;
 
 //Variables for multi-lat
-const float TrackerClass::SEPARATIONx = 37; //Distance between all anchors in both x and y directions (cm)
-const float TrackerClass::SEPARATIONy = 40;
+const float TrackerClass::SEPARATIONx = 35.5; //Distance between all anchors in both x and y directions (cm)
+const float TrackerClass::SEPARATIONy = 41;
 											 /* Coordinates of anchors with respect to reference point RL (0,0) */
 float TrackerClass::FLx = -1*(SEPARATIONx/2);
 float TrackerClass::FLy = SEPARATIONy/2;
