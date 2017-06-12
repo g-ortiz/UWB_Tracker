@@ -3,6 +3,14 @@
 --Motor Controller
 --Gabriel Ortiz
 --Fredrik Treven
+
+This program receives the position of the target from the Arduino M0 and
+controls the motors based on the angle and the distace to the target.
+
+It uses the PWM outputs on the Arduino Mini to control the speed of the motors.
+In this way, it can turn or go slower or faster depending on the distance to the target.
+
+
 */
 
 #include <Wire.h>
@@ -22,6 +30,9 @@ uint8_t _PIN_Right_F = 3;
 uint8_t _PIN_Left_B = 9;
 uint8_t _PIN_Right_B = 6;
 
+
+uint8_t mindistance = 150;
+
 uint32_t lastActivity;
 uint32_t resetPeriod = 60;
 
@@ -38,7 +49,11 @@ void setup() {
   pinMode(_PIN_Left_F, OUTPUT);  // Left Forward
   pinMode(_PIN_Right_F, OUTPUT); // Right Forward
   pinMode(_PIN_Left_B, OUTPUT);  // Left backwards
-  pinMode(_PIN_Right_B, OUTPUT); //  right barckwards   
+  pinMode(_PIN_Right_B, OUTPUT); //  right barckwards  
+  analogWrite(_PIN_Right_F, 0);
+  analogWrite(_PIN_Left_B, 0);
+  analogWrite(_PIN_Left_F, 0);
+  analogWrite(_PIN_Right_B, 0); 
 }
 
 void loop() {
@@ -52,6 +67,7 @@ void loop() {
     }
     if (coord[0] != 0 && newdata){
         newdata = false;
+        // Calculate angle (polar coordinates)
         angle = atan2(coord[1] - 0, coord[0] - 0 );
         angle = angle * 180 / PI;
         //Serial.println(angle);
@@ -60,14 +76,14 @@ void loop() {
         }else if (angle<-50 && angle>-130){
           modeFront = false; 
         }
-        if (coord[1]<=60 && modeFront){
+        if (coord[1]<=mindistance*0.8 && modeFront){
             if(angle>=0 && angle<=70){
-                    float NewValue = (((angle - 0) * (200 - 255)) / (70 - 0)) + 2005;
+                    float NewValue = (((angle - 0) * (180 - 255)) / (70 - 0)) + 255;
                     analogWrite(_PIN_Left_F, NewValue);
                     analogWrite(_PIN_Right_B, NewValue);
                     //Serial.println(NewValue);
             }else if (angle>=110 && angle<=180){
-                    float NewValue = (((angle - 110) * (200 - 180)) / (180 - 110)) + 180;
+                    float NewValue = (((angle - 110) * (255 - 180)) / (180 - 110)) + 180;
                     analogWrite(_PIN_Right_F, NewValue);
                     analogWrite(_PIN_Left_B, NewValue);
                     //Serial.println(NewValue);           
@@ -78,31 +94,37 @@ void loop() {
                     analogWrite(_PIN_Right_B, 0);
             }
             lastActivity = millis();
-        }else if(coord[1]>60 && modeFront){
+        }else if(coord[1]>mindistance*0.8 && modeFront){
             analogWrite(_PIN_Right_B, 0);            
             analogWrite(_PIN_Left_B, 0);
             if(angle>=0 && angle<70){
-                    float NewValue = 200;
+                    float NewValue = 255;
                     analogWrite(_PIN_Left_F, NewValue);
                     //Serial.println(NewValue);  
-                    NewValue = 160;
+                    NewValue = 220;
                     analogWrite(_PIN_Right_F, NewValue);          
                     //Serial.println(NewValue);  
             }else if (angle>110 && angle<=180){
-                    float NewValue = 200;
+                    float NewValue = 255;
                     analogWrite(_PIN_Right_F, NewValue); 
                     //Serial.println(NewValue);  
-                    NewValue = 160;
+                    NewValue = 220;
                     analogWrite(_PIN_Left_F, NewValue);                            
                     //Serial.println(NewValue);  
             }else if (angle>=70 && angle<=110){
-                    float NewValue = 180;
-                    analogWrite(_PIN_Right_F, NewValue); 
-                    analogWrite(_PIN_Left_F, NewValue);                            
-                    //Serial.println(NewValue);  
+                    if(coord[1]>mindistance*1.2){
+                      float NewValue = 255;
+                      analogWrite(_PIN_Right_F, NewValue); 
+                      analogWrite(_PIN_Left_F, NewValue);   
+                    }else{
+                      float NewValue = (((coord[1] - mindistance*0.8) * (255 - 160)) / (mindistance*1.2 - mindistance*0.8)) + 160;
+                      analogWrite(_PIN_Right_F, NewValue); 
+                      analogWrite(_PIN_Left_F, NewValue);                            
+                      //Serial.println(NewValue);  
+                    }
             }
             lastActivity = millis();
-        }else if (coord[1]>=-60 && !modeFront){
+        }else if (coord[1]>=-mindistance && !modeFront){
             if(angle<=0 && angle>=-70){
                     float NewValue = (((angle - (0)) * (180 - 255)) / ((-70) - 0)) + 255;
                     analogWrite(_PIN_Left_B, NewValue);
@@ -120,7 +142,7 @@ void loop() {
                     analogWrite(_PIN_Right_B, 0);
             }
             lastActivity = millis();
-        }else if(coord[1]<-60 && !modeFront){
+        }else if(coord[1]<-mindistance && !modeFront){
             analogWrite(_PIN_Right_F, 0);            
             analogWrite(_PIN_Left_F, 0);
             if(angle<0 && angle>-70){
@@ -138,7 +160,7 @@ void loop() {
                     analogWrite(_PIN_Left_B, NewValue);                            
                     //Serial.println(NewValue);  
             }else if (angle<=-70 && angle>=-110){
-                    float NewValue = 220;
+                    float NewValue = 255;
                     analogWrite(_PIN_Right_B, NewValue); 
                     analogWrite(_PIN_Left_B, NewValue);                            
                     //Serial.println(NewValue);  

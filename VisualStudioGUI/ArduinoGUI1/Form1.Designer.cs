@@ -236,7 +236,7 @@
             chartArea1.AxisX2.TitleFont = new System.Drawing.Font("Arial", 8F);
             chartArea1.AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);
             chartArea1.AxisY.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.NotSet;
-            chartArea1.AxisY.Maximum = 500D;
+            chartArea1.AxisY.Maximum = 1000D;
             chartArea1.AxisY.Minimum = 0D;
             chartArea1.AxisY.TitleFont = new System.Drawing.Font("Arial", 8F);
             chartArea1.AxisY2.LabelStyle.Font = new System.Drawing.Font("Arial", 8F);

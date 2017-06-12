@@ -15,7 +15,7 @@
 #include <Wire.h>
 
 
-// Pins in Arduino M0 Pro
+// Pins in Arduino M0 Pro for anchors
 const uint8_t PIN_RST_FL = 13; // reset pin
 const uint8_t PIN_IRQ_FL = 11; // irq pin
 const uint8_t PIN_SS_FL = 12; // spi select pin
@@ -44,6 +44,7 @@ const uint8_t PIN_SS_RL = A1; // spi select pin
 #define R_R 2
 #define R_L 3
 
+// Positioning and Ranging variables
 float coords[4];
 float rawcoords[2];
 float ranges[4];
@@ -165,6 +166,7 @@ void setup() {
   // start receive mode, wait for POLL message
   receiverFL();
   transmitPollFL();
+  // Set the other anchors to idle and not receive permanently
   DW1000FR.receivePermanently(false);
   DW1000RR.receivePermanently(false);
   DW1000RL.receivePermanently(false);
@@ -226,6 +228,9 @@ void handleReceived() {
   // change state when ACK received
   receivedAck = true;
 }
+
+
+// The following functions are used for sending and receiving the messages in the ranging protocol
 
 void transmitPollFL() {
   DW1000FL.newTransmit();
@@ -344,7 +349,7 @@ void computeRangeAsymmetric() {
 }
 
 void loop() {
-  // reset if wathcdog timed out
+  // reset if wathcdog timed out. It resets the ancor that is currently ranging and start over the protocol at that anchor.
   int32_t curMillis = millis(); // get current time
   if (!sentAck && !receivedAck) {
     if (curMillis - lastActivity > resetPeriod) {
@@ -362,50 +367,59 @@ void loop() {
     return;
   }
 
+// The anchorRanging contains the value of the anchor that is currently ranging.
+// This value is changed after every completed ranging and the next anchor is assigned to it.
+// The same protocol is repeated for each anchors, the only thing that change is the libraries that are used.
+
   if (anchorRanging == F_L) {
-    if (sentAck) {
+    if (sentAck) { // If sentAck flag has been risen in the interrupt handler
       sentAck = false;
       byte msgId = data[0];
       if (msgId == POLL) {
+        // If a POLL message was sent, save timestampt
         DW1000FL.getTransmitTimestamp(timePollSent);
         noteActivity();
       } else if (msgId == RANGE) {
+        // If a RANGE message was sent, save timestampt        
         DW1000FL.getTransmitTimestamp(timeRangeSent);
         noteActivity();
       }
     }
-    if (receivedAck) {
+    if (receivedAck) { // If receivdAck flag has been risen in the interrupt handler (a message was received)
       receivedAck = false;
-      // get message and parse
+      // get message
       DW1000FL.getData(data, LEN_DATA);
       byte msgId = data[0];
       if (msgId != expectedMsgId) {
         expectedMsgId = POLL_ACK;
         return;
       }
+      // Depending on the type of message the processor executes different functions:
       if (msgId == POLL_ACK) {
-        DW1000FL.getReceiveTimestamp(timePollAckReceived);
-        timePollReceived.setTimestamp(data + 1);
-        expectedMsgId = RANGE_ACK;
-        transmitRangeFL();
+        DW1000FL.getReceiveTimestamp(timePollAckReceived); // get Poll Acknowledge Received Timestamp
+        timePollReceived.setTimestamp(data + 1); // get Poll Received Timestamp
+        expectedMsgId = RANGE_ACK; // change expected message
+        transmitRangeFL(); // Send range message
         DW1000FL.receivePermanently(false);
         DW1000FR.receivePermanently(true);
         noteActivity();
       } else if (msgId == RANGE_ACK) {
-        timeRangeReceived.setTimestamp(data + 1);
-        timePollAckSent.setTimestamp(data + 6);
-        computeRangeAsymmetric();
-        float distance = timeComputedRange.getAsMeters() * 100;
-        distance = (distance - 24.8) / 1.146;
-        Tracker.filter(distance , F_L, coords);
-        powers[0] = DW1000FL.getReceivePower();
-        ranges[0] = Tracker.smoothing(distance , F_L, coords);
-        rawcoords[0] = coords[2];
+        timeRangeReceived.setTimestamp(data + 1); // get Range Received Timestamp
+        timePollAckSent.setTimestamp(data + 6); // get Poll Acknowledge Sent Timestamp
+        computeRangeAsymmetric(); // compute TOF
+        float distance = timeComputedRange.getAsMeters() * 100; // get distance as meters
+        distance = (distance - 24.8) / 1.146; // Offset correction equation (see report)
+        Tracker.filter(distance , F_L, coords); // Execute positioning 
+        powers[0] = DW1000FL.getReceivePower(); // get received power
+        ranges[0] = Tracker.smoothing(distance , F_L, coords); // execute filter (not active)
+        rawcoords[0] = coords[2]; 
         rawcoords[1] = coords[3];
-        Tracker.kalman(coords + 2);
+        Tracker.kalman(coords + 2); // execute kalman filter
         kalman_buf = kalman_buf + 1;
-        anchorRanging = F_R;
-        expectedMsgId = POLL_ACK;
+        anchorRanging = F_R; //change ranging anchor
+        expectedMsgId = POLL_ACK; // change expected message
+        
+        // Send data to arduino mini using I2C        
         if (kalman_buf > 3)
         {
           byte *bvalX;
@@ -424,6 +438,7 @@ void loop() {
           Wire.endTransmission();    // stop transmitting
           successRangingCount++;
         }
+        // Calculate Sampling Frequency
         if (curMillis - rangingCountPeriod > 1000) {
           samplingRate = (1000.0f * successRangingCount) / (curMillis - rangingCountPeriod);
           rangingCountPeriod = curMillis;
@@ -620,6 +635,8 @@ void loop() {
         rawcoords[1] = coords[3];
         Tracker.kalman(coords + 2);
         kalman_buf = kalman_buf + 1;
+
+        //Send data to GUI via SerialPort
         String SerialUSBdata = "m" + String(samplingRate) + "," + String(ranges[0]) + "," + String(ranges[1]) + "," + String(ranges[2]) + "," + String(ranges[3]) + "," + String(powers[0]) + "," + String(powers[1]) + "," + String(powers[2]) + "," + String(powers[3]) 
                                + "," + String(coords[2]) + "," + String(coords[3]) + "," + String(rawcoords[0]) + "," + String(rawcoords[1]) + "b\n\r";
         SerialUSB.print(SerialUSBdata);

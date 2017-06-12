@@ -142,6 +142,11 @@ void receiver() {
     DW1000.startReceive();
 }
 
+
+// The target program works the same as the anchors but only for one component
+// See the thesis report to understand the message interchange and the anchors program 
+// for a deeper explanation on the code
+
 void loop() {
     if (!sentAck && !receivedAck) {
         // reset if wathcdog timed out
